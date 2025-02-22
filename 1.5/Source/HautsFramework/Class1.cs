@@ -3945,7 +3945,7 @@ namespace HautsFramework
             base.CompPostTick(ref severityAdjustment);
             if (this.Pawn.Spawned && this.parent.Severity >= this.Props.validRange.min && this.parent.Severity <= this.Props.validRange.max)
             {
-                if (!DisableMote())
+                if (!this.DisableMote())
                 {
                     if (this.mote == null || this.mote.Destroyed)
                     {
@@ -3965,8 +3965,10 @@ namespace HautsFramework
                     {
                         this.mote.Scale = this.Scale;
                     }
+                } else if (this.mote != null && !this.mote.Destroyed) {
+                    this.mote.Destroy();
                 }
-            } else if ((this.mote != null && !this.mote.Destroyed) || DisableMote()) {
+            } else if (this.mote != null && !this.mote.Destroyed) {
                 this.mote.Destroy(DestroyMode.Vanish);
             }
         }
