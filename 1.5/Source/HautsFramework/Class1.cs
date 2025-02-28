@@ -127,6 +127,9 @@ namespace HautsFramework
                           postfix: new HarmonyMethod(patchType, nameof(HautsGetGizmosPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Recipe_RemoveImplant), nameof(Recipe_RemoveImplant.ApplyOnPawn)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsApplyOnPawnPrefix)));
+            MethodInfo methodInfo2 = typeof(StatPart_Glow).GetMethod("ActiveFor", BindingFlags.NonPublic | BindingFlags.Instance);
+            harmony.Patch(methodInfo2,
+                          postfix: new HarmonyMethod(patchType, nameof(HautsStatPart_GlowActiveForPostfix)));
             harmony.Patch(AccessTools.Method(typeof(MedicalRecipesUtility), nameof(MedicalRecipesUtility.SpawnThingsFromHediffs)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsApplyOnPawnPrefix)));
             //hediff comps
@@ -140,8 +143,8 @@ namespace HautsFramework
                            postfix: new HarmonyMethod(patchType, nameof(HautsFramework_PreApplyDamagePostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.PostApplyDamage)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsPostApplyDamagePostfix)));
-            MethodInfo methodInfo2 = typeof(DamageWorker_AddInjury).GetMethod("ApplyDamageToPart", BindingFlags.NonPublic | BindingFlags.Instance);
-            harmony.Patch(methodInfo2,
+            MethodInfo methodInfo3 = typeof(DamageWorker_AddInjury).GetMethod("ApplyDamageToPart", BindingFlags.NonPublic | BindingFlags.Instance);
+            harmony.Patch(methodInfo3,
                           postfix: new HarmonyMethod(patchType, nameof(HautsApplyDamageToPartPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Thing), nameof(Thing.TakeDamage)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsTakeDamagePostfix)));
@@ -872,6 +875,23 @@ namespace HautsFramework
             }
             return true;
         }
+        public static void HautsStatPart_GlowActiveForPostfix(ref bool __result, StatPart_Glow __instance, Thing t)
+        {
+            if ((bool)__instance.GetType().GetField("ignoreIfPrefersDarkness", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance))
+            {
+                if (t is Pawn p && p.story != null)
+                {
+                    foreach (Trait trait in p.story.traits.TraitsSorted)
+                    {
+                        if (trait.def.HasModExtension<UnaffectedByDarkness>())
+                        {
+                            __result = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         //hediff comp functionalities
         public static void HautsSetIdeoPostfix(Pawn_IdeoTracker __instance)
         {
@@ -1446,6 +1466,10 @@ namespace HautsFramework
 
     }
     public class ConceitedTrait : DefModExtension
+    {
+
+    }
+    public class UnaffectedByDarkness : DefModExtension
     {
 
     }
@@ -2413,6 +2437,9 @@ namespace HautsFramework
         public bool damageScalesSeverityLoss = false;
         public bool noCostIfInvincible = true;
         public int priority = 100;
+        public bool reactsToRanged = true;
+        public bool reactsToExplosive = true;
+        public bool reactsToOther = true;
     }
     public class HediffComp_PreDamageModification : HediffComp
     {
@@ -2425,7 +2452,7 @@ namespace HautsFramework
         }
         public virtual bool ShouldDoEffect(DamageInfo dinfo)
         {
-            return this.parent.Severity >= this.Props.minSeverityToWork && (!this.Props.harmfulDamageTypesOnly || dinfo.Def.harmsHealth) && (this.Props.affectedDamageTypes == null || this.Props.affectedDamageTypes.Contains(dinfo.Def)) && (this.Props.unaffectedDamageTypes == null || !this.Props.unaffectedDamageTypes.Contains(dinfo.Def));
+            return this.parent.Severity >= this.Props.minSeverityToWork && (!this.Props.harmfulDamageTypesOnly || dinfo.Def.harmsHealth) && (dinfo.Def.isRanged ? this.Props.reactsToRanged : (dinfo.Def.isExplosive ? this.Props.reactsToExplosive : this.Props.reactsToOther)) && (this.Props.affectedDamageTypes == null || this.Props.affectedDamageTypes.Contains(dinfo.Def)) && (this.Props.unaffectedDamageTypes == null || !this.Props.unaffectedDamageTypes.Contains(dinfo.Def));
         }
         public virtual bool ShouldDoModificationInner(DamageInfo dinfo)
         {
@@ -2547,6 +2574,199 @@ namespace HautsFramework
                 }
             }
         }
+    }
+    public class HediffCompProperties_DamageNegationShield : HediffCompProperties_DamageNegation
+    {
+        public HediffCompProperties_DamageNegationShield()
+        {
+            this.compClass = typeof(HediffComp_DamageNegationShield);
+        }
+        public DamageDef instantlyOverwhelmedBy;
+        public bool destroyIfOverwhelmed;
+        //public bool blocksRangedWeapons;
+        public int baseStartingTicksToReset = 1;
+        public float energyOnReset = 1;
+        public float baseEnergyRechargeRate = 1;
+        public float baseMaxEnergy = 1;
+        public StatDef rechargeRateScalar;
+        public StatDef maxEnergyScalar;
+        public EffecterDef breakEffect;
+        public FloatRange visualRange;
+        public SoundDef resetSound;
+        public bool lightningGlowOnReset = true;
+    }
+    public class HediffComp_DamageNegationShield : HediffComp_DamageNegation
+    {
+        public new HediffCompProperties_DamageNegationShield Props
+        {
+            get
+            {
+                return (HediffCompProperties_DamageNegationShield)this.props;
+            }
+        }
+        public virtual float EnergyGainPerTick
+        {
+            get
+            {
+                return this.energyGainPerTickCached;
+            }
+            set
+            {
+                this.energyGainPerTickCached = value;
+            }
+        }
+        public virtual int ResetDelayTicks
+        {
+            get
+            {
+                return this.resetDelayTicksCached;
+            }
+            set
+            {
+                this.resetDelayTicksCached = value;
+            }
+        }
+        public virtual float MaxEnergy
+        {
+            get
+            {
+                return this.maxEnergyCached;
+            }
+            set
+            {
+                this.maxEnergyCached = value;
+            }
+        }
+        public float Energy
+        {
+            get
+            {
+                return this.parent.Severity - this.Props.minSeverityToWork;
+            }
+        }
+        public override void CompPostPostAdd(DamageInfo? dinfo)
+        {
+            base.CompPostPostAdd(dinfo);
+            this.RedetermineAllStats();
+            this.ResetShield();
+        }
+        public virtual void RedetermineAllStats()
+        {
+            this.EnergyGainPerTick = this.Props.baseEnergyRechargeRate * (this.Props.rechargeRateScalar != null ? this.Pawn.GetStatValue(this.Props.rechargeRateScalar) : 1f) / 60f;
+            this.ResetDelayTicks = this.Props.baseStartingTicksToReset;
+            this.MaxEnergy = (this.Props.baseMaxEnergy * (this.Props.maxEnergyScalar != null ? this.Pawn.GetStatValue(this.Props.maxEnergyScalar) : 1f)) + this.Props.minSeverityToWork;
+        }
+        public override bool ShouldDoEffect(DamageInfo dinfo)
+        {
+            return (this.Props.instantlyOverwhelmedBy != null && dinfo.Def == this.Props.instantlyOverwhelmedBy) || base.ShouldDoEffect(dinfo);
+        }
+        public override void DoModificationInner(ref DamageInfo dinfo, ref bool absorbed, float amount)
+        {
+            if (this.Props.instantlyOverwhelmedBy != null && dinfo.Def == this.Props.instantlyOverwhelmedBy)
+            {
+                this.PayCostOfHit(this.parent.Severity*2f);
+            }
+            base.DoModificationInner(ref dinfo, ref absorbed, amount);
+        }
+        public override void PayCostOfHit(float damageAmount)
+        {
+            base.PayCostOfHit(damageAmount);
+            if (this.Energy < 0)
+            {
+                this.BreakShield();
+            }
+        }
+        public virtual void ResetShield()
+        {
+            this.parent.Severity = this.Props.minSeverityToWork + this.Props.energyOnReset;
+            if (this.Pawn.Spawned)
+            {
+                if (this.Props.resetSound != null)
+                {
+                    this.Props.resetSound.PlayOneShot(new TargetInfo(this.Pawn.Position, this.Pawn.Map, false));
+                }
+                if (this.Props.lightningGlowOnReset)
+                {
+                    FleckMaker.ThrowLightningGlow(this.Pawn.TrueCenter(), this.Pawn.Map, 3f);
+                }
+            }
+        }
+        public virtual void BreakShield()
+        {
+            this.ticksToReset = this.ResetDelayTicks;
+            if (this.Pawn.Spawned)
+            {
+                float num = Mathf.Lerp(this.Props.visualRange.min, this.Props.visualRange.max, this.parent.Severity);
+                if (this.Props.breakEffect != null)
+                {
+                    this.Props.breakEffect.SpawnAttached(this.Pawn, this.Pawn.MapHeld, num);
+                }
+                if (this.Props.fleckOnBlock != null)
+                {
+                    FleckMaker.Static(this.Pawn.TrueCenter(), this.Pawn.Map, this.Props.fleckOnBlock, this.Props.minFleckSize * 1.2f);
+                }
+                if (this.Props.throwDustPuffsOnBlock)
+                {
+                    for (int i = 0; i < 6; i++)
+                    {
+                        FleckMaker.ThrowDustPuff(this.Pawn.TrueCenter() + Vector3Utility.HorizontalVectorFromAngle((float)Rand.Range(0, 360)) * Rand.Range(0.3f, 0.6f), this.Pawn.Map, Rand.Range(0.8f, 1.2f));
+                    }
+                }
+            }
+            if (this.Props.destroyIfOverwhelmed)
+            {
+                this.Pawn.health.RemoveHediff(this.parent);
+                return;
+            } else {
+                this.parent.Severity = this.Props.minSeverityToWork / 2f;
+            }
+        }
+        public override string CompLabelInBracketsExtra {
+            get
+            {
+                if (this.ticksToReset <= 0)
+                {
+                    return (this.parent.Severity - this.Props.minSeverityToWork).ToStringByStyle(ToStringStyle.FloatOne) + "/" + this.MaxEnergy.ToStringByStyle(ToStringStyle.FloatOne);
+                }
+                return "Hauts_ShieldRecharge".Translate((this.ticksToReset/60));
+            }
+        }
+        public override void CompPostTick(ref float severityAdjustment)
+        {
+            base.CompPostTick(ref severityAdjustment);
+            if (this.ticksToReset > 0)
+            {
+                this.ticksToReset--;
+                if (this.ticksToReset <= 0)
+                {
+                    if (this.parent.Severity < this.Props.minSeverityToWork)
+                    {
+                        this.ResetShield();
+                    }
+                    this.parent.Severity = Math.Min(this.EnergyGainPerTick + this.parent.Severity, this.MaxEnergy);
+                }
+            } else if (this.parent.Severity < this.Props.minSeverityToWork) {
+                this.ticksToReset = this.ResetDelayTicks;
+            } else {
+                this.parent.Severity = Math.Min(this.EnergyGainPerTick + this.parent.Severity, this.MaxEnergy);
+            }
+            if (this.Pawn.IsHashIntervalTick(60))
+            {
+                this.RedetermineAllStats();
+            }
+        }
+        public override void CompExposeData()
+        {
+            base.CompExposeData();
+            Scribe_Values.Look<int>(ref this.ticksToReset, "ticksToReset", -1, false);
+            Scribe_Values.Look<float>(ref this.maxEnergyCached, "maxEnergyCached", 1, false);
+            Scribe_Values.Look<float>(ref this.energyGainPerTickCached, "energyGainPerTickCached", 1, false);
+            Scribe_Values.Look<int>(ref this.resetDelayTicksCached, "resetDelayTicksCached", 1, false);
+        }
+        public int ticksToReset = -1;
+        public float maxEnergyCached;
+        public float energyGainPerTickCached;
+        public int resetDelayTicksCached;
     }
     public class HediffCompProperties_DamageRetaliation : HediffCompProperties_PreDamageModification
     {
@@ -3981,6 +4201,56 @@ namespace HautsFramework
             }
         }
         public Mote mote;
+    }
+    public class HediffCompProperties_MoteConditionalShield : HediffCompProperties_MoteConditional
+    {
+        public HediffCompProperties_MoteConditionalShield()
+        {
+            this.compClass = typeof(HediffComp_MoteConditionalShield);
+        }
+        public float minDrawFactor = 1.2f;
+        public float maxDrawFactor = 1.55f;
+        public bool randomRotation = true;
+    }
+    public class HediffComp_MoteConditionalShield : HediffComp_MoteConditional
+    {
+        public new HediffCompProperties_MoteConditionalShield Props
+        {
+            get
+            {
+                return this.props as HediffCompProperties_MoteConditionalShield;
+            }
+        }
+        public float MaxEnergy
+        {
+            get
+            {
+                HediffComp_DamageNegationShield hcdns = this.parent.TryGetComp<HediffComp_DamageNegationShield>();
+                if (hcdns != null)
+                {
+                    return hcdns.MaxEnergy;
+                }
+                return 1f;
+            }
+        }
+        public override float Scale {
+            get
+            {
+                return base.Scale*Mathf.Lerp(this.Props.minDrawFactor, this.Props.maxDrawFactor, (this.parent.Severity-this.Props.validRange.min) /this.MaxEnergy);
+            }
+        }
+        public override void CompPostTick(ref float severityAdjustment)
+        {
+            base.CompPostTick(ref severityAdjustment);
+            if (this.mote != null)
+            {
+                this.mote.Scale = this.Scale;
+                if (this.Props.randomRotation)
+                {
+                    this.mote.exactRotation = (float)Rand.Range(0, 360);
+                }
+            }
+        }
     }
     public class MoteConditionalText : MoteAttached
     {
@@ -7538,6 +7808,8 @@ namespace HautsFramework
         public List<IncidentDef> incidentDefs;
         public int questCount = 1;
         public IntRange incidentPoints = new IntRange(100, 100);
+        public IntRange incidentDelay;
+        public bool incidentUsesPermitFaction = true;
         //causing conditions
         public List<GameConditionDef> conditionDefs;
         public IntRange conditionDuration;
@@ -8350,11 +8622,24 @@ namespace HautsFramework
     [StaticConstructorOnStartup]
     public class RoyalTitlePermitWorker_GenerateQuest : RoyalTitlePermitWorker_Targeted
     {
+        public virtual bool FactionCanBeGroupSource(Faction f, Map map, bool desperate = false)
+        {
+            return !f.IsPlayer && !f.defeated && !f.temporary;
+        }
+        public IEnumerable<Faction> CandidateFactions(Map map, bool desperate = false)
+        {
+            return Find.FactionManager.AllFactions.Where((Faction f) => this.FactionCanBeGroupSource(f, map, desperate));
+        }
         public override IEnumerable<FloatMenuOption> GetRoyalAidOptions(Map map, Pawn pawn, Faction faction)
         {
             if (faction.HostileTo(Faction.OfPlayer))
             {
                 yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
+                yield break;
+            }
+            if (!this.CandidateFactions(map, false).Any<Faction>())
+            {
+                yield return new FloatMenuOption("Hauts_NoFactionCanFieldIncident".Translate(), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
             }
             Action action = null;
@@ -8422,9 +8707,7 @@ namespace HautsFramework
                             slate.Set<ThingDef>("targetMineableThing", targetMineable.building.mineableThing, false);
                             Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
                             Find.LetterStack.ReceiveLetter(quest.name, quest.description, LetterDefOf.PositiveEvent, null, null, quest, null, null, 0, true);
-                        }
-                        else
-                        {
+                        } else {
                             Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, parms.points);
                             if (!quest.hidden && questDef.sendAvailableLetter)
                             {
@@ -8432,36 +8715,33 @@ namespace HautsFramework
                             }
                         }
                         done = true;
-                    }
-                    else
-                    {
+                    } else {
+                        IncidentDef incidentDef = pme.incidentDefs.RandomElement();
+                        Faction funcFaction = pme.incidentUsesPermitFaction ? faction : this.CandidateFactions(caller.Map??null, false).RandomElement();
+                        Faction raidFaction = Find.FactionManager.AllFactionsListForReading.Where((Faction f) => !f.IsPlayer && f.HostileTo(Faction.OfPlayerSilentFail) && !f.defeated && !f.temporary && (caller.Map != null || (f.def.allowedArrivalTemperatureRange.Includes(caller.Map.mapTemperature.OutdoorTemp) && f.def.allowedArrivalTemperatureRange.Includes(caller.Map.mapTemperature.SeasonalTemp)))).RandomElement();
                         IncidentParms incidentParms = new IncidentParms
                         {
                             forced = true,
                             points = pme.incidentPoints.RandomInRange,
-                            faction = faction,
+                            faction = funcFaction,
                             raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn,
-                            raidStrategy = RaidStrategyDefOf.ImmediateAttack
+                            raidStrategy = RaidStrategyDefOf.ImmediateAttack,
+                            traderKind = (funcFaction != null && !funcFaction.IsPlayer && !funcFaction.def.caravanTraderKinds.NullOrEmpty() && funcFaction.def.caravanTraderKinds.ContainsAny((TraderKindDef tkd2) => tkd2.requestable) && funcFaction.AllyOrNeutralTo(Faction.OfPlayerSilentFail)) ? funcFaction.def.caravanTraderKinds.Where((TraderKindDef tkd)=>tkd.requestable).RandomElement() : null
                         };
                         if (caller.Map != null)
                         {
                             incidentParms.target = caller.Map;
-                        }
-                        else if (Find.AnyPlayerHomeMap != null)
-                        {
+                        } else if (Find.AnyPlayerHomeMap != null) {
                             incidentParms.target = Find.AnyPlayerHomeMap;
-                        }
-                        else if (Find.WorldObjects.Caravans.Count > 0)
-                        {
+                        } else if (Find.WorldObjects.Caravans.Count > 0) {
                             incidentParms.target = Find.WorldObjects.Caravans.RandomElement();
-                        }
-                        else
-                        {
+                        } else {
                             incidentParms.target = Find.World;
                         }
-                        IncidentDef incidentDef = pme.incidentDefs.RandomElement();
-                        if (incidentDef.Worker.CanFireNow(incidentParms))
+                        if (pme.incidentDelay != null)
                         {
+                            Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + pme.incidentDelay.RandomInRange, incidentParms, 240000);
+                        } else if (incidentDef.Worker.CanFireNow(incidentParms)) {
                             incidentDef.Worker.TryExecute(incidentParms);
                         }
                         done = true;

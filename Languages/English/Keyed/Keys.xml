@@ -47,6 +47,7 @@
 <Hauts_ExtraHitFXSuffix2E> unnatural entities</Hauts_ExtraHitFXSuffix2E>
 <Hauts_GotInspiredOnHit>{0} gained an inspiration due to the {1} on-hit effect.</Hauts_GotInspiredOnHit>
 <Hauts_GotMBOnHit>The {0} on-hit effect is responsible.</Hauts_GotMBOnHit>
+<Hauts_ShieldRecharge>{0}s to recharge</Hauts_ShieldRecharge>
 <Hauts_SkillAdjustmentTooltip>Grants {0} {1} xp per day</Hauts_SkillAdjustmentTooltip>
 <Hauts_StatWorkerPsyfocusBand>From current psyfocus band</Hauts_StatWorkerPsyfocusBand>
 <Hauts_StatWorkerExpectationLevel>From current expectation level</Hauts_StatWorkerExpectationLevel>
@@ -75,6 +76,7 @@
 <Hauts_TargetAlreadyHasPairedHediff>target already affected by this ability</Hauts_TargetAlreadyHasPairedHediff>
 <Hauts_MustBeCaravanning>Only usable on a caravan</Hauts_MustBeCaravanning>
 <Hauts_PMEMisconfig>Permit is of a type that requires PermitMoreEffects, but there isn't one in its definition</Hauts_PMEMisconfig>
+<Hauts_NoFactionCanFieldIncident>There are no factions that can cause this event</Hauts_NoFactionCanFieldIncident>
 <!--Devmode-->
 <HVT_CharEditFixer>DEV: Fix TraitGrantedStuff</HVT_CharEditFixer>
 <HVT_CharEditFixerDesc>Adds any missing hediffs or abilities to this pawn which should've been granted by its traits. The presence of this button does not necessarily mean that there are any missing hediffs or abilities.\n\nIf you're using Character Editor to add traits to pawns, make sure to press this on the pawn immediately afterward.</HVT_CharEditFixerDesc>

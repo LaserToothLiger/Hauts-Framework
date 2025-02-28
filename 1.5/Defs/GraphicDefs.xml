@@ -26,6 +26,32 @@
 	</graphicData>
   </ThingDef>
   
+  <ThingDef ParentName="MoteGlowDistorted">
+	<defName>Hauts_DefaultShieldGraphic</defName>
+	<thingClass>MoteAttached</thingClass>
+	<altitudeLayer>Projectile</altitudeLayer>
+	<mote>
+	  <fadeInTime>0.001</fadeInTime>
+	  <fadeOutTime>0.001</fadeOutTime>
+	  <solidTime>9999</solidTime>
+	  <!--<realTime>true</realTime>-->
+	  <needsMaintenance>true</needsMaintenance>
+	</mote>
+	<graphicData>
+	  <graphicClass>Graphic_Mote</graphicClass>
+	  <texPath>Other/ShieldBubble</texPath>
+	  <shaderType>Transparent</shaderType>
+	  <color>(1,1,1,1)</color>
+	  <drawSize>1</drawSize>
+	  <shaderParameters>
+		<_DistortionTex>/Other/Ripples</_DistortionTex>
+		<_distortionIntensity>0.05</_distortionIntensity>
+		<_DistortionScale>0.4</_DistortionScale>
+		<_distortionScrollSpeed>(0.07, 0.07, 0.0)</_distortionScrollSpeed>
+	  </shaderParameters>
+	</graphicData>
+  </ThingDef>
+  
   
 	  <EffecterDef>
 		<defName>Hauts_ToxThornsMist</defName>
