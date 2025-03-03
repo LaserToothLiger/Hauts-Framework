@@ -101,6 +101,11 @@ namespace HautsFramework
                            postfix: new HarmonyMethod(patchType, nameof(Hauts_VCAJ_EffectiveRangePostfix)));
             harmony.Patch(AccessTools.Property(typeof(Verb_Jump), nameof(Verb_Jump.EffectiveRange)).GetGetMethod(),
                            postfix: new HarmonyMethod(patchType, nameof(Hauts_VJ_EffectiveRangePostfix)));
+            if (ModsConfig.BiotechActive)
+            {
+                harmony.Patch(AccessTools.Method(typeof(SanguophageUtility), nameof(SanguophageUtility.HemogenGainBloodlossFactor)),
+                               postfix: new HarmonyMethod(patchType, nameof(Hauts_HemogenGainBloodlossFactorPostfix)));
+            }
             if (!ModsConfig.IsActive("VanillaExpanded.VPsycastsE"))
             {
                 harmony.Patch(AccessTools.Method(typeof(Psycast), nameof(Psycast.Activate), new[] { typeof(LocalTargetInfo), typeof(LocalTargetInfo) }),
@@ -752,6 +757,10 @@ namespace HautsFramework
             {
                 __result *= __instance.CasterPawn.GetStatValue(HautsDefOf.Hauts_JumpRangeFactor);
             }
+        }
+        public static void Hauts_HemogenGainBloodlossFactorPostfix(ref float __result, Pawn pawn)
+        {
+            __result *= pawn.GetStatValue(HautsDefOf.Hauts_HemogenContentFactor);
         }
         //trait defmodextension functionalities
         public static void HautsGainTraitPostfix(TraitSet __instance, Trait trait, bool suppressConflicts)
@@ -1419,6 +1428,8 @@ namespace HautsFramework
         public static StatDef Hauts_MechCommandRange;
         [MayRequireBiotech]
         public static StatDef Hauts_SpewRangeFactor;
+        [MayRequireBiotech]
+        public static StatDef Hauts_HemogenContentFactor;
         [MayRequireRoyalty]
         public static StatDef Hauts_PsycastFocusRefund;
         [MayRequireRoyalty]
@@ -2067,6 +2078,67 @@ namespace HautsFramework
     {
         public Hauts_SpewAbility()
         {
+        }
+    }
+    public class Recipe_ExtractHemogenStatScalable : Recipe_Surgery
+    {
+        public override bool AvailableOnNow(Thing thing, BodyPartRecord part = null)
+        {
+            Pawn pawn = thing as Pawn;
+            return (((pawn != null) ? pawn.genes : null) == null || !pawn.genes.HasActiveGene(GeneDefOf.Hemogenic)) && (pawn == null || pawn.health.CanBleed) && base.AvailableOnNow(thing, part);
+        }
+        public override AcceptanceReport AvailableReport(Thing thing, BodyPartRecord part = null)
+        {
+            Pawn pawn;
+            if ((pawn = thing as Pawn) != null && pawn.DevelopmentalStage.Baby())
+            {
+                return "TooSmall".Translate();
+            }
+            return base.AvailableReport(thing, part);
+        }
+        public override bool CompletableEver(Pawn surgeryTarget)
+        {
+            return base.CompletableEver(surgeryTarget) && this.PawnHasEnoughBloodForExtraction(surgeryTarget);
+        }
+        public override void CheckForWarnings(Pawn medPawn)
+        {
+            base.CheckForWarnings(medPawn);
+            if (!this.PawnHasEnoughBloodForExtraction(medPawn))
+            {
+                Messages.Message("MessageCannotStartHemogenExtraction".Translate(medPawn.Named("PAWN")), medPawn, MessageTypeDefOf.NeutralEvent, false);
+            }
+        }
+        public override void ApplyOnPawn(Pawn pawn, BodyPartRecord part, Pawn billDoer, List<Thing> ingredients, Bill bill)
+        {
+            if (!ModLister.CheckBiotech("Hemogen extraction"))
+            {
+                return;
+            }
+            if (!this.PawnHasEnoughBloodForExtraction(pawn))
+            {
+                Messages.Message("MessagePawnHadNotEnoughBloodToProduceHemogenPack".Translate(pawn.Named("PAWN")), pawn, MessageTypeDefOf.NeutralEvent, true);
+                return;
+            }
+            Hediff hediff = HediffMaker.MakeHediff(HediffDefOf.BloodLoss, pawn, null);
+            hediff.Severity = 0.45f/pawn.GetStatValue(HautsDefOf.Hauts_HemogenContentFactor);
+            pawn.health.AddHediff(hediff, null, null, null);
+            this.OnSurgerySuccess(pawn, part, billDoer, ingredients, bill);
+            if (this.IsViolationOnPawn(pawn, part, Faction.OfPlayer))
+            {
+                base.ReportViolation(pawn, billDoer, pawn.HomeFaction, -1, HistoryEventDefOf.ExtractedHemogenPack);
+            }
+        }
+        protected override void OnSurgerySuccess(Pawn pawn, BodyPartRecord part, Pawn billDoer, List<Thing> ingredients, Bill bill)
+        {
+            if (!GenPlace.TryPlaceThing(ThingMaker.MakeThing(ThingDefOf.HemogenPack, null), pawn.PositionHeld, pawn.MapHeld, ThingPlaceMode.Near, null, null, default(Rot4)))
+            {
+                Log.Error("Could not drop hemogen pack near " + pawn.PositionHeld);
+            }
+        }
+        private bool PawnHasEnoughBloodForExtraction(Pawn pawn)
+        {
+            Hediff firstHediffOfDef = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss, false);
+            return firstHediffOfDef == null || firstHediffOfDef.Severity < 0.45f / pawn.GetStatValue(HautsDefOf.Hauts_HemogenContentFactor);
         }
     }
     //hediffcomps misc.

@@ -46,6 +46,13 @@
 						<Hauts_MechCommandRange>24.9</Hauts_MechCommandRange>
 					</value>
 				</li>
+				<!--hemogen content factor stat functionality-->
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/RecipeDef[defName="ExtractHemogenPack"]/workerClass</xpath>
+					<value>
+					  <workerClass>HautsFramework.Recipe_ExtractHemogenStatScalable</workerClass>
+					</value>
+				</li>
 				<!--make our command range stats work together-->
 				<li Class="PatchOperationFindMod">
 					<mods>
