@@ -224,13 +224,13 @@
 	</StatDef>
 	<StatDef MayRequire="Ludeon.RimWorld.Biotech">
 		<defName>Hauts_HemogenContentFactor</defName>
-		<label>hemogen content factor</label>
-		<description>A multiplier to the amount of hemogen gained from bloodfeeding on this character.</description>
+		<label>hemogen density</label>
+		<description>The density of hemogen in this character's blood. At higher values, bloodfeeders will gain more hemogen per feeding from this character, and medical extraction of hemogen packs will incur less blood loss.\n\nDoes not affect hemogen gain from corpsefeeding with Vanilla Races Expanded - Sanguophage</description>
 		<category>BasicsPawn</category>
         <minValue>0</minValue>
 		<hideAtValue>1</hideAtValue>
 		<defaultBaseValue>1</defaultBaseValue>
-		<displayPriorityInCategory>8798</displayPriorityInCategory>
+		<displayPriorityInCategory>2254</displayPriorityInCategory>
         <toStringStyle>PercentZero</toStringStyle>
 	</StatDef>
 	<StatDef MayRequire="VanillaExpanded.Recycling">
