@@ -18,5 +18,6 @@
 		<li IfModActive="Neronix17.TweaksGalore">1.5/Mods/TweaksGalore</li>
 		<li IfModActive="OskarPotocki.VFE.Insectoid2">1.5/Mods/VFE_Insectoids2</li>
 		<li IfModActive="lts.I" IfModNotActive="MSE2.Core">1.5/Mods/ThisIsGettingALittleIntoTheWeeds</li>
+		<li IfModActive="notfood.Infused">1.5/Mods/Infused</li>
 	</v1.5>
 </loadFolders>

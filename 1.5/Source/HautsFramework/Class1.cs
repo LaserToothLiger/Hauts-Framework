@@ -3605,6 +3605,7 @@ namespace HautsFramework
         public bool multiplyBySeverity = false;
         public StatDef multiplyByStat = null;
         public bool affectsAllBionicAbilities = false;
+        public bool affectsAllGeneticAbilities = false;
         public bool affectsAllAbilities = false;
     }
     public class HediffComp_AbilityCooldownModifier : HediffComp
@@ -5634,6 +5635,8 @@ namespace HautsFramework
         public float severityGainedOnUse = 0f;
         public float setSeverity = -1f;
         public int minAgeTicksToFunction = 1;
+        [TranslationHandle]
+        public Type specificVerbType = typeof(Verb);
     }
     public class HediffComp_ChangeSeverityOnVerbUse : HediffComp
     {
@@ -5649,13 +5652,16 @@ namespace HautsFramework
             base.Notify_PawnUsedVerb(verb, target);
             if (this.parent.ageTicks >= this.Props.minAgeTicksToFunction)
             {
-                if (this.Props.setSeverity != -1f)
+                if (this.Props.specificVerbType == null || this.Props.specificVerbType == typeof(Verb) || verb.GetType().IsAssignableFrom(this.Props.specificVerbType))
                 {
-                    this.parent.Severity = this.Props.setSeverity;
-                }
-                if (this.Props.severityGainedOnUse != 0f)
-                {
-                    this.parent.Severity += this.Props.severityGainedOnUse;
+                    if (this.Props.setSeverity != -1f)
+                    {
+                        this.parent.Severity = this.Props.setSeverity;
+                    }
+                    if (this.Props.severityGainedOnUse != 0f)
+                    {
+                        this.parent.Severity += this.Props.severityGainedOnUse;
+                    }
                 }
             }
         }
@@ -7861,8 +7867,9 @@ namespace HautsFramework
         public PermitMoreEffects() { }
         //giving hediffs
         public List<HediffDef> hediffs;
+        //spawning stuff
+        public int phenomenonCount;
         //making books
-        public int bookCount;
         public ThingDef bookDef;
         public RulePackDef bookTitlePack;
         public RulePackDef bookDescPack;
@@ -7894,6 +7901,23 @@ namespace HautsFramework
         //thing-targeting
         public List<ThingDef> targetableThings;
         public string invalidTargetMessage;
+        //drop pawns
+        public List<PawnKindDef> allowedPawnKinds;
+        public bool allowMechs;
+        public bool allowDryads;
+        public bool allowInsectoids;
+        public bool allowEntities;
+        public bool allowAnimals;
+        public bool allowHumanlikes;
+        public bool allowAnyFlesh;
+        public bool allowAnyNonflesh;
+        public bool needsPen;
+        public bool mustBePredator;
+        public float maxWildness = 0.6f;
+        public float minPetness = -1f;
+        public FloatRange bodySizeCapRange = new FloatRange(-1f,999f);
+        public List<PawnKindDef> disallowedPawnKinds;
+        public bool startsTamed;
         //drop stuff
         public FloatRange gambaFactorRange;
         public bool gambaDropPodSoNotInstant = false;
@@ -8032,9 +8056,9 @@ namespace HautsFramework
                     PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
                     if (pme != null && pme.bookDef != null)
                     {
-                        for (int i = 0; i < pme.bookCount; i++)
+                        for (int i = 0; i < pme.phenomenonCount; i++)
                         {
-                            num += pme.bookDef.BaseMass * pme.bookCount;
+                            num += pme.bookDef.BaseMass * pme.phenomenonCount;
                         }
                         if (num > caravan.MassCapacity)
                         {
@@ -8085,7 +8109,7 @@ namespace HautsFramework
             if (pme != null && pme.bookDef != null)
             {
                 List<Thing> list = new List<Thing>();
-                for (int i = 0; i < pme.bookCount; i++)
+                for (int i = 0; i < pme.phenomenonCount; i++)
                 {
                     Thing thing = this.MakeBook(pme);
                     list.Add(thing);
@@ -8110,7 +8134,7 @@ namespace HautsFramework
             if (pme != null && pme.bookDef != null)
             {
                 Caravan caravan = caller.GetCaravan();
-                for (int i = 0; i < pme.bookCount; i++)
+                for (int i = 0; i < pme.phenomenonCount; i++)
                 {
                     Thing thing = this.MakeBook(pme);
                     CaravanInventoryUtility.GiveThing(caravan, thing);
@@ -9122,6 +9146,181 @@ namespace HautsFramework
         }
         private Faction calledFaction;
     }
+    public class RoyalTitlePermitWorker_GiveHediffs : RoyalTitlePermitWorker_TargetPawn
+    {
+        public override bool IsGoodPawn(Pawn pawn)
+        {
+            PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
+            return HautsUtility.AllowCheckPMEs(pme,pawn.kindDef);
+        }
+        public override void AffectPawnInner(PermitMoreEffects pme, Pawn pawn, Faction faction)
+        {
+            base.AffectPawnInner(pme, pawn, faction);
+            foreach (HediffDef hd in pme.hediffs)
+            {
+                Hediff hediff = HediffMaker.MakeHediff(hd, pawn);
+                pawn.health.AddHediff(hediff);
+            }
+        }
+    }
+    [StaticConstructorOnStartup]
+    public class RoyalTitlePermitWorker_DropPawns : RoyalTitlePermitWorker_Targeted
+    {
+        public override void OrderForceTarget(LocalTargetInfo target)
+        {
+            this.CallPawns(target.Cell);
+        }
+        public override IEnumerable<FloatMenuOption> GetRoyalAidOptions(Map map, Pawn pawn, Faction faction)
+        {
+            if (map.generatorDef.isUnderground)
+            {
+                yield return new FloatMenuOption(this.def.LabelCap + ": " + "CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
+                yield break;
+            }
+            if (faction.HostileTo(Faction.OfPlayer))
+            {
+                yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
+                yield break;
+            }
+            Action action = null;
+            string text = this.def.LabelCap + ": ";
+            bool free;
+            if (base.FillAidOption(pawn, faction, ref text, out free))
+            {
+                action = delegate
+                {
+                    this.BeginCallPawns(pawn, faction, map, free);
+                };
+            }
+            yield return new FloatMenuOption(text, action, faction.def.FactionIcon, faction.Color, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0, HorizontalJustification.Left, false);
+            yield break;
+        }
+        public override IEnumerable<Gizmo> GetCaravanGizmos(Pawn pawn, Faction faction)
+        {
+            string text;
+            bool flag;
+            if (!base.FillCaravanAidOption(pawn, faction, out text, out this.free, out flag))
+            {
+                yield break;
+            }
+            Command_Action command_Action = new Command_Action
+            {
+                defaultLabel = this.def.LabelCap + " (" + pawn.LabelShort + ")",
+                defaultDesc = text,
+                icon = RoyalTitlePermitWorker_DropPawns.CommandTex,
+                action = delegate
+                {
+                    this.CallResourcesToCaravan(pawn, faction, this.free);
+                }
+            };
+            if (pawn.MapHeld != null && pawn.MapHeld.generatorDef.isUnderground)
+            {
+                command_Action.Disable("CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")));
+            }
+            if (faction.HostileTo(Faction.OfPlayer))
+            {
+                command_Action.Disable("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")));
+            }
+            if (flag)
+            {
+                command_Action.Disable("CommandCallRoyalAidNotEnoughFavor".Translate());
+            }
+            yield return command_Action;
+            yield break;
+        }
+        private void BeginCallPawns(Pawn caller, Faction faction, Map map, bool free)
+        {
+            this.targetingParameters = new TargetingParameters();
+            this.targetingParameters.canTargetLocations = true;
+            this.targetingParameters.canTargetBuildings = false;
+            this.targetingParameters.canTargetPawns = false;
+            this.caller = caller;
+            this.map = map;
+            this.faction = faction;
+            this.free = free;
+            this.targetingParameters.validator = (TargetInfo target) => (this.def.royalAid.targetingRange <= 0f || target.Cell.DistanceTo(caller.Position) <= this.def.royalAid.targetingRange) && !target.Cell.Fogged(map) && DropCellFinder.CanPhysicallyDropInto(target.Cell, map, true, true);
+            Find.Targeter.BeginTargeting(this, null, false, null, null, true);
+        }
+        private void CallPawns(IntVec3 cell)
+        {
+            List<Pawn> list = new List<Pawn>();
+            PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
+            if (pme != null)
+            {
+                int pawnSpawnCount = pme.numFromCategory != null ? pme.numFromCategory.RandomInRange : pme.phenomenonCount;
+                for (int i = 0; i < pawnSpawnCount; i++)
+                {
+                    PawnKindDef pkd = this.ChoosePawnKindToDrop(pme);
+                    if (pkd != null)
+                    {
+                        list.Add(PawnGenerator.GeneratePawn(pkd, pme.startsTamed ? this.caller.Faction : null));
+                    }
+                }
+            }
+            if (list.Any<Pawn>())
+            {
+                ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();
+                activeDropPodInfo.innerContainer.TryAddRangeOrTransfer(list, true, false);
+                DropPodUtility.MakeDropPodAt(cell, this.map, activeDropPodInfo, null);
+                Messages.Message("MessagePermitTransportDrop".Translate(this.faction.Named("FACTION")), new LookTargets(cell, this.map), MessageTypeDefOf.NeutralEvent, true);
+                this.caller.royalty.GetPermit(this.def, this.faction).Notify_Used();
+                if (!this.free)
+                {
+                    this.caller.royalty.TryRemoveFavor(this.faction, this.def.royalAid.favorCost);
+                }
+            }
+        }
+        private void CallResourcesToCaravan(Pawn caller, Faction faction, bool free)
+        {
+            Caravan caravan = caller.GetCaravan();
+            List<Pawn> list = new List<Pawn>();
+            PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
+            if (pme != null)
+            {
+                int pawnSpawnCount = pme.numFromCategory != null ? pme.numFromCategory.RandomInRange : pme.phenomenonCount;
+                for (int i = 0; i < pawnSpawnCount; i++)
+                {
+                    PawnKindDef pkd = this.ChoosePawnKindToDrop(pme);
+                    if (pkd != null)
+                    {
+                        list.Add(PawnGenerator.GeneratePawn(pkd, null));
+                    }
+                }
+            }
+            if (!list.NullOrEmpty())
+            {
+                foreach (Pawn p in list)
+                {
+                    Find.WorldPawns.PassToWorld(p, PawnDiscardDecideMode.Decide);
+                    caravan.AddPawn(p,true);
+                    p.SetFaction(pme.startsTamed ? caller.Faction : null);
+                }
+            }
+            Messages.Message("MessagePermitTransportDropCaravan".Translate(faction.Named("FACTION"), caller.Named("PAWN")), caravan, MessageTypeDefOf.NeutralEvent, true);
+            caller.royalty.GetPermit(this.def, faction).Notify_Used();
+            if (!free)
+            {
+                caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
+            }
+        }
+        private PawnKindDef ChoosePawnKindToDrop(PermitMoreEffects pme)
+        {
+            PawnKindDef pawnToMake = PawnKindDefOf.WildMan;
+            if (!pme.allowedPawnKinds.NullOrEmpty())
+            {
+                pawnToMake = pme.allowedPawnKinds.RandomElement();
+            } else {
+                List<PawnKindDef> possiblePawnsFromAllowBools = DefDatabase<PawnKindDef>.AllDefsListForReading.Where((PawnKindDef p) => (!pme.needsPen || p.RaceProps.Roamer) && (pme.maxWildness < 0f || p.RaceProps.wildness <= pme.maxWildness) && p.RaceProps.petness >= pme.minPetness && (!pme.mustBePredator || p.RaceProps.predator) && (pme.disallowedPawnKinds ==null || !pme.disallowedPawnKinds.Contains(p)) && (pme.marketValueLimits == null || (pme.marketValueLimits.min <= p.race.GetStatValueAbstract(StatDefOf.MarketValue) && pme.marketValueLimits.max >= p.race.GetStatValueAbstract(StatDefOf.MarketValue))) && (pme.bodySizeCapRange == null || pme.bodySizeCapRange.Includes(p.RaceProps.baseBodySize)) && HautsUtility.AllowCheckPMEs(pme, p)).ToList<PawnKindDef>();
+                if (!possiblePawnsFromAllowBools.NullOrEmpty())
+                {
+                    pawnToMake = possiblePawnsFromAllowBools.RandomElement();
+                }
+            }
+                return pawnToMake;
+        }
+        private Faction faction;
+        private static readonly Texture2D CommandTex = ContentFinder<Texture2D>.Get("UI/Commands/CallAid", true);
+    }
     //verbs and damage
     public class Verb_MeleeShot : Verse.Verb_Shoot
     {
@@ -9808,6 +10007,17 @@ namespace HautsFramework
                                     }
                                 }
                             }
+                            if (!shouldLowerCooldown && acm.Props.affectsAllGeneticAbilities && ModsConfig.BiotechActive && ability.pawn.genes != null)
+                            {
+                                foreach (Gene g in ability.pawn.genes.GenesListForReading)
+                                {
+                                    if (g.def.abilities != null && g.def.abilities.Contains(ability.def))
+                                    {
+                                        shouldLowerCooldown = true;
+                                        break;
+                                    }
+                                }
+                            }
                             if (!shouldLowerCooldown && HautsUtility.ShouldLowerCooldown(ability,acm)) {
                                 shouldLowerCooldown = true;
                             }
@@ -10271,6 +10481,11 @@ namespace HautsFramework
         public static void VPESetSkillPointsAndExperienceTo(Pawn setFor, Pawn copyFrom)
         {
 
+        }
+        //permits
+        public static bool AllowCheckPMEs(PermitMoreEffects pme, PawnKindDef p)
+        {
+            return ((pme.allowAnyFlesh && p.RaceProps.IsFlesh) || (pme.allowAnyNonflesh && !p.RaceProps.IsFlesh)) || (pme.allowDryads || !p.RaceProps.Dryad) && (pme.allowEntities || !p.RaceProps.IsAnomalyEntity) && (pme.allowInsectoids || !p.RaceProps.Insect) && (pme.allowMechs || !p.RaceProps.IsMechanoid) && (pme.allowAnimals || !p.RaceProps.Animal) && (pme.allowHumanlikes || !p.RaceProps.Humanlike);
         }
         //checkers and lists
         public static bool IsntCastingAbility(Pawn pawn)
