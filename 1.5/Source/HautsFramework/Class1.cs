@@ -1547,11 +1547,16 @@ namespace HautsFramework
                 {
                     HautsUtility.TraitGrantedStuffLoadCheck(Find.Maps[i].mapPawns.AllPawns);
                 }
+                this.ThirdTickEffects();
             }
             foreach (Hauts_FactionCompHolder fch in factions)
             {
                 fch.PostTick();
             }
+        }
+        public void ThirdTickEffects()
+        {
+            //you put Harmony patches in here to also go off at the same time as the initial traitgrantedstuff load check
         }
         public override void ExposeData()
         {
@@ -6642,6 +6647,7 @@ namespace HautsFramework
         public int periodicity = 250;
         public bool scanForPawnsOnly = false;
         public bool onlyHostiles = false;
+        public bool usableInMentalStates = false;
     }
     public class CompAbilityEffect_AiScansForTargets : CompAbilityEffect
     {
@@ -6662,7 +6668,7 @@ namespace HautsFramework
         public override void CompTick()
         {
             base.CompTick();
-            if (this.parent.pawn.IsHashIntervalTick(this.Props.periodicity) && this.parent.pawn.Spawned && !this.parent.pawn.IsColonistPlayerControlled && !this.parent.GizmoDisabled(out string text) && this.parent.def.aiCanUse && this.parent.CanCast && !this.parent.pawn.InMentalState && (this.parent.pawn.CurJob == null || (this.parent.pawn.CurJob.ability == null && (this.parent.pawn.CurJob.verbToUse == null || !(this.parent.pawn.CurJob.verbToUse is VFECore.Abilities.Verb_CastAbility)))))
+            if (this.parent.pawn.IsHashIntervalTick(this.Props.periodicity) && this.parent.pawn.Spawned && !this.parent.pawn.IsColonistPlayerControlled && !this.parent.GizmoDisabled(out string text) && this.parent.def.aiCanUse && this.parent.CanCast && (this.Props.usableInMentalStates || !this.parent.pawn.InMentalState) && (this.parent.pawn.CurJob == null || (this.parent.pawn.CurJob.ability == null && (this.parent.pawn.CurJob.verbToUse == null || !(this.parent.pawn.CurJob.verbToUse is VFECore.Abilities.Verb_CastAbility)))))
             {
                 if (this.Props.scanForPawnsOnly)
                 {
