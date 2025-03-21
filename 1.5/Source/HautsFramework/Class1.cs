@@ -42,6 +42,8 @@ namespace HautsFramework
                           postfix: new HarmonyMethod(patchType, nameof(HautsAdjustedCooldownPostfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), new[] { typeof(PawnKindDef), typeof(Faction) }),
                           postfix: new HarmonyMethod(patchType, nameof(Hauts_GeneratePawnPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(Pawn_RoyaltyTracker), nameof(Pawn_RoyaltyTracker.OpenPermitWindow)),
+                           postfix: new HarmonyMethod(patchType, nameof(Hauts_OpenPermitTabPostfix)));
             //faction 'comps'
             harmony.Patch(AccessTools.Method(typeof(FactionManager), nameof(FactionManager.Add)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsFactionManager_AddPostfix)));
@@ -293,6 +295,17 @@ namespace HautsFramework
                 }
                 foreach (Trait t in traitsToRemove) {
                     __result.story.traits.RemoveTrait(t);
+                }
+            }
+        }
+        public static void Hauts_OpenPermitTabPostfix(Pawn_RoyaltyTracker __instance)
+        {
+            if (!__instance.AllTitlesInEffectForReading.NullOrEmpty())
+            {
+                Faction f = __instance.MostSeniorTitle.faction;
+                if (f != null)
+                {
+                    PermitsCardUtility.selectedFaction = f;
                 }
             }
         }
@@ -8597,9 +8610,9 @@ namespace HautsFramework
                     if (randomThing != null)
                     {
                         Thing thing = ThingMaker.MakeThing(randomThing, GenStuff.RandomStuffFor(randomThing));
-                        if (thing.TryGetComp(out CompQuality compQuality))
+                        if (thing.TryGetComp(out CompQuality compQuality) && pme.extraNumber != null)
                         {
-                            compQuality.SetQuality(this.def.royalAid.itemsToDrop[i].quality, new ArtGenerationContext?(ArtGenerationContext.Outsider));
+                            compQuality.SetQuality((QualityCategory)pme.extraNumber.RandomInRange, new ArtGenerationContext?(ArtGenerationContext.Outsider));
                         }
                         if (thing.def.Minifiable)
                         {
@@ -9788,7 +9801,11 @@ namespace HautsFramework
         public override void PostPostMake()
         {
             base.PostPostMake();
-            this.remainingCharges = this.MaxCharges;
+            this.remainingCharges = this.InitialCharges();
+        }
+        public virtual int InitialCharges()
+        {
+            return this.MaxCharges;
         }
         public override void PostExposeData()
         {
@@ -10055,13 +10072,18 @@ namespace HautsFramework
         }
         private static void SetNewCooldownInner(RimWorld.Ability ability, int newCooldown)
         {
-            if (ability.GetType().GetField("cooldownDuration", BindingFlags.NonPublic | BindingFlags.Instance) != null && ability.GetType().GetField("cooldownEndTick", BindingFlags.NonPublic | BindingFlags.Instance) != null)
+            if (ability is Psycast)
             {
-                if (newCooldown > ability.CooldownTicksTotal)
+                ability.StartCooldown(newCooldown);
+            } else {
+                if (ability.GetType().GetField("cooldownDuration", BindingFlags.NonPublic | BindingFlags.Instance) != null && ability.GetType().GetField("cooldownEndTick", BindingFlags.NonPublic | BindingFlags.Instance) != null)
                 {
-                    ability.GetType().GetField("cooldownDuration", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(ability, Math.Max(newCooldown, 0));
+                    if (newCooldown > ability.CooldownTicksTotal)
+                    {
+                        ability.GetType().GetField("cooldownDuration", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(ability, Math.Max(newCooldown, 0));
+                    }
+                    ability.GetType().GetField("cooldownEndTick", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(ability, GenTicks.TicksGame + Math.Max(newCooldown, 0));
                 }
-                ability.GetType().GetField("cooldownEndTick", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(ability, GenTicks.TicksGame + Math.Max(newCooldown, 0));
             }
         }
         public static bool AthenaAbilityCooldownPatch(RimWorld.Ability ability, HediffCompProperties hcp)
