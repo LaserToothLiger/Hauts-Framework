@@ -4,6 +4,7 @@ using MVCF.VerbComps;
 using RimWorld;
 using RimWorld.Planet;
 using RimWorld.QuestGen;
+using RimWorld.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -309,6 +310,27 @@ namespace HautsFramework
                 }
             }
         }
+        /*public static void Hauts_TryFindCastPositionPrefix(ref CastPositionRequest newReq)
+        {
+            if (newReq.caster != null)
+            {
+                newReq.maxRangeFromTarget += Mathf.Max(0f, newReq.caster.GetStatValue(VFEDefOf.VEF_MeleeWeaponRange) - VFEDefOf.VEF_MeleeWeaponRange.defaultBaseValue);
+            }
+        }
+        public static void Hauts_BestAttackTargetPrefix(IAttackTargetSearcher searcher, ref float maxDist)
+        {
+            if (searcher is Pawn p)
+            {
+                maxDist += Mathf.Max(0f, p.GetStatValue(VFEDefOf.VEF_MeleeWeaponRange) - VFEDefOf.VEF_MeleeWeaponRange.defaultBaseValue);
+            }
+        }
+        public static void Hauts_IsVanillaMeleeAttackPostfix(Verb verb, ref bool __result)
+        {
+            if (verb.Caster is Pawn p && p.GetStatValue(VFEDefOf.VEF_MeleeWeaponRange) - VFEDefOf.VEF_MeleeWeaponRange.defaultBaseValue > 0f)
+            {
+                __result = false;
+            }
+        }*/
         //faction comps. second method here makes the example comp, "spy points", work
         public static void HautsFactionManager_AddPostfix(Faction faction)
         {
@@ -9760,6 +9782,7 @@ namespace HautsFramework
         public bool displayGizmoWhileUndrafted = true;
         public bool displayGizmoWhileDrafted = true;
         public bool displayChargesInLabel = true;
+        public bool priceScalesByRemainingCharges = true;
     }
     public class Comp_ItemCharged : ThingComp
     {
@@ -9849,6 +9872,41 @@ namespace HautsFramework
             return true;
         }
         protected int remainingCharges;
+    }
+    public class StatPart_ItemCharged : StatPart
+    {
+        public override void TransformValue(StatRequest req, ref float val)
+        {
+            StatPart_ItemCharged.TransformAndExplain(req, ref val, null);
+        }
+        public override string ExplanationPart(StatRequest req)
+        {
+            float num = 1f;
+            StringBuilder stringBuilder = new StringBuilder();
+            StatPart_ItemCharged.TransformAndExplain(req, ref num, stringBuilder);
+            return stringBuilder.ToString().TrimEndNewlines();
+        }
+        private static void TransformAndExplain(StatRequest req, ref float val, StringBuilder explanation)
+        {
+            Thing thing = req.Thing;
+            if (thing != null)
+            {
+                Comp_ItemCharged cic = thing.TryGetComp<Comp_ItemCharged>();
+                if (cic != null && cic.Props.priceScalesByRemainingCharges)
+                {
+                    float num3 = ((float)cic.RemainingCharges / (float)cic.MaxCharges);
+                    if (explanation != null)
+                    {
+                        explanation.AppendLine("StatsReport_ReloadRemainingChargesMultipler".Translate(cic.Props.ChargeNounArgument, cic.LabelRemaining) + ": x" + num3.ToStringPercent());
+                    }
+                    val *= num3;
+                }
+            }
+            if (val < 0f)
+            {
+                val = 0f;
+            }
+        }
     }
     //event pools
     public class BelongsToEventPool : DefModExtension
