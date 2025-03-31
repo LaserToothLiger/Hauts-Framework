@@ -9366,9 +9366,6 @@ namespace HautsFramework
     public class Verb_MeleeShot : Verse.Verb_Shoot
     {
     }
-    /*public class Verb_RangedMelee : Verb_MeleeAttackDamage
-    {
-    }*/
     public class DamageWorker_AddInjurySkip : DamageWorker_AddInjury
     {
         public override DamageResult Apply(DamageInfo dinfo, Thing thing)
@@ -10619,10 +10616,23 @@ namespace HautsFramework
             }
             foreach (Hediff h in p.health.hediffSet.hediffs)
             {
-                if (h is HediffWithComps hwc)
+                HediffComp_ReactOnDamage rod = h.TryGetComp<HediffComp_ReactOnDamage>();
+                if (rod != null && rod.Props.damageDefIncoming == DamageDefOf.EMP)
                 {
-                    HediffComp_ReactOnDamage rod = hwc.TryGetComp<HediffComp_ReactOnDamage>();
-                    if (rod != null && rod.Props.damageDefIncoming == DamageDefOf.EMP)
+                    return true;
+                }
+                HediffComp_DamageNegationShield dns = h.TryGetComp<HediffComp_DamageNegationShield>();
+                if (dns != null && dns.Props.instantlyOverwhelmedBy != null && dns.Props.instantlyOverwhelmedBy == DamageDefOf.EMP && dns.Energy > 0f)
+                {
+                    return true;
+                }
+            }
+            if (p.apparel != null)
+            {
+                foreach (Apparel a in p.apparel.WornApparel)
+                {
+                    RimWorld.CompShield cs = a.TryGetComp<RimWorld.CompShield>();
+                    if (cs != null && cs.ShieldState == ShieldState.Active)
                     {
                         return true;
                     }
