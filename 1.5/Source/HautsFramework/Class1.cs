@@ -83,6 +83,8 @@ namespace HautsFramework
                           postfix: new HarmonyMethod(patchType, nameof(HautsGiveMentalStatePostfix)));
             harmony.Patch(AccessTools.Property(typeof(CompTreeConnection), nameof(CompTreeConnection.MaxDryads)).GetGetMethod(),
                            postfix: new HarmonyMethod(patchType, nameof(HautsMaxDryadsPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(Book), nameof(Book.OnBookReadTick)),
+                           postfix: new HarmonyMethod(patchType, nameof(HautsOnBookReadTickPostfix)));
             harmony.Patch(AccessTools.Method(typeof(JoyUtility), nameof(JoyUtility.JoyTickCheckEnd)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsJoyTickCheckEndPostfix)));
             harmony.Patch(AccessTools.Method(typeof(JoyToleranceSet), nameof(JoyToleranceSet.NeedInterval)),
@@ -138,6 +140,8 @@ namespace HautsFramework
             MethodInfo methodInfo2 = typeof(StatPart_Glow).GetMethod("ActiveFor", BindingFlags.NonPublic | BindingFlags.Instance);
             harmony.Patch(methodInfo2,
                           postfix: new HarmonyMethod(patchType, nameof(HautsStatPart_GlowActiveForPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(LifeStageWorker_HumanlikeAdult), nameof(LifeStageWorker_HumanlikeAdult.Notify_LifeStageStarted)),
+                          postfix: new HarmonyMethod(patchType, nameof(HautsNotify_LifeStageStartedPostfix)));
             harmony.Patch(AccessTools.Method(typeof(MedicalRecipesUtility), nameof(MedicalRecipesUtility.SpawnThingsFromHediffs)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsApplyOnPawnPrefix)));
             //hediff comps
@@ -240,8 +244,10 @@ namespace HautsFramework
                            prefix: new HarmonyMethod(patchType, nameof(HautsAICanTargetNowPrefix)));
             harmony.Patch(AccessTools.Method(typeof(CompAbilityEffect), nameof(CompAbilityEffect.AICanTargetNow)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsAICanTargetNowPostfix)));
-            /*harmony.Patch(AccessTools.Method(typeof(RimWorld.Ability), nameof(RimWorld.Ability.AICanTargetNow)),
-                           postfix: new HarmonyMethod(patchType, nameof(HautsAICanTargetNowPostfixBluh)));*/
+            //harmony.Patch(AccessTools.Method(typeof(RimWorld.Ability), nameof(RimWorld.Ability.AICanTargetNow)),postfix: new HarmonyMethod(patchType, nameof(HautsAICanTargetNowPostfixBluh)));
+            //ignore natural goodwill's influence on the amount of goodwill gained or lost by a particular HED
+            harmony.Patch(AccessTools.Method(typeof(Faction), nameof(Faction.TryAffectGoodwillWith)),
+                           prefix: new HarmonyMethod(patchType, nameof(HautsTryAffectGoodwillWithPrefix)));
             Log.Message("Hauts_Initialize".Translate().CapitalizeFirst());
         }
         internal static object GetInstanceField(Type type, object instance, string fieldName)
@@ -304,6 +310,19 @@ namespace HautsFramework
             if (!__instance.AllTitlesInEffectForReading.NullOrEmpty())
             {
                 Faction f = __instance.MostSeniorTitle.faction;
+                foreach (Faction faction in Find.FactionManager.AllFactionsVisible)
+                {
+                    if (__instance.GetPermitPoints(faction) > __instance.GetPermitPoints(f))
+                    {
+                        f = faction;
+                    } else if (__instance.GetPermitPoints(faction) == __instance.GetPermitPoints(f)) {
+                        RoyalTitle rtFac = __instance.GetCurrentTitleInFaction(faction), rtF = __instance.GetCurrentTitleInFaction(f);
+                        if (rtFac != null && rtF != null && rtFac.def.seniority > rtF.def.seniority)
+                        {
+                            f = faction;
+                        }
+                    }
+                }
                 if (f != null)
                 {
                     PermitsCardUtility.selectedFaction = f;
@@ -597,6 +616,13 @@ namespace HautsFramework
                 {
                     psychicEntropy.OffsetPsyfocusDirectly(__result * ingester.GetStatValue(HautsDefOf.Hauts_PsyfocusFromFood));
                 }
+            }
+        }
+        public static void HautsOnBookReadTickPostfix(Pawn pawn)
+        {
+            if (pawn.skills != null)
+            {
+                pawn.skills.Learn(SkillDefOf.Intellectual, 0.1f * (pawn.GetStatValue(HautsDefOf.Hauts_SkillGainFromRecreation) - 1), false, false);
             }
         }
         public static void HautsJoyTickCheckEndPostfix(Pawn pawn)
@@ -931,6 +957,27 @@ namespace HautsFramework
                         {
                             __result = false;
                             break;
+                        }
+                    }
+                }
+            }
+        }
+        public static void HautsNotify_LifeStageStartedPostfix(Pawn pawn)
+        {
+            if (pawn.story != null && pawn.story.bodyType != null)
+            {
+                foreach (Trait t in pawn.story.traits.TraitsSorted)
+                {
+                    TraitGrantedStuff tgs = t.def.GetModExtension<TraitGrantedStuff>();
+                    if (tgs != null)
+                    {
+                        if (tgs.forcedBodyTypes != null)
+                        {
+                            if (tgs.forcedBodyTypes.Keys.Contains(pawn.story.bodyType))
+                            {
+                                pawn.story.bodyType = tgs.forcedBodyTypes.TryGetValue(pawn.story.bodyType);
+                                pawn.Drawer.renderer.SetAllGraphicsDirty();
+                            }
                         }
                     }
                 }
@@ -1431,6 +1478,64 @@ namespace HautsFramework
                 }
             }
         }*/
+        //history event def dme
+        public static bool HautsTryAffectGoodwillWithPrefix(ref bool __result, Faction __instance, Faction other, int goodwillChange, bool canSendMessage, bool canSendHostilityLetter, HistoryEventDef reason, GlobalTargetInfo? lookTarget)
+        {
+            if (Current.ProgramState != ProgramState.Playing || reason == null || !reason.HasModExtension<IgnoresNaturalGoodwill>() || goodwillChange == 0)
+            {
+                return true;
+            }
+            if (!__instance.CanChangeGoodwillFor(other, goodwillChange))
+            {
+                __result = false;
+            } else {
+                int num = __instance.GoodwillWith(other);
+                int num2 = __instance.BaseGoodwillWith(other);
+                int num3 = Mathf.Clamp(num2 + goodwillChange, -100, 100);
+                if (num2 == num3)
+                {
+                    return true;
+                }
+                if (reason != null && (__instance.IsPlayer || other.IsPlayer))
+                {
+                    Faction faction = (__instance.IsPlayer ? other : __instance);
+                    Find.HistoryEventsManager.RecordEvent(new HistoryEvent(reason, faction.Named(HistoryEventArgsNames.AffectedFaction), goodwillChange.Named(HistoryEventArgsNames.CustomGoodwill)), true);
+                }
+                FactionRelation factionRelation = __instance.RelationWith(other, false);
+                factionRelation.baseGoodwill = num3;
+                bool flag;
+                factionRelation.CheckKindThresholds(__instance, canSendHostilityLetter, (reason != null) ? reason.LabelCap : null, lookTarget ?? GlobalTargetInfo.Invalid, out flag);
+                FactionRelation factionRelation2 = other.RelationWith(__instance, false);
+                FactionRelationKind kind = factionRelation2.kind;
+                factionRelation2.baseGoodwill = factionRelation.baseGoodwill;
+                factionRelation2.kind = factionRelation.kind;
+                bool flag2;
+                if (kind != factionRelation2.kind)
+                {
+                    other.Notify_RelationKindChanged(__instance, kind, canSendHostilityLetter, (reason != null) ? reason.LabelCap : null, lookTarget ?? GlobalTargetInfo.Invalid, out flag2);
+                }
+                else
+                {
+                    flag2 = false;
+                }
+                int num4 = __instance.GoodwillWith(other);
+                if (canSendMessage && num != num4 && !flag && !flag2 && Current.ProgramState == ProgramState.Playing && (__instance.IsPlayer || other.IsPlayer))
+                {
+                    Faction faction2 = (__instance.IsPlayer ? other : __instance);
+                    string name = (string)GetInstanceField(typeof(Faction), faction2, "name");
+                    string text;
+                    if (reason != null)
+                    {
+                        text = "MessageGoodwillChangedWithReason".Translate(name, num.ToString("F0"), num4.ToString("F0"), reason.label);
+                    } else {
+                        text = "MessageGoodwillChanged".Translate(name, num.ToString("F0"), num4.ToString("F0"));
+                    }
+                    Messages.Message(text, lookTarget ?? GlobalTargetInfo.Invalid, ((float)goodwillChange > 0f) ? MessageTypeDefOf.PositiveEvent : MessageTypeDefOf.NegativeEvent, true);
+                }
+                __result = true;
+            }
+            return false;
+        }
     }
     [DefOf]
     public static class HautsDefOf
@@ -2213,6 +2318,7 @@ namespace HautsFramework
         public bool affectsOthersInCaravan = true;
         public bool disappearsWhileDowned = true;
         public FloatRange functionalSeverity = new FloatRange(-999f, 99999f);
+        public bool scanByPawnListerNotByGrid = true;
         public ThingDef mote;
     }
     public class HediffComp_Aura : HediffComp
@@ -2285,7 +2391,13 @@ namespace HautsFramework
             }
             if (pawn.Spawned)
             {
-                List<Pawn> pawns = (List<Pawn>)pawn.Map.mapPawns.AllPawnsSpawned;
+                List<Pawn> pawns = new List<Pawn>();
+                if (this.Props.scanByPawnListerNotByGrid)
+                {
+                    pawns = (List<Pawn>)pawn.Map.mapPawns.AllPawnsSpawned;
+                } else {
+                    pawns = GenRadial.RadialDistinctThingsAround(this.Pawn.Position, this.Pawn.Map, this.FunctionalRange, true).OfType<Pawn>().Distinct<Pawn>().ToList();
+                }
                 this.AffectPawns(pawn, pawns);
                 return;
             }
@@ -6797,16 +6909,7 @@ namespace HautsFramework
         private bool HpCheck
         {
             get {
-                HediffSet hediffSet = this.parent.pawn.health.hediffSet;
-                float num = 0f;
-                for (int i = 0; i < hediffSet.hediffs.Count; i++)
-                {
-                    if (hediffSet.hediffs[i] is Hediff_Injury)
-                    {
-                        num += hediffSet.hediffs[i].Severity;
-                    }
-                }
-                return num / this.parent.pawn.health.LethalDamageThreshold > this.Props.hpThreshold;
+                return HautsUtility.MissingHitPointPercentageFor(this.parent.pawn) > this.Props.hpThreshold;
             }
         }
         private bool EscapePosition(out IntVec3 relocatePosition, float maxDistance)
@@ -7919,6 +8022,8 @@ namespace HautsFramework
         //making things from sets
         public List<ThingCategoryDef> thingCategories;
         public List<ThingCategoryDef> forbiddenThingCategories;
+        public List<string> tradeTags;
+        public List<string> forbiddenTradeTags;
         public TechLevel minTechLevelInCategory = TechLevel.Undefined;
         public TechLevel maxTechLevelInCategory = TechLevel.Archotech;
         public IntRange marketValueLimits = new IntRange(0,9999999);
@@ -8628,7 +8733,13 @@ namespace HautsFramework
                 List<Thing> list = new List<Thing>();
                 for (int i = 0; i < pme.numFromCategory.RandomInRange; i++)
                 {
-                    DefDatabase<ThingDef>.AllDefsListForReading.TryRandomElement((ThingDef x) => x.thingCategories != null && x.thingCategories.ContainsAny((ThingCategoryDef tcd) => (pme.thingCategories ==null || pme.thingCategories.Contains(tcd)) && (pme.forbiddenThingCategories == null || !pme.forbiddenThingCategories.Contains(tcd))) && x.techLevel <= pme.maxTechLevelInCategory && x.techLevel >= pme.minTechLevelInCategory && x.BaseMarketValue <= pme.marketValueLimits.max && x.BaseMarketValue >= pme.marketValueLimits.min, out ThingDef randomThing);
+                    ThingDef randomThing;
+                    if (!pme.targetableThings.NullOrEmpty())
+                    {
+                        randomThing = pme.targetableThings.RandomElement();
+                    } else {
+                        DefDatabase<ThingDef>.AllDefsListForReading.TryRandomElement((ThingDef x) => this.IsValidItemOption(x, pme), out randomThing);
+                    }
                     if (randomThing != null)
                     {
                         Thing thing = ThingMaker.MakeThing(randomThing, GenStuff.RandomStuffFor(randomThing));
@@ -8640,9 +8751,7 @@ namespace HautsFramework
                         {
                             MinifiedThing minifiedThing = thing.MakeMinified();
                             list.Add(minifiedThing);
-                        }
-                        else
-                        {
+                        } else {
                             list.Add(thing);
                         }
                     }
@@ -8661,6 +8770,10 @@ namespace HautsFramework
                 }
             }
         }
+        public bool IsValidItemOption(ThingDef x, PermitMoreEffects pme)
+        {
+            return x.techLevel <= pme.maxTechLevelInCategory && x.techLevel >= pme.minTechLevelInCategory && x.BaseMarketValue <= pme.marketValueLimits.max && x.BaseMarketValue >= pme.marketValueLimits.min && (pme.thingCategories.NullOrEmpty() || (!x.thingCategories.NullOrEmpty() && x.thingCategories.ContainsAny((ThingCategoryDef tcd) => pme.thingCategories.Contains(tcd)))) && (pme.forbiddenThingCategories.NullOrEmpty() || x.thingCategories.NullOrEmpty() || !x.thingCategories.ContainsAny((ThingCategoryDef tcd) => pme.forbiddenThingCategories.Contains(tcd))) && (pme.tradeTags.NullOrEmpty() || (!x.tradeTags.NullOrEmpty() && x.tradeTags.ContainsAny((string tt) => pme.tradeTags.Contains(tt)))) && (pme.forbiddenTradeTags.NullOrEmpty() || (x.tradeTags.NullOrEmpty() && !x.tradeTags.ContainsAny((string tt) => pme.tradeTags.Contains(tt))));
+        }
         private void CallResourcesToCaravan(Pawn caller, Faction faction, bool free)
         {
             Caravan caravan = caller.GetCaravan();
@@ -8670,7 +8783,13 @@ namespace HautsFramework
                 List<Thing> list = new List<Thing>();
                 for (int i = 0; i < pme.numFromCategory.RandomInRange; i++)
                 {
-                    DefDatabase<ThingDef>.AllDefsListForReading.TryRandomElement((ThingDef x) => x.thingCategories.ContainsAny((ThingCategoryDef tcd) => (pme.thingCategories == null || pme.thingCategories.Contains(tcd)) && (pme.forbiddenThingCategories == null || !pme.forbiddenThingCategories.Contains(tcd))) && x.techLevel <= pme.maxTechLevelInCategory && x.techLevel >= pme.minTechLevelInCategory && x.BaseMarketValue <= pme.marketValueLimits.max && x.BaseMarketValue >= pme.marketValueLimits.min, out ThingDef randomThing);
+                    ThingDef randomThing;
+                    if (!pme.targetableThings.NullOrEmpty())
+                    {
+                        randomThing = pme.targetableThings.RandomElement();
+                    } else {
+                        DefDatabase<ThingDef>.AllDefsListForReading.TryRandomElement((ThingDef x) => this.IsValidItemOption(x, pme), out randomThing);
+                    }
                     if (randomThing != null)
                     {
                         Thing thing = ThingMaker.MakeThing(randomThing, GenStuff.RandomStuffFor(randomThing));
@@ -9554,6 +9673,7 @@ namespace HautsFramework
         public bool affectCreator = true;
         public StatDef requiredStat = null;
         public float minStat = 1E-45f;
+        public bool scanByPawnListerNotByGrid = true;
         public Color color;
     }
     public class CompAuraEmitter : ThingComp
@@ -9587,14 +9707,25 @@ namespace HautsFramework
         public override void CompTick()
         {
             base.CompTick();
-            if (this.parent.IsHashIntervalTick(this.Props.periodicity))
+            if (this.parent.SpawnedOrAnyParentSpawned && this.parent.IsHashIntervalTick(this.Props.periodicity))
             {
                 this.DoOnTrigger();
-                foreach (Thing thing in GenRadial.RadialDistinctThingsAround(this.parent.Position, this.parent.Map, this.FunctionalRange, true))
+                if (this.Props.scanByPawnListerNotByGrid)
                 {
-                    if (thing is Pawn pawn && this.ShouldAffectPawn(pawn))
+                    foreach (Pawn p in this.parent.MapHeld.mapPawns.AllPawnsSpawned)
                     {
-                        this.AffectPawn(pawn);
+                        if (p.Position.DistanceTo(this.parent.PositionHeld) <= this.FunctionalRange && this.ShouldAffectPawn(p))
+                        {
+                            this.AffectPawn(p);
+                        }
+                    }
+                } else {
+                    foreach (Pawn p in GenRadial.RadialDistinctThingsAround(this.parent.PositionHeld, this.parent.MapHeld, this.FunctionalRange, true).OfType<Pawn>().Distinct<Pawn>())
+                    {
+                        if (this.ShouldAffectPawn(p))
+                        {
+                            this.AffectPawn(p);
+                        }
                     }
                 }
             }
@@ -9744,6 +9875,11 @@ namespace HautsFramework
         public NoEMPReaction()
         {
         }
+    }
+    //natural-goodwill ignoring history event defs
+    public class IgnoresNaturalGoodwill : DefModExtension
+    {
+        public IgnoresNaturalGoodwill(){}
     }
     //misc thought worker
     public class ThoughtWorker_OfSameFaction : ThoughtWorker
@@ -10603,6 +10739,19 @@ namespace HautsFramework
                 result += p.health.hediffSet.GetPartHealth(bpr);
             }
             return result;
+        }
+        public static float MissingHitPointPercentageFor(Pawn p)
+        {
+            HediffSet hediffSet = p.health.hediffSet;
+            float num = 0f;
+            for (int i = 0; i < hediffSet.hediffs.Count; i++)
+            {
+                if (hediffSet.hediffs[i] is Hediff_Injury)
+                {
+                    num += hediffSet.hediffs[i].Severity;
+                }
+            }
+            return num / p.health.LethalDamageThreshold;
         }
         public static bool ReactsToEMP(Pawn p)
         {
