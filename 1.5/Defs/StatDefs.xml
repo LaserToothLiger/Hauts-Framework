@@ -141,6 +141,25 @@
 		<showIfModsLoaded><li>ludeon.rimworld.biotech</li></showIfModsLoaded>
 	</StatDef>
 	<StatDef>
+		<defName>Hauts_ApparelWearRateFactor</defName>
+		<label>apparel wear rate factor</label>
+		<description>A multiplier to the rate at which worn apparel deteriorates.</description>
+		<category>BasicsPawn</category>
+        <minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<displayPriorityInCategory>8787</displayPriorityInCategory>
+        <toStringStyle>PercentZero</toStringStyle>
+		<skillNeedOffsets>
+		  <li Class="HautsFramework.SkillNeed_BaseBonusAWRF">
+			<skill>Crafting</skill>
+			<baseValue>0</baseValue>
+			<bonusPerLevel>-0.01</bonusPerLevel>
+			<required>false</required>
+		  </li>
+		</skillNeedOffsets>
+	</StatDef>
+	<StatDef>
 		<defName>Hauts_BoredomDropPerDay</defName>
 		<label>boredom decay</label>
 		<description>The amount of joy tolerance, or 'boredom', lost per day. This is in addition to the joy tolerance drop per day from one's expectation level.</description>
@@ -225,7 +244,7 @@
 	<StatDef MayRequire="Ludeon.RimWorld.Biotech">
 		<defName>Hauts_HemogenContentFactor</defName>
 		<label>hemogen density</label>
-		<description>The density of hemogen in this character's blood. At higher values, bloodfeeders will gain more hemogen per feeding from this character, and medical extraction of hemogen packs will incur less blood loss.\n\nDoes not affect hemogen gain from corpsefeeding with Vanilla Races Expanded - Sanguophage</description>
+		<description>The density of hemogen in this character's blood. At higher values, bloodfeeders will gain more hemogen per feeding from this character, and medical extraction of hemogen packs will incur less blood loss.</description>
 		<category>BasicsPawn</category>
         <minValue>0</minValue>
 		<hideAtValue>1</hideAtValue>

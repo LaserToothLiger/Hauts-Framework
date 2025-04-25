@@ -11,6 +11,13 @@
     <harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
     <overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
     <makesAnimalsFlee>true</makesAnimalsFlee>
+    <explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+    <explosionHeatEnergyPerCell>5</explosionHeatEnergyPerCell>
+    <explosionCellFleck>BlastDry</explosionCellFleck>
+    <explosionColorCenter>(0.01, 0.01, 0.05)</explosionColorCenter>
+    <explosionColorEdge>(0.7, 0.7, 0.9)</explosionColorEdge>
+    <explosionInteriorFleck>ElectricalSpark</explosionInteriorFleck>
+    <soundExplosion>Psycast_Skip_Exit</soundExplosion>
   </DamageDef>
   <ToolCapacityDef>
     <defName>Hauts_Skipcut</defName>

@@ -3,6 +3,8 @@
 <!--Initialization-->
 <Hauts_Initialize>[Hauts' Framework] active.</Hauts_Initialize>
 <!--Mod options-->
+<Hauts_SettingAWRFC>Crafting skill affects apparel wear rate factor</Hauts_SettingAWRFC>
+<Hauts_TooltipAWRFC>If enabled, grants -1% apparel wear rate factor per level of crafting skill.</Hauts_TooltipAWRFC>
 <Hauts_SettingBDFC>Construction skill affects damage vs buildings</Hauts_SettingBDFC>
 <Hauts_TooltipBDFC>If enabled, grants +1.5% breach damage factor per level of construction skill.</Hauts_TooltipBDFC>
 <!--UI-->

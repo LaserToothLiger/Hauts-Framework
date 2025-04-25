@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <VFETribals.CornerstoneDef>
+	<defName>Hauts_GuardiansOfTheGarments</defName>
+	<label>Guardians of the Garments</label>
+	<description>Apparel wear rate is decreased by 10%.</description>
+	<blurb>The {0} understand the necessity of clothing for protection, comfort, and self-expression, so they take care to keep their apparel intact.</blurb>
+	<statOffsets>
+		<Hauts_ApparelWearRateFactor>-0.1</Hauts_ApparelWearRateFactor>
+	</statOffsets>
+  </VFETribals.CornerstoneDef>
+  <VFETribals.CornerstoneDef>
 	<defName>Hauts_TravelersInSilence</defName>
 	<label>Travelers in Silence</label>
 	<description>Caravan visibility is reduced by 15%.</description>

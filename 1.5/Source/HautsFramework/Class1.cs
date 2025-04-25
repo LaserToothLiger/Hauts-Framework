@@ -142,6 +142,9 @@ namespace HautsFramework
                           postfix: new HarmonyMethod(patchType, nameof(HautsStatPart_GlowActiveForPostfix)));
             harmony.Patch(AccessTools.Method(typeof(LifeStageWorker_HumanlikeAdult), nameof(LifeStageWorker_HumanlikeAdult.Notify_LifeStageStarted)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsNotify_LifeStageStartedPostfix)));
+            MethodInfo methodInfo3 = typeof(Pawn_ApparelTracker).GetMethod("TakeWearoutDamageForDay", BindingFlags.NonPublic | BindingFlags.Instance);
+            harmony.Patch(methodInfo3,
+                          prefix: new HarmonyMethod(patchType, nameof(HautsTakeWearoutDamageForDayPrefix)));
             harmony.Patch(AccessTools.Method(typeof(MedicalRecipesUtility), nameof(MedicalRecipesUtility.SpawnThingsFromHediffs)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsApplyOnPawnPrefix)));
             //hediff comps
@@ -155,8 +158,8 @@ namespace HautsFramework
                            postfix: new HarmonyMethod(patchType, nameof(HautsFramework_PreApplyDamagePostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.PostApplyDamage)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsPostApplyDamagePostfix)));
-            MethodInfo methodInfo3 = typeof(DamageWorker_AddInjury).GetMethod("ApplyDamageToPart", BindingFlags.NonPublic | BindingFlags.Instance);
-            harmony.Patch(methodInfo3,
+            MethodInfo methodInfo4 = typeof(DamageWorker_AddInjury).GetMethod("ApplyDamageToPart", BindingFlags.NonPublic | BindingFlags.Instance);
+            harmony.Patch(methodInfo4,
                           postfix: new HarmonyMethod(patchType, nameof(HautsApplyDamageToPartPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Thing), nameof(Thing.TakeDamage)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsTakeDamagePostfix)));
@@ -983,6 +986,20 @@ namespace HautsFramework
                 }
             }
         }
+        public static bool HautsTakeWearoutDamageForDayPrefix(Pawn_ApparelTracker __instance, Thing ap)
+        {
+            Pawn pawn = __instance.pawn;
+            int num = (int)(GenMath.RoundRandom(ap.def.apparel.wearPerDay) * pawn.GetStatValue(HautsDefOf.Hauts_ApparelWearRateFactor));
+            if (num > 0)
+            {
+                ap.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, (float)num, 0f, -1f, null, null, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true, QualityCategory.Normal, true));
+            }
+            if (ap.Destroyed && PawnUtility.ShouldSendNotificationAbout(pawn) && !pawn.Dead)
+            {
+                Messages.Message("MessageWornApparelDeterioratedAway".Translate(GenLabel.ThingLabel(ap.def, ap.Stuff, 1), pawn).CapitalizeFirst(), pawn, MessageTypeDefOf.NegativeEvent, true);
+            }
+            return false;
+        }
         //hediff comp functionalities
         public static void HautsSetIdeoPostfix(Pawn_IdeoTracker __instance)
         {
@@ -1550,6 +1567,7 @@ namespace HautsFramework
 
         public static IncidentDef Hauts_InvestmentReturn;
 
+        public static StatDef Hauts_ApparelWearRateFactor;
         public static StatDef Hauts_BoredomDropPerDay;
         public static StatDef Hauts_SkillGainFromRecreation;
         public static StatDef Hauts_CaravanVisibilityOffset;
@@ -2007,6 +2025,17 @@ namespace HautsFramework
         }
         public bool skip = false;
         public bool leap = false;
+    }
+    public class SkillNeed_BaseBonusAWRF : SkillNeed_BaseBonus
+    {
+        public override float ValueFor(Pawn pawn)
+        {
+            if (Hauts_Mod.settings.apparelWearRateCrafting)
+            {
+                return base.ValueFor(pawn);
+            }
+            return 0f;
+        }
     }
     public class SkillNeed_BaseBonusBDF : SkillNeed_BaseBonus
     {
@@ -10903,9 +10932,11 @@ namespace HautsFramework
     //mod settings
     public class Hauts_Settings : ModSettings
     {
+        public bool apparelWearRateCrafting = false;
         public bool breachDamageConstruction = false;
         public override void ExposeData()
         {
+            Scribe_Values.Look(ref apparelWearRateCrafting, "apparelWearRateCrafting", false);
             Scribe_Values.Look(ref breachDamageConstruction, "breachDamageConstruction", false);
             base.ExposeData();
         }
@@ -10920,6 +10951,7 @@ namespace HautsFramework
         {
             Listing_Standard listingStandard = new Listing_Standard();
             listingStandard.Begin(inRect);
+            listingStandard.CheckboxLabeled("Hauts_SettingAWRFC".Translate(), ref settings.apparelWearRateCrafting, "Hauts_TooltipAWRFC".Translate());
             listingStandard.CheckboxLabeled("Hauts_SettingBDFC".Translate(), ref settings.breachDamageConstruction, "Hauts_TooltipBDFC".Translate());
             listingStandard.End();
             base.DoSettingsWindowContents(inRect);
