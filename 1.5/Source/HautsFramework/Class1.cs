@@ -4928,6 +4928,13 @@ namespace HautsFramework
                 {
                     if (this.Props.affectedSkills.Contains(s.def) && s.GetLevel(this.affectsAptitudes) >= this.Props.minLevel && s.GetLevel(this.affectsAptitudes) < this.Props.maxLevel)
                     {
+                        if (skillAdjustment < 0f) {
+                            if (this.Pawn.story != null && this.Pawn.story.traits.HasTrait(TraitDefOf.GreatMemory))
+                            {
+                                skillAdjustment *= 0.5f;
+                            }
+                            skillAdjustment *= this.ForgettingSpeed(s);
+                        }
                         s.Learn(skillAdjustment, true);
                         if (s.Level < 0)
                         {
@@ -4936,6 +4943,10 @@ namespace HautsFramework
                     }
                 }
             }
+        }
+        public float ForgettingSpeed(SkillRecord skill)
+        {
+            return 1f;
         }
         public override void CompExposeData()
         {
