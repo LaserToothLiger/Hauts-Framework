@@ -158,6 +158,9 @@ namespace HautsFramework
                            postfix: new HarmonyMethod(patchType, nameof(HautsFramework_PreApplyDamagePostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.PostApplyDamage)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsPostApplyDamagePostfix)));
+            /* missing a transpiler patch that would hit up VerbTracker.Command_VerbTarget's CreateVerbTargetCommand function, doing something similar to FirstApparelPreventingShooting
+             * harmony.Patch(AccessTools.Method(typeof(Verb), nameof(Verb.ApparelPreventsShooting)),
+                          postfix: new HarmonyMethod(patchType, nameof(HautsApparelPreventsShootingPostfix)));*/
             MethodInfo methodInfo4 = typeof(DamageWorker_AddInjury).GetMethod("ApplyDamageToPart", BindingFlags.NonPublic | BindingFlags.Instance);
             harmony.Patch(methodInfo4,
                           postfix: new HarmonyMethod(patchType, nameof(HautsApplyDamageToPartPostfix)));
@@ -178,11 +181,6 @@ namespace HautsFramework
                            postfix: new HarmonyMethod(patchType, nameof(HautsActivatePostfix)));
             harmony.Patch(AccessTools.Method(typeof(VFECore.Abilities.Ability), nameof(VFECore.Abilities.Ability.GetCooldownForPawn)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsGetCooldownForPawnPostfix)));
-            if (ModsConfig.IsActive("VanillaExpanded.VMemesE"))
-            {
-                harmony.Patch(AccessTools.Method(typeof(HautsUtility), nameof(HautsUtility.ShouldLowerCooldown), new[] { typeof(RimWorld.Ability), typeof(HediffComp_AbilityCooldownModifier) }),
-                              postfix: new HarmonyMethod(patchType, nameof(HautsVIEMSAbilityCooldownsPostfix)));
-            }
             harmony.Patch(AccessTools.Method(typeof(Pawn_AbilityTracker), nameof(Pawn_AbilityTracker.RemoveAbility)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsRemoveAbilityPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Verb_MeleeAttack), nameof(Verb_MeleeAttack.CreateCombatLog)),
@@ -1101,6 +1099,23 @@ namespace HautsFramework
                 }
             }
         }
+        /*public static void HautsApparelPreventsShootingPostfix(ref bool __result, Verb __instance)
+        {
+            if (__instance.CasterIsPawn)
+            {
+                foreach (Hediff h in __instance.CasterPawn.health.hediffSet.hediffs)
+                {
+                    if (h is Hediff_PreDamageModification)
+                    {
+                        HediffComp_DamageNegationShield hcdns = h.TryGetComp<HediffComp_DamageNegationShield>();
+                        if (hcdns != null && hcdns.Props.blocksRangedWeapons)
+                        {
+                            __result = true;
+                        }
+                    }
+                }
+            }
+        }*/
         public static void HautsApplyDamageToPartPostfix(DamageInfo dinfo, Pawn pawn, DamageWorker.DamageResult result)
         {
             if (!pawn.DestroyedOrNull() && dinfo.Instigator is Pawn attacker)
@@ -1222,28 +1237,6 @@ namespace HautsFramework
         public static void HautsGetCooldownForPawnPostfix(ref int __result, VFECore.Abilities.Ability __instance)
         {
             __result /= Mathf.RoundToInt(HautsUtility.GetCooldownModifier(__instance));
-        }
-        public static void HautsVIEMSAbilityCooldownsPostfix(ref bool __result, RimWorld.Ability ability, HediffComp_AbilityCooldownModifier acm)
-        {
-            if (ability.def.groupDef != null)
-            {
-                if (acm.Props.abilitiesUsingThisWorkTag.GetAllSelectedItems<WorkTags>().Contains(WorkTags.Social) && (ability.def.groupDef == DefDatabase<AbilityGroupDef>.GetNamedSilentFail("VME_PartyHost") || ability.def.groupDef == DefDatabase<AbilityGroupDef>.GetNamedSilentFail("VME_Trader") || ability.def.groupDef == DefDatabase<AbilityGroupDef>.GetNamedSilentFail("VME_Commissar")))
-                {
-                    __result = true;
-                } else if (acm.Props.abilitiesUsingThisWorkTag.GetAllSelectedItems<WorkTags>().Contains(WorkTags.Animals) && ability.def.groupDef == DefDatabase<AbilityGroupDef>.GetNamedSilentFail("VME_InsectoidHerder"))
-                {
-                    __result = true;
-                } else if (acm.Props.abilitiesUsingThisWorkTag.GetAllSelectedItems<WorkTags>().Contains(WorkTags.Crafting) && ability.def.groupDef == DefDatabase<AbilityGroupDef>.GetNamedSilentFail("VME_Mechacker"))
-                {
-                    __result = true;
-                } else if (acm.Props.abilitiesUsingThisWorkTag.GetAllSelectedItems<WorkTags>().Contains(WorkTags.Caring) && ability.def.groupDef == DefDatabase<AbilityGroupDef>.GetNamedSilentFail("VME_Nurse"))
-                {
-                    __result = true;
-                } else if (acm.Props.abilitiesUsingThisWorkTag.GetAllSelectedItems<WorkTags>().Contains(WorkTags.Violent) && ability.def.groupDef == DefDatabase<AbilityGroupDef>.GetNamedSilentFail("VME_Commissar"))
-                {
-                    __result = true;
-                }
-            }
         }
         public static void HautsRemoveAbilityPostfix(Pawn_AbilityTracker __instance, RimWorld.AbilityDef def)
         {
@@ -2836,7 +2829,7 @@ namespace HautsFramework
         }
         public DamageDef instantlyOverwhelmedBy;
         public bool destroyIfOverwhelmed;
-        //public bool blocksRangedWeapons;
+        public bool blocksRangedWeapons;
         public int baseStartingTicksToReset = 1;
         public float energyOnReset = 1;
         public float baseEnergyRechargeRate = 1;
@@ -3809,6 +3802,14 @@ namespace HautsFramework
                 return "Hauts_ACMtooltip".Translate(this.Props.increasedCooldownRecovery.ToStringPercent());
             }
         }
+    }
+    public class CooldownModifier_WorkTags : DefModExtension
+    {
+        public CooldownModifier_WorkTags()
+        {
+
+        }
+        public WorkTags affectedByAnyACMwithThisWorkTag = WorkTags.None;
     }
     public class HediffCompProperties_BoredomAdjustment : HediffCompProperties
     {
@@ -4859,6 +4860,52 @@ namespace HautsFramework
             }
             this.Pawn.health.AddHediff(hediff, this.parent.Part);
             this.Pawn.health.RemoveHediff(this.parent);
+        }
+    }
+    public class HediffCompProperties_SatisfiesNeeds : HediffCompProperties
+    {
+        public HediffCompProperties_SatisfiesNeeds()
+        {
+            this.compClass = typeof(HediffComp_SatisfiesNeeds);
+        }
+        public int periodicity;
+        public Dictionary<NeedDef, float> needsSatisfied;
+        public bool satisfiesDrugAddictions;
+        public float drugAddictionSatisfaction;
+    }
+    public class HediffComp_SatisfiesNeeds : HediffComp
+    {
+        public HediffCompProperties_SatisfiesNeeds Props
+        {
+            get
+            {
+                return (HediffCompProperties_SatisfiesNeeds)this.props;
+            }
+        }
+        public virtual bool ConditionsMetToSatisfyNeeds
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override void CompPostTick(ref float severityAdjustment)
+        {
+            base.CompPostTick(ref severityAdjustment);
+            if (this.Pawn.IsHashIntervalTick(this.Props.periodicity) && this.ConditionsMetToSatisfyNeeds)
+            {
+                foreach (Need n in this.Pawn.needs.AllNeeds)
+                {
+                    if (this.Props.needsSatisfied.ContainsKey(n.def))
+                    {
+                        n.CurLevel += this.Props.needsSatisfied.TryGetValue(n.def);
+                    }
+                    else if (this.Props.satisfiesDrugAddictions && n.def.needClass == typeof(Need_Chemical))
+                    {
+                        n.CurLevel += this.Props.drugAddictionSatisfaction;
+                    }
+                }
+            }
         }
     }
     public class HediffCompProperties_SkillAdjustment : HediffCompProperties
@@ -10170,6 +10217,20 @@ namespace HautsFramework
                 }
             }
             float netACM = 1f;
+            List<WorkTags> workTags = new List<WorkTags>();
+            if (ability.def.groupDef != null)
+            {
+                CooldownModifier_WorkTags cmwt = ability.def.groupDef.GetModExtension<CooldownModifier_WorkTags>();
+                if (cmwt != null)
+                {
+                    workTags.Add(cmwt.affectedByAnyACMwithThisWorkTag);
+                }
+            }
+            CooldownModifier_WorkTags cmwt2 = ability.def.GetModExtension<CooldownModifier_WorkTags>();
+            if (cmwt2 != null)
+            {
+                workTags.Add(cmwt2.affectedByAnyACMwithThisWorkTag);
+            }
             foreach (Hediff h in ability.pawn.health.hediffSet.hediffs)
             {
                 if (h is HediffWithComps hwc)
@@ -10198,25 +10259,37 @@ namespace HautsFramework
                                         break;
                                     }
                                 }
-                            } else if (acm.Props.abilitiesUsingThisWorkTag != 0 && !ability.comps.NullOrEmpty<AbilityComp>()) {
-                                for (int i = 0; i < ability.comps.Count; i++)
+                            }
+                            if (!shouldLowerCooldown && acm.Props.abilitiesUsingThisWorkTag != 0) {
+                                if (!ability.comps.NullOrEmpty<AbilityComp>())
                                 {
-                                    if (ability.comps[i] is CompAbilityEffect_MustBeCapableOf mbco)
+                                    for (int i = 0; i < ability.comps.Count; i++)
                                     {
-                                        foreach (WorkTags wt in mbco.Props.workTags.GetAllSelectedItems<WorkTags>())
+                                        if (ability.comps[i] is CompAbilityEffect_MustBeCapableOf mbco)
                                         {
-                                            if (acm.Props.abilitiesUsingThisWorkTag.GetAllSelectedItems<WorkTags>().Contains(wt))
+                                            foreach (WorkTags wt in mbco.Props.workTags.GetAllSelectedItems<WorkTags>())
                                             {
-                                                shouldLowerCooldown = true;
-                                                break;
+                                                if (!workTags.Contains(wt))
+                                                {
+                                                    workTags.Add(wt);
+                                                }
                                             }
+                                        } else if (ability.comps[i] is CompAbilityEffect_SocialInteraction || ability.comps[i] is CompAbilityEffect_StartRitual) {
+                                            workTags.Add(WorkTags.Social);
+                                        } else if (ability.comps[i] is CompAbilityEffect_StopManhunter) {
+                                            workTags.Add(WorkTags.Animals);
                                         }
-                                    } else if ((ability.comps[i] is CompAbilityEffect_SocialInteraction || ability.comps[i] is CompAbilityEffect_StartRitual) && acm.Props.abilitiesUsingThisWorkTag.GetAllSelectedItems<WorkTags>().Contains(WorkTags.Social)) {
-                                        shouldLowerCooldown = true;
-                                        break;
-                                    } else if (acm.Props.abilitiesUsingThisWorkTag.GetAllSelectedItems<WorkTags>().Contains(WorkTags.Animals) && ability.comps[i] is CompAbilityEffect_StopManhunter) {
-                                        shouldLowerCooldown = true;
-                                        break;
+                                    }
+                                }
+                                if (!workTags.NullOrEmpty())
+                                {
+                                    foreach (WorkTags wt in workTags)
+                                    {
+                                        if (acm.Props.abilitiesUsingThisWorkTag.GetAllSelectedItems<WorkTags>().Contains(wt))
+                                        {
+                                            shouldLowerCooldown = true;
+                                            break;
+                                        }
                                     }
                                 }
                             }

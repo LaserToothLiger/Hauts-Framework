@@ -164,6 +164,87 @@
 				</li>
 				<li Class="PatchOperationFindMod">
 					<mods>
+					  <li>Obsidia Expansion - Axotl Xenotype</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_EMP"]</xpath>
+								<value>
+									<li Class="HautsFramework.Hauts_SpewAbility" />
+								</value>
+							</li>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Fire"]</xpath>
+								<value>
+									<li Class="HautsFramework.Hauts_SpewAbility" />
+								</value>
+							</li>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Tox"]</xpath>
+								<value>
+									<li Class="HautsFramework.Hauts_SpewAbility" />
+								</value>
+							</li>
+							<li Class="PatchOperationFindMod">
+								<mods>
+								  <li>Obsidia Expansion</li>
+								</mods>
+								<match Class="PatchOperationSequence">
+									<operations>
+										<li Class="PatchOperationAddModExtension">
+											<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Acid"]</xpath>
+											<value>
+												<li Class="HautsFramework.Hauts_SpewAbility" />
+											</value>
+										</li>
+										<li Class="PatchOperationAddModExtension">
+											<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Cryo"]</xpath>
+											<value>
+												<li Class="HautsFramework.Hauts_SpewAbility" />
+											</value>
+										</li>
+										<li Class="PatchOperationAddModExtension">
+											<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Blast"]</xpath>
+											<value>
+												<li Class="HautsFramework.Hauts_SpewAbility" />
+											</value>
+										</li>
+									</operations>
+								</match>
+							</li>
+						</operations>
+					</match>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
+					  <li>Obsidia Expansion - Drakonids Xenotype</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/AbilityDef[defName="OE_DragonBreath"]</xpath>
+								<value>
+									<li Class="HautsFramework.Hauts_SpewAbility" />
+								</value>
+							</li>
+							<li Class="PatchOperationReplace">
+								<xpath>/Defs/AbilityDef[defName="OE_DragonBreath"]/comps/li[@Class="CompProperties_AbilityFireSpew"]</xpath>
+								<value>
+								  <li Class="HautsFramework.CompProperties_AbilityFireSpewScalable">
+									<range>12.9</range>
+									<lineWidthEnd>9</lineWidthEnd>
+									<filthDef>Filth_FlammableBile</filthDef>
+									<effecterDef>Fire_Spew</effecterDef>
+									<canHitFilledCells>true</canHitFilledCells>
+								  </li>
+								</value>
+							</li>
+						</operations>
+					</match>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
 					  <li>Vanilla Factions Expanded - Insectoids 2</li>
 					</mods>
 					<match Class="PatchOperationSequence">

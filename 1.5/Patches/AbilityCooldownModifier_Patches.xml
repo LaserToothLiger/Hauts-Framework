@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch><!--Spew range factor works on the following abilities-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Obsidia Expansion - Ceratons Xenotype</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--social abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="OEAuraBuff"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Ideology Expanded - Memes and Structures</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--animals abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_InsectoidHerder"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Animals</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--caring abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_Nurse"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Caring</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--crafting abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_Mechacker"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Crafting</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--intellectual abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityDef[defName="VME_EnableSelfDestruct"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Intellectual</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--social abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_Commissar"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_PartyHost"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_Trader"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--violent abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityDef[defName="VME_EnforceCompliance"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Violent</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>
