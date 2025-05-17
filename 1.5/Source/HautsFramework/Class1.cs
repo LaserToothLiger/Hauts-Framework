@@ -1258,7 +1258,7 @@ namespace HautsFramework
                     } else if (ModsConfig.BiotechActive && __instance.pawn.genes != null && cRTG.forcingGenes != null && cRTG.forcingGenes.Count > 0) {
                         foreach (GeneDef gd in cRTG.forcingGenes)
                         {
-                            if (__instance.pawn.genes.HasActiveGene(gd))
+                            if (HautsUtility.AnalogHasActiveGene(__instance.pawn.genes,gd))
                             {
                                 __instance.GainAbility(def);
                                 return;
@@ -2252,7 +2252,7 @@ namespace HautsFramework
         public override bool AvailableOnNow(Thing thing, BodyPartRecord part = null)
         {
             Pawn pawn = thing as Pawn;
-            return (((pawn != null) ? pawn.genes : null) == null || !pawn.genes.HasActiveGene(GeneDefOf.Hemogenic)) && (pawn == null || pawn.health.CanBleed) && base.AvailableOnNow(thing, part);
+            return (((pawn != null) ? pawn.genes : null) == null || !!HautsUtility.AnalogHasActiveGene(pawn.genes, GeneDefOf.Hemogenic)) && (pawn == null || pawn.health.CanBleed) && base.AvailableOnNow(thing, part);
         }
         public override AcceptanceReport AvailableReport(Thing thing, BodyPartRecord part = null)
         {
@@ -4113,7 +4113,7 @@ namespace HautsFramework
                 {
                     foreach (GeneDef g in this.Props.forcingGenes)
                     {
-                        if (this.Pawn.genes.HasActiveGene(g))
+                        if (HautsUtility.AnalogHasActiveGene(this.Pawn.genes, g))
                         {
                             this.RecreateHediff();
                             return;
@@ -10450,7 +10450,7 @@ namespace HautsFramework
                             } else if (cRTG.Props.forcingGenes != null && cRTG.Props.forcingGenes.Count > 0 && ModsConfig.BiotechActive && p.genes != null) {
                                 foreach (GeneDef gd in cRTG.Props.forcingGenes)
                                 {
-                                    if (p.genes.HasActiveGene(gd))
+                                    if (HautsUtility.AnalogHasActiveGene(p.genes, gd))
                                     {
                                         shouldDelete = false;
                                         break;
@@ -10492,7 +10492,7 @@ namespace HautsFramework
                         } else if (ModsConfig.BiotechActive && comp.Props.forcingGenes != null && comp.Props.forcingGenes.Count > 0 && p.genes != null) {
                             foreach (GeneDef gd in comp.Props.forcingGenes)
                             {
-                                if (p.genes.HasActiveGene(gd))
+                                if (HautsUtility.AnalogHasActiveGene(p.genes, gd))
                                 {
                                     shouldDelete = false;
                                     break;
@@ -10739,6 +10739,22 @@ namespace HautsFramework
             }
         }
         //misc
+        public static bool AnalogHasActiveGene(Pawn_GeneTracker pgt, GeneDef geneDef)
+        {
+            if (geneDef == null)
+            {
+                return false;
+            }
+            List<Gene> genesListForReading = pgt.GenesListForReading;
+            for (int i = 0; i < genesListForReading.Count; i++)
+            {
+                if (genesListForReading[i].def == geneDef && genesListForReading[i].Active)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public static void ModifyGeneResourceMax(Pawn pawn, Gene_Resource gr)
         {
             foreach (Hediff h in pawn.health.hediffSet.hediffs)
@@ -10817,9 +10833,35 @@ namespace HautsFramework
         //permits
         public static bool AllowCheckPMEs(PermitMoreEffects pme, PawnKindDef p)
         {
-            return ((pme.allowAnyFlesh && p.RaceProps.IsFlesh) || (pme.allowAnyNonflesh && !p.RaceProps.IsFlesh)) || (pme.allowDryads || !p.RaceProps.Dryad) && (pme.allowEntities || !p.RaceProps.IsAnomalyEntity) && (pme.allowInsectoids || !p.RaceProps.Insect) && (pme.allowMechs || !p.RaceProps.IsMechanoid) && (pme.allowAnimals || !p.RaceProps.Animal) && (pme.allowHumanlikes || !p.RaceProps.Humanlike);
+            if (!pme.allowedPawnKinds.NullOrEmpty())
+            {
+                return pme.allowedPawnKinds.Contains(p);
+            }
+            if (!pme.disallowedPawnKinds.NullOrEmpty() && pme.disallowedPawnKinds.Contains(p))
+            {
+                return false;
+            }
+            return (pme.allowAnyFlesh && p.RaceProps.IsFlesh) || (pme.allowAnyNonflesh && !p.RaceProps.IsFlesh) || ((pme.allowDryads || !p.RaceProps.Dryad) && (pme.allowEntities || !p.RaceProps.IsAnomalyEntity) && (pme.allowInsectoids || !p.RaceProps.Insect) && (pme.allowMechs || !p.RaceProps.IsMechanoid) && (pme.allowAnimals || !p.RaceProps.Animal) && (pme.allowHumanlikes || !p.RaceProps.Humanlike));
         }
         //checkers and lists
+        public static bool CanBeHitByAirToSurface(IntVec3 iv3, Map map, bool blockedByThinRoofs)
+        {
+            RoofDef roof = iv3.GetRoof(map);
+            if (roof != null && (blockedByThinRoofs || roof.isThickRoof || !roof.canCollapse))
+            {
+                return false;
+            }
+            List<Thing> highShields = map.listerThings.ThingsInGroup(ThingRequestGroup.ProjectileInterceptor);
+            for (int i = 0; i < highShields.Count; i++)
+            {
+                CompProjectileInterceptor cpi = highShields[i].TryGetComp<CompProjectileInterceptor>();
+                if (cpi != null && cpi.Active && cpi.Props.interceptAirProjectiles && iv3.InHorDistOf(highShields[i].PositionHeld, cpi.Props.radius))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         public static bool IsntCastingAbility(Pawn pawn)
         {
             return (pawn.CurJob == null || (pawn.CurJob.ability == null && !(pawn.CurJob.verbToUse is VFECore.Abilities.Verb_CastAbility)));
