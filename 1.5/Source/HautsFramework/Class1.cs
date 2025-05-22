@@ -641,7 +641,7 @@ namespace HautsFramework
             for (int i = 0; i < tolerances.Count; i++)
             {
                 float num2 = tolerances[i];
-                num2 -= (pawn.GetStatValue(HautsDefOf.Hauts_BoredomDropPerDay)+ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay) * 150f / 60000f;
+                num2 -= (pawn.GetStatValue(HautsDefOf.Hauts_BoredomDropPerDay)-ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay) * 150f / 60000f;
                 if (num2 < 0f)
                 {
                     num2 = 0f;
@@ -2046,20 +2046,20 @@ namespace HautsFramework
         public override void TransformValue(StatRequest req, ref float val)
         {
             Pawn pawn;
-            if ((pawn = (req.Thing as Pawn)) == null || pawn.psychicEntropy == null)
+            if ((pawn = (req.Thing as Pawn)) == null)
             {
                 return;
             }
-            val -= ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay;
+            val += ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay;
         }
         public override string ExplanationPart(StatRequest req)
         {
             Pawn pawn;
-            if ((pawn = (req.Thing as Pawn)) == null || pawn.psychicEntropy == null)
+            if ((pawn = (req.Thing as Pawn)) == null)
             {
                 return null;
             }
-            return "Hauts_StatWorkerExpectationLevel".Translate() + ": " + (-1f * ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay).ToStringPercent();
+            return "Hauts_StatWorkerExpectationLevel".Translate() + ": " + (ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay).ToStringPercent();
         }
     }
     public class StatPart_PsyfocusBand : StatPart
@@ -2247,34 +2247,8 @@ namespace HautsFramework
         {
         }
     }
-    public class Recipe_ExtractHemogenStatScalable : Recipe_Surgery
+    public class Recipe_ExtractHemogenStatScalable : Recipe_ExtractHemogen
     {
-        public override bool AvailableOnNow(Thing thing, BodyPartRecord part = null)
-        {
-            Pawn pawn = thing as Pawn;
-            return (((pawn != null) ? pawn.genes : null) == null || !!HautsUtility.AnalogHasActiveGene(pawn.genes, GeneDefOf.Hemogenic)) && (pawn == null || pawn.health.CanBleed) && base.AvailableOnNow(thing, part);
-        }
-        public override AcceptanceReport AvailableReport(Thing thing, BodyPartRecord part = null)
-        {
-            Pawn pawn;
-            if ((pawn = thing as Pawn) != null && pawn.DevelopmentalStage.Baby())
-            {
-                return "TooSmall".Translate();
-            }
-            return base.AvailableReport(thing, part);
-        }
-        public override bool CompletableEver(Pawn surgeryTarget)
-        {
-            return base.CompletableEver(surgeryTarget) && this.PawnHasEnoughBloodForExtraction(surgeryTarget);
-        }
-        public override void CheckForWarnings(Pawn medPawn)
-        {
-            base.CheckForWarnings(medPawn);
-            if (!this.PawnHasEnoughBloodForExtraction(medPawn))
-            {
-                Messages.Message("MessageCannotStartHemogenExtraction".Translate(medPawn.Named("PAWN")), medPawn, MessageTypeDefOf.NeutralEvent, false);
-            }
-        }
         public override void ApplyOnPawn(Pawn pawn, BodyPartRecord part, Pawn billDoer, List<Thing> ingredients, Bill bill)
         {
             if (!ModLister.CheckBiotech("Hemogen extraction"))
@@ -2295,17 +2269,10 @@ namespace HautsFramework
                 base.ReportViolation(pawn, billDoer, pawn.HomeFaction, -1, HistoryEventDefOf.ExtractedHemogenPack);
             }
         }
-        protected override void OnSurgerySuccess(Pawn pawn, BodyPartRecord part, Pawn billDoer, List<Thing> ingredients, Bill bill)
-        {
-            if (!GenPlace.TryPlaceThing(ThingMaker.MakeThing(ThingDefOf.HemogenPack, null), pawn.PositionHeld, pawn.MapHeld, ThingPlaceMode.Near, null, null, default(Rot4)))
-            {
-                Log.Error("Could not drop hemogen pack near " + pawn.PositionHeld);
-            }
-        }
         private bool PawnHasEnoughBloodForExtraction(Pawn pawn)
         {
             Hediff firstHediffOfDef = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss, false);
-            return firstHediffOfDef == null || firstHediffOfDef.Severity < 0.45f / pawn.GetStatValue(HautsDefOf.Hauts_HemogenContentFactor);
+            return firstHediffOfDef == null || firstHediffOfDef.Severity < 0.45f;
         }
     }
     //hediffcomps misc.
