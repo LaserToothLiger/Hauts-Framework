@@ -2309,6 +2309,11 @@ namespace HautsFramework
         public FloatRange functionalSeverity = new FloatRange(-999f, 99999f);
         public bool scanByPawnListerNotByGrid = true;
         public ThingDef mote;
+        public bool canToggleVisualization;
+        public string visIcon = "Other/ShieldBubble";
+        public string visLabel;
+        public string visTooltip;
+        public string visTooltipFantasy;
     }
     public class HediffComp_Aura : HediffComp
     {
@@ -2317,6 +2322,30 @@ namespace HautsFramework
             get
             {
                 return (HediffCompProperties_Aura)this.props;
+            }
+        }
+        public override IEnumerable<Gizmo> CompGetGizmos()
+        {
+            if (this.Props.canToggleVisualization)
+            {
+                if (this.uiIcon == null)
+                {
+                    this.uiIcon = ContentFinder<Texture2D>.Get(this.Props.visIcon, true);
+                    this.buttonLabel = this.Props.visLabel;
+                    this.buttonTooltip = (HautsUtility.IsHighFantasy() ? this.Props.visTooltipFantasy : this.Props.visTooltip);
+                }
+                Command_Action cmdRecall = new Command_Action
+                {
+                    defaultLabel = this.buttonLabel,
+                    defaultDesc = this.buttonTooltip,
+                    icon = this.uiIcon,
+                    action = delegate ()
+                    {
+                        this.visualizationEnabled = !this.visualizationEnabled;
+                    }
+                };
+                yield return cmdRecall;
+                yield break;
             }
         }
         public override string CompTipStringExtra
@@ -2349,7 +2378,7 @@ namespace HautsFramework
             base.CompPostTick(ref severityAdjustment);
             if (this.Pawn.Spawned)
             {
-                if (this.ShouldBeActive)
+                if (this.ShouldBeActive && this.visualizationEnabled)
                 {
                     if (this.mote == null || this.mote.Destroyed)
                     {
@@ -2360,8 +2389,7 @@ namespace HautsFramework
                         {
                             this.mote.link1.UpdateDrawPos();
                         }
-                    } else
-                    {
+                    } else {
                         this.mote.range = this.FunctionalRange;
                         this.mote.Maintain();
                     }
@@ -2373,6 +2401,10 @@ namespace HautsFramework
             if (!pawn.IsHashIntervalTick(this.Props.tickPeriodicity) || !this.ShouldBeActive)
             {
                 return;
+            }
+            if (!pawn.IsPlayerControlled)
+            {
+                this.visualizationEnabled = true;
             }
             if (this.Props.affectsSelf)
             {
@@ -2454,7 +2486,21 @@ namespace HautsFramework
                 this.mote.Destroy(DestroyMode.Vanish);
             }
         }
+        public override void CompExposeData()
+        {
+            base.CompExposeData();
+            if (this.Props.canToggleVisualization)
+            {
+                Scribe_Values.Look<bool>(ref this.visualizationEnabled, "visualizationEnabled", true, false);
+                Scribe_Values.Look<string>(ref this.buttonLabel, "buttonLabel", this.Props.visLabel, false);
+                Scribe_Values.Look<string>(ref this.buttonTooltip, "buttonTooltip", this.Props.visTooltip, false);
+            }
+        }
         public MoteThrownAttached_Aura mote;
+        public bool visualizationEnabled = true;
+        Texture2D uiIcon;
+        string buttonLabel;
+        string buttonTooltip;
     }
     public class HediffCompProperties_AuraHediff : HediffCompProperties_Aura
     {
