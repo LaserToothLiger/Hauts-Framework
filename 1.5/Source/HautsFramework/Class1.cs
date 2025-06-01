@@ -21,10 +21,12 @@ using Verse;
 using Verse.AI;
 using Verse.AI.Group;
 using Verse.Grammar;
+using Verse.Noise;
 using Verse.Sound;
 using VFECore;
 using VFECore.Abilities;
 using VFECore.Shields;
+using static System.Collections.Specialized.BitVector32;
 using static UnityEngine.GraphicsBuffer;
 
 namespace HautsFramework
@@ -2334,17 +2336,41 @@ namespace HautsFramework
                     this.buttonLabel = this.Props.visLabel;
                     this.buttonTooltip = (HautsUtility.IsHighFantasy() ? this.Props.visTooltipFantasy : this.Props.visTooltip);
                 }
-                Command_Action cmdRecall = new Command_Action
+                Command_Action command_Action = new Command_Action();
+                command_Action.defaultLabel = this.buttonLabel;
+                command_Action.defaultDesc = this.buttonTooltip;
+                command_Action.icon = this.uiIcon;
+                if (Find.Selector.NumSelected > 1)
                 {
-                    defaultLabel = this.buttonLabel,
-                    defaultDesc = this.buttonTooltip,
-                    icon = this.uiIcon,
-                    action = delegate ()
+                    Command_Action command_Action2 = command_Action;
+                    command_Action2.defaultLabel = command_Action2.defaultLabel + " (" + this.Pawn.LabelShort + ")";
+                }
+                command_Action.action = delegate
+                {
+                    List<FloatMenuOption> list = new List<FloatMenuOption>();
+                    Action action0 = delegate
                     {
-                        this.visualizationEnabled = !this.visualizationEnabled;
-                    }
+                        this.visSetting = AuraVisSetting.Enabled;
+                    };
+                    list.Add(new FloatMenuOption("Hauts_AuraVisSetting0".Translate(), action0, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+                    Action action1 = delegate
+                    {
+                        this.visSetting = AuraVisSetting.WhileDrafted;
+                    };
+                    list.Add(new FloatMenuOption("Hauts_AuraVisSetting1".Translate(), action1, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+                    Action action2 = delegate
+                    {
+                        this.visSetting = AuraVisSetting.WhileSelected;
+                    };
+                    list.Add(new FloatMenuOption("Hauts_AuraVisSetting2".Translate(), action2, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+                    Action action3 = delegate
+                    {
+                        this.visSetting = AuraVisSetting.Disabled;
+                    };
+                    list.Add(new FloatMenuOption("Hauts_AuraVisSetting3".Translate(), action3, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0));
+                    Find.WindowStack.Add(new FloatMenu(list));
                 };
-                yield return cmdRecall;
+                yield return command_Action;
                 yield break;
             }
         }
@@ -2378,7 +2404,7 @@ namespace HautsFramework
             base.CompPostTick(ref severityAdjustment);
             if (this.Pawn.Spawned)
             {
-                if (this.ShouldBeActive && this.visualizationEnabled)
+                if (this.ShouldBeActive && (this.visSetting == AuraVisSetting.Enabled || (this.Pawn.Drafted && this.visSetting == AuraVisSetting.WhileDrafted) || (Find.Selector.SelectedPawns.Contains(this.Pawn) && this.visSetting == AuraVisSetting.WhileSelected)))
                 {
                     if (this.mote == null || this.mote.Destroyed)
                     {
@@ -2404,7 +2430,7 @@ namespace HautsFramework
             }
             if (!pawn.IsPlayerControlled)
             {
-                this.visualizationEnabled = true;
+                this.visSetting = AuraVisSetting.Enabled;
             }
             if (this.Props.affectsSelf)
             {
@@ -2491,16 +2517,23 @@ namespace HautsFramework
             base.CompExposeData();
             if (this.Props.canToggleVisualization)
             {
-                Scribe_Values.Look<bool>(ref this.visualizationEnabled, "visualizationEnabled", true, false);
+                Scribe_Values.Look<AuraVisSetting>(ref this.visSetting, "AuraVisSetting", AuraVisSetting.Enabled, false);
                 Scribe_Values.Look<string>(ref this.buttonLabel, "buttonLabel", this.Props.visLabel, false);
                 Scribe_Values.Look<string>(ref this.buttonTooltip, "buttonTooltip", this.Props.visTooltip, false);
             }
         }
         public MoteThrownAttached_Aura mote;
-        public bool visualizationEnabled = true;
+        public AuraVisSetting visSetting = AuraVisSetting.Enabled;
         Texture2D uiIcon;
         string buttonLabel;
         string buttonTooltip;
+    }
+    public enum AuraVisSetting : short
+    {
+        Enabled,
+        WhileDrafted = 8,
+        WhileSelected = 16,
+        Disabled = 24
     }
     public class HediffCompProperties_AuraHediff : HediffCompProperties_Aura
     {

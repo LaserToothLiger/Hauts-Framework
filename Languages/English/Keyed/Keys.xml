@@ -10,6 +10,10 @@
 <!--UI-->
 <Hauts_AbilityNeedsHigherStatToUse>Requires at least {0} {1}.</Hauts_AbilityNeedsHigherStatToUse>
 <HVT_JumpRangeFactorScalar>Jump range factor</HVT_JumpRangeFactorScalar>
+<Hauts_AuraVisSetting0>Always visible</Hauts_AuraVisSetting0>
+<Hauts_AuraVisSetting1>Visible while drafted</Hauts_AuraVisSetting1>
+<Hauts_AuraVisSetting2>Visible while selected</Hauts_AuraVisSetting2>
+<Hauts_AuraVisSetting3>Not visible</Hauts_AuraVisSetting3>
 <Hauts_AuraTooltip>Aura radius: {0} cells</Hauts_AuraTooltip>
 <Hauts_ACMtooltip>Affected abilities' cooldowns elapse {0} faster.</Hauts_ACMtooltip>
 <Hauts_GRMtooltip>Grants {0} max {1}.</Hauts_GRMtooltip>
