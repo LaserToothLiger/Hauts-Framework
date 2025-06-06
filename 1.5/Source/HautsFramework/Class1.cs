@@ -4795,7 +4795,7 @@ namespace HautsFramework
         public override void CompPostMake()
         {
             base.CompPostMake();
-            hediffs = new List<Hediff>();
+            this.hediffs = new List<Hediff>();
         }
         public override void CompPostTick(ref float severityAdjustment)
         {
@@ -10873,6 +10873,11 @@ namespace HautsFramework
 
         }
         public static void VPESetSkillPointsAndExperienceTo(Pawn setFor, Pawn copyFrom)
+        {
+
+        }
+        //rim languages integration
+        public static void LearnLanguage(Pawn pawn, Pawn other, float power)
         {
 
         }

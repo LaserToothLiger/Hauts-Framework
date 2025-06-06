@@ -3,6 +3,7 @@
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 			<li>YM_ManiacTraits</li>
+			<li>YM_ManiacTraits2.0</li>
 		</mods>
 		<match Class="PatchOperationSequence">
 			<operations>
@@ -48,30 +49,36 @@
 				<li Class="PatchOperationReplace">
 					<xpath>/Defs/TraitDef[defName="DataSupremacist"]/degreeDatas/li/statOffsets/MentalBreakThreshold</xpath>
 					<value>
-						<MentalBreakThreshold>0.12</MentalBreakThreshold>
+						<MentalBreakThreshold>0.15</MentalBreakThreshold>
 					</value>
 				</li>
-				<!--ditto w Confident Beauty-->
+				<!--ditto w Confident Beauty; nevermind, this is correct now in the 2.0 update
 				<li Class="PatchOperationReplace">
 					<xpath>/Defs/TraitDef[defName="ConfidentBeauty"]/degreeDatas/li/statOffsets/MentalBreakThreshold</xpath>
 					<value>
-						<MentalBreakThreshold>0.1</MentalBreakThreshold>
+						<MentalBreakThreshold>0.12</MentalBreakThreshold>
 					</value>
-				</li>
-				<!--and the reverse w Jobber-->
+				</li>-->
+				<!--and the reverse w Jobber and Rough Birth-->
 				<li Class="PatchOperationReplace">
 					<xpath>/Defs/TraitDef[defName="Jobber"]/degreeDatas/li/statOffsets/MentalBreakThreshold</xpath>
+					<value>
+						<MentalBreakThreshold>-0.2</MentalBreakThreshold>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/TraitDef[defName="RoughBirth"]/degreeDatas/li/statOffsets/MentalBreakThreshold</xpath>
 					<value>
 						<MentalBreakThreshold>-0.1</MentalBreakThreshold>
 					</value>
 				</li>
-				<!--Power Supremacist gains a commensurate increase to melee damage factor, as multiplying the melee DPS stat does nothing-->
+				<!--Power Supremacist gains a commensurate increase to melee damage factor, as multiplying the melee DPS stat does nothing; nevermind, it was removed in the 2.0 update
 				<li Class="PatchOperationAdd">
 					<xpath>/Defs/TraitDef[defName="PowerSupremacist"]/degreeDatas/li/statFactors</xpath>
 					<value>
 						<MeleeDamageFactor>1.2</MeleeDamageFactor>
 					</value>
-				</li>
+				</li>-->
 			</operations>
 		</match>
 	</Operation>

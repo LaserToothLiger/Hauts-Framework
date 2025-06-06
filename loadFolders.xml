@@ -20,5 +20,6 @@
 		<li IfModActive="vanillaracesexpanded.sanguophage">1.5/Mods/VRE_Sanguophage</li>
 		<li IfModActive="lts.I" IfModNotActive="MSE2.Core">1.5/Mods/ThisIsGettingALittleIntoTheWeeds</li>
 		<li IfModActive="notfood.Infused">1.5/Mods/Infused</li>
+		<li IfModActive="DimonSever000.FactionLanguages">1.5/Mods/RimLanguages</li>
 	</v1.5>
 </loadFolders>
