@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Royalty</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--fixes the dumb new behavior of Diaboli in 1.5 that makes them prefer Fire Bursting instead of using the Hellsphere Cannon regardless of whether anything is in Fire Burst range-->
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/DamageDef[defName="Hauts_SkipFrag"]/soundExplosion</xpath>
+					<value>
+					  <soundExplosion>Psycast_Skip_Exit</soundExplosion>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

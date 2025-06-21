@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  
+  <DamageDef>
+    <defName>Hauts_SkipFrag</defName>
+    <label>skip</label>
+    <workerClass>HautsFramework.DamageWorker_AddInjurySkip</workerClass>
+    <externalViolence>true</externalViolence>
+    <deathMessage>{0} has been separated by skipgates to death.</deathMessage>
+    <hediff>Cut</hediff>
+    <harmAllLayersUntilOutside>true</harmAllLayersUntilOutside>
+    <overkillPctToDestroyPart>0.4~1.0</overkillPctToDestroyPart>
+    <makesAnimalsFlee>true</makesAnimalsFlee>
+    <explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+    <explosionHeatEnergyPerCell>5</explosionHeatEnergyPerCell>
+    <explosionCellFleck>BlastDry</explosionCellFleck>
+    <explosionColorCenter>(0.01, 0.01, 0.05)</explosionColorCenter>
+    <explosionColorEdge>(0.7, 0.7, 0.9)</explosionColorEdge>
+    <explosionInteriorFleck>ElectricalSpark</explosionInteriorFleck>
+	<soundExplosion>Explosion_Vaporize</soundExplosion> <!--if you have Royalty, it gets subbed out for a much more fitting skip sound-->
+  </DamageDef>
+  <ToolCapacityDef>
+    <defName>Hauts_Skipcut</defName>
+    <label>skipcut</label>
+  </ToolCapacityDef>
+  <ManeuverDef>
+    <defName>Hauts_Skipslash</defName>
+    <requiredCapacity>Hauts_Skipcut</requiredCapacity>
+    <verb>
+      <verbClass>Verb_MeleeAttackDamage</verbClass>
+      <meleeDamageDef>Hauts_SkipFrag</meleeDamageDef>
+    </verb>
+    <logEntryDef>MeleeAttack</logEntryDef>
+    <combatLogRulesHit>Maneuver_Slash_MeleeHit</combatLogRulesHit>
+    <combatLogRulesDeflect>Maneuver_Slash_MeleeDeflect</combatLogRulesDeflect>
+    <combatLogRulesMiss>Maneuver_Slash_MeleeMiss</combatLogRulesMiss>
+    <combatLogRulesDodge>Maneuver_Slash_MeleeDodge</combatLogRulesDodge>
+  </ManeuverDef>
+  
+</Defs>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>YM_ManiacTraits</li>
+			<li>YM_ManiacTraits2.0</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--Data Supremacist and Lazy Genius should require intellectual-->
+				<li Class="PatchOperationConditional">
+					<xpath>/Defs/TraitDef[defName="DataSupremacist"]/requiredWorkTags</xpath>
+					<nomatch Class="PatchOperationAdd">
+						<xpath>/Defs/TraitDef[defName="DataSupremacist"]</xpath>
+						<value>
+							<requiredWorkTags><li>Intellectual</li></requiredWorkTags>
+						</value>
+					</nomatch>
+				</li>
+				<li Class="PatchOperationConditional">
+					<xpath>/Defs/TraitDef[defName="LazyGenius"]/requiredWorkTags</xpath>
+					<nomatch Class="PatchOperationAdd">
+						<xpath>/Defs/TraitDef[defName="LazyGenius"]</xpath>
+						<value>
+							<requiredWorkTags><li>Intellectual</li></requiredWorkTags>
+						</value>
+					</nomatch>
+				</li>
+				<!--Genocide Machine and Silent Expert should require violent-->
+				<li Class="PatchOperationConditional">
+					<xpath>/Defs/TraitDef[defName="GenocideMachine"]/requiredWorkTags</xpath>
+					<nomatch Class="PatchOperationAdd">
+						<xpath>/Defs/TraitDef[defName="GenocideMachine"]</xpath>
+						<value>
+							<requiredWorkTags><li>Violent</li></requiredWorkTags>
+						</value>
+					</nomatch>
+				</li>
+				<li Class="PatchOperationConditional">
+					<xpath>/Defs/TraitDef[defName="SilentExpert"]/requiredWorkTags</xpath>
+					<nomatch Class="PatchOperationAdd">
+						<xpath>/Defs/TraitDef[defName="SilentExpert"]</xpath>
+						<value>
+							<requiredWorkTags><li>Violent</li></requiredWorkTags>
+						</value>
+					</nomatch>
+				</li>
+				<!--DataSup is supposed to be more susceptible to mental breaks, not less. this means it needs to make MBT higher, not lower-->
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/TraitDef[defName="DataSupremacist"]/degreeDatas/li/statOffsets/MentalBreakThreshold</xpath>
+					<value>
+						<MentalBreakThreshold>0.15</MentalBreakThreshold>
+					</value>
+				</li>
+				<!--ditto w Confident Beauty; nevermind, this is correct now in the 2.0 update
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/TraitDef[defName="ConfidentBeauty"]/degreeDatas/li/statOffsets/MentalBreakThreshold</xpath>
+					<value>
+						<MentalBreakThreshold>0.12</MentalBreakThreshold>
+					</value>
+				</li>-->
+				<!--and the reverse w Jobber and Rough Birth-->
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/TraitDef[defName="Jobber"]/degreeDatas/li/statOffsets/MentalBreakThreshold</xpath>
+					<value>
+						<MentalBreakThreshold>-0.2</MentalBreakThreshold>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/TraitDef[defName="RoughBirth"]/degreeDatas/li/statOffsets/MentalBreakThreshold</xpath>
+					<value>
+						<MentalBreakThreshold>-0.1</MentalBreakThreshold>
+					</value>
+				</li>
+				<!--Power Supremacist gains a commensurate increase to melee damage factor, as multiplying the melee DPS stat does nothing; nevermind, it was removed in the 2.0 update
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="PowerSupremacist"]/degreeDatas/li/statFactors</xpath>
+					<value>
+						<MeleeDamageFactor>1.2</MeleeDamageFactor>
+					</value>
+				</li>-->
+			</operations>
+		</match>
+	</Operation>
+</Patch>

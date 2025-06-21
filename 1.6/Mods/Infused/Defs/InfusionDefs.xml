@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <Infused.Def ParentName="InfusedChargedWeapon">
+    <defName>Hauts_Charged_Skipfrag</defName>
+    <label>space-carving</label>
+    <labelShort>skipcut</labelShort>
+    <stats>
+      <li>
+        <key>Hauts_SkipDamageAmount</key>
+        <value>
+          <offset>3</offset>
+        </value>
+      </li>
+    </stats>
+  </Infused.Def>
+</Defs>

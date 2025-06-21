@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <Infused.OnHitDef ParentName="InfusedOnHit">
+    <damage>Hauts_SkipFrag</damage>
+    <amount>Hauts_SkipDamageAmount</amount>
+  </Infused.OnHitDef>
+  
+  <StatDef ParentName="InfusedAmount">
+    <defName>Hauts_SkipDamageAmount</defName>
+    <label>skip damage bonus</label>
+    <description>Bonus skip damage to infuse attacks.</description>
+    <displayPriorityInCategory>4602</displayPriorityInCategory>
+  </StatDef>
+</Defs>

@@ -23,11 +23,10 @@ using Verse.AI.Group;
 using Verse.Grammar;
 using Verse.Noise;
 using Verse.Sound;
-using VFECore;
-using VFECore.Abilities;
-using VFECore.Shields;
+using VEF;
 using static System.Collections.Specialized.BitVector32;
 using static UnityEngine.GraphicsBuffer;
+using VEF.Abilities;
 
 namespace HautsFramework
 {
@@ -39,11 +38,11 @@ namespace HautsFramework
         {
             Harmony harmony = new Harmony(id: "rimworld.hautarche.hautsframework.main");
             //tweaks
-            harmony.Patch(AccessTools.Method(typeof(VFECore.Abilities.Ability), nameof(VFECore.Abilities.Ability.Cast), new[] { typeof(GlobalTargetInfo[]) }),
+            harmony.Patch(AccessTools.Method(typeof(VEF.Abilities.Ability), nameof(VEF.Abilities.Ability.Cast), new[] { typeof(GlobalTargetInfo[]) }),
                            postfix: new HarmonyMethod(patchType, nameof(HautsVFEAbility_CastPostfix)));
             harmony.Patch(AccessTools.Method(typeof(VerbProperties), nameof(VerbProperties.AdjustedCooldown), new[] { typeof(Tool), typeof(Pawn), typeof(Thing) }),
                           postfix: new HarmonyMethod(patchType, nameof(HautsAdjustedCooldownPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), new[] { typeof(PawnKindDef), typeof(Faction) }),
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), new[] { typeof(PawnKindDef), typeof(Faction), typeof(PlanetTile) }),
                           postfix: new HarmonyMethod(patchType, nameof(Hauts_GeneratePawnPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_RoyaltyTracker), nameof(Pawn_RoyaltyTracker.OpenPermitWindow)),
                            postfix: new HarmonyMethod(patchType, nameof(Hauts_OpenPermitTabPostfix)));
@@ -79,7 +78,7 @@ namespace HautsFramework
             MethodInfo methodInfo = typeof(Pawn_FilthTracker).GetMethod("DropCarriedFilth", BindingFlags.NonPublic | BindingFlags.Instance);
             harmony.Patch(methodInfo,
                           postfix: new HarmonyMethod(patchType, nameof(HautsDropCarriedFilthPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(VFECore.Abilities.Ability), nameof(VFECore.Abilities.Ability.GetRangeForPawn)),
+            harmony.Patch(AccessTools.Method(typeof(VEF.Abilities.Ability), nameof(VEF.Abilities.Ability.GetRangeForPawn)),
                            postfix: new HarmonyMethod(patchType, nameof(Hauts_GetRangeForPawnPostfix)));
             harmony.Patch(AccessTools.Method(typeof(CompAbilityEffect_GiveMentalState), nameof(CompAbilityEffect_GiveMentalState.Apply), new[] { typeof(LocalTargetInfo), typeof(LocalTargetInfo) }),
                           postfix: new HarmonyMethod(patchType, nameof(HautsGiveMentalStatePostfix)));
@@ -181,14 +180,14 @@ namespace HautsFramework
                            postfix: new HarmonyMethod(patchType, nameof(HautsActivatePostfix)));
             harmony.Patch(AccessTools.Method(typeof(RimWorld.Ability), nameof(RimWorld.Ability.Activate), new[] { typeof(GlobalTargetInfo) }),
                            postfix: new HarmonyMethod(patchType, nameof(HautsActivatePostfix)));
-            harmony.Patch(AccessTools.Method(typeof(VFECore.Abilities.Ability), nameof(VFECore.Abilities.Ability.GetCooldownForPawn)),
+            harmony.Patch(AccessTools.Method(typeof(VEF.Abilities.Ability), nameof(VEF.Abilities.Ability.GetCooldownForPawn)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsGetCooldownForPawnPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_AbilityTracker), nameof(Pawn_AbilityTracker.RemoveAbility)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsRemoveAbilityPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(Verb_MeleeAttack), nameof(Verb_MeleeAttack.CreateCombatLog)),
+            /*harmony.Patch(AccessTools.Method(typeof(Verb_MeleeAttack), nameof(Verb_MeleeAttack.CreateCombatLog)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsMelee_CreateCombatLogPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Verb), nameof(Verb.WarmupComplete)),
-                          postfix: new HarmonyMethod(patchType, nameof(HautsWarmupCompletePostfix)));
+                          postfix: new HarmonyMethod(patchType, nameof(HautsWarmupCompletePostfix)));*/
             harmony.Patch(AccessTools.Method(typeof(RitualBehaviorWorker), nameof(RitualBehaviorWorker.TryExecuteOn)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsRitualBehaviorWorker_TryExecuteOnPostfix)));
             /*if (ModsConfig.RoyaltyActive)
@@ -247,7 +246,6 @@ namespace HautsFramework
                            prefix: new HarmonyMethod(patchType, nameof(HautsAICanTargetNowPrefix)));
             harmony.Patch(AccessTools.Method(typeof(CompAbilityEffect), nameof(CompAbilityEffect.AICanTargetNow)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsAICanTargetNowPostfix)));
-            //harmony.Patch(AccessTools.Method(typeof(RimWorld.Ability), nameof(RimWorld.Ability.AICanTargetNow)),postfix: new HarmonyMethod(patchType, nameof(HautsAICanTargetNowPostfixBluh)));
             //ignore natural goodwill's influence on the amount of goodwill gained or lost by a particular HED
             harmony.Patch(AccessTools.Method(typeof(Faction), nameof(Faction.TryAffectGoodwillWith)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsTryAffectGoodwillWithPrefix)));
@@ -272,7 +270,7 @@ namespace HautsFramework
         {
             __result *= (p.GetStatValue(StatDefOf.CarryingCapacity) / 75f);
         }*/
-        public static void HautsVFEAbility_CastPostfix(VFECore.Abilities.Ability __instance, GlobalTargetInfo[] targets)
+        public static void HautsVFEAbility_CastPostfix(VEF.Abilities.Ability __instance, GlobalTargetInfo[] targets)
         {
             if (__instance.pawn != null)
             {
@@ -287,7 +285,7 @@ namespace HautsFramework
         {
             if (__instance.IsMeleeAttack && equipment == attacker)
             {
-                __result /= attacker.GetStatValue(VFEDefOf.VEF_MeleeAttackSpeedFactor, true, -1);
+                __result /= Math.Max(0.001f,attacker.GetStatValue(VEFDefOf.VEF_MeleeAttackSpeedFactor, true, -1));
             }
         }
         public static void Hauts_GeneratePawnPostfix(ref Pawn __result)
@@ -557,7 +555,7 @@ namespace HautsFramework
                 trackSize -= 1f;
             }
         }
-        public static void Hauts_GetRangeForPawnPostfix(ref float __result, VFECore.Abilities.Ability __instance)
+        public static void Hauts_GetRangeForPawnPostfix(ref float __result, VEF.Abilities.Ability __instance)
         {
             if (__instance.pawn != null && __result > 1f)
             {
@@ -913,6 +911,18 @@ namespace HautsFramework
                     defaultDesc = "HVT_CharEditFixerDesc".Translate(),
                     action = delegate ()
                     {
+                        if (ModsConfig.IdeologyActive && __instance.story != null && __instance.story.favoriteColor == null)
+                        {
+                            Pawn_StoryTracker pst = __instance.story;
+                            if (pst.favoriteColor == null)
+                            {
+                                pst.favoriteColor = DefDatabase<ColorDef>.AllDefs.Where(delegate (ColorDef x)
+                                {
+                                    ColorType colorType = x.colorType;
+                                    return colorType == ColorType.Ideo || colorType == ColorType.Misc;
+                                }).RandomElement<ColorDef>();
+                            }
+                        }
                         HautsUtility.TraitGrantedStuffRegeneration(__instance);
                     }
                 });
@@ -1236,7 +1246,7 @@ namespace HautsFramework
                 HautsUtility.SetNewCooldown(__instance, newCooldown);
             }
         }
-        public static void HautsGetCooldownForPawnPostfix(ref int __result, VFECore.Abilities.Ability __instance)
+        public static void HautsGetCooldownForPawnPostfix(ref int __result, VEF.Abilities.Ability __instance)
         {
             __result /= Mathf.RoundToInt(HautsUtility.GetCooldownModifier(__instance));
         }
@@ -1270,7 +1280,7 @@ namespace HautsFramework
                 }
             }
         }
-        public static void HautsMelee_CreateCombatLogPostfix(Verb_MeleeAttack __instance)
+        /*public static void HautsMelee_CreateCombatLogPostfix(Verb_MeleeAttack __instance)
         {
             Pawn pawn = __instance.CasterPawn;
             if (pawn.abilities != null)
@@ -1313,7 +1323,7 @@ namespace HautsFramework
                     }
                 }
             }
-        }
+        }*/
         public static void HautsRitualBehaviorWorker_TryExecuteOnPostfix(Precept_Ritual ritual, RitualRoleAssignments assignments)
         {
             AbilityGroupDef useCooldownFromAbilityGroupDef = ritual.def.useCooldownFromAbilityGroupDef;
@@ -1618,7 +1628,7 @@ namespace HautsFramework
         public bool hediffsToBrain = false;
         public Dictionary<int,float> prisonerResolveFactor;
         public Dictionary<int,List<RimWorld.AbilityDef>> grantedAbilities;
-        public Dictionary<int,List<VFECore.Abilities.AbilityDef>> grantedVEFAbilities;
+        public Dictionary<int,List<VEF.Abilities.AbilityDef>> grantedVEFAbilities;
         public Dictionary<BodyTypeDef, BodyTypeDef> forcedBodyTypes;
     }
     public class CannotRemoveBionicsFrom : DefModExtension
@@ -1668,9 +1678,9 @@ namespace HautsFramework
             }
             return fch;
         }
-        public override void FinalizeInit()
+        public override void FinalizeInit(bool fromLoad)
         {
-            base.FinalizeInit();
+            base.FinalizeInit(fromLoad);
             foreach (Faction f in this.world.factionManager.AllFactionsListForReading)
             {
                 bool shouldAdd = true;
@@ -1965,6 +1975,7 @@ namespace HautsFramework
         }
         public int spyPoints;
     }
+    [Obsolete]
     public class Hauts_SpyHediff : HediffWithComps
     {
         public override void PostAdd(DamageInfo? dinfo)
@@ -1995,7 +2006,7 @@ namespace HautsFramework
                         HautsFactionComp_SpyPoints spyPoints = fch.TryGetComp<HautsFactionComp_SpyPoints>();
                         if (spyPoints != null)
                         {
-                            int addedSpyPoints = (int)(3.5 * this.pawn.skills.GetSkill(SkillDefOf.Intellectual).Level * this.pawn.health.capacities.GetLevel(PawnCapacityDefOf.Sight));
+                            int addedSpyPoints = (int)(153.5 * this.pawn.skills.GetSkill(SkillDefOf.Intellectual).Level * this.pawn.health.capacities.GetLevel(PawnCapacityDefOf.Sight));
                             spyPoints.spyPoints += addedSpyPoints + 2;
                         }
                     }
@@ -2006,6 +2017,95 @@ namespace HautsFramework
         public override void ExposeData()
         {
             base.ExposeData();
+            Scribe_References.Look<Faction>(ref this.spyingOnFaction, "spyingOnFaction", false);
+            Scribe_References.Look<Faction>(ref this.spyingForFaction, "spyingForFaction", false);
+        }
+        public Faction spyingOnFaction;
+        public Faction spyingForFaction;
+    }
+    public class HediffCompProperties_Espionage : HediffCompProperties
+    {
+        public HediffCompProperties_Espionage()
+        {
+            this.compClass = typeof(HediffComp_Espionage);
+        }
+        public float baseSpyPoints;
+        public int unscalableFlatSpyPoints;
+        public List<SkillDef> relevantSkills;
+        public float fallbackIfNoSkillLevel = 1f;
+        public List<PawnCapacityDef> relevantCapacities;
+    }
+    public class HediffComp_Espionage : HediffComp
+    {
+        public HediffCompProperties_Espionage Props
+        {
+            get
+            {
+                return (HediffCompProperties_Espionage)this.props;
+            }
+        }
+        public override void CompPostPostAdd(DamageInfo? dinfo)
+        {
+            base.CompPostPostAdd(dinfo);
+            if (this.spyingOnFaction == null)
+            {
+                this.spyingOnFaction = Faction.OfPlayerSilentFail;
+            }
+            if (this.spyingForFaction == null)
+            {
+                this.spyingForFaction = this.Pawn.Faction;
+            }
+        }
+        public override void CompPostTick(ref float severityAdjustment)
+        {
+            base.CompPostTick(ref severityAdjustment);
+            if (this.Pawn.Faction == this.spyingOnFaction)
+            {
+                this.Pawn.health.RemoveHediff(this.parent);
+                return;
+            }
+            if (this.Pawn.IsWorldPawn() && !this.Pawn.Dead) {
+                if (!this.Pawn.IsPrisonerOfColony)
+                {
+                    WorldComponent_HautsFactionComps WCFC = (WorldComponent_HautsFactionComps)Find.World.GetComponent(typeof(WorldComponent_HautsFactionComps));
+                    Hauts_FactionCompHolder fch = WCFC.FindCompsFor(this.spyingForFaction);
+                    if (fch != null)
+                    {
+                        HautsFactionComp_SpyPoints spyPoints = fch.TryGetComp<HautsFactionComp_SpyPoints>();
+                        if (spyPoints != null)
+                        {
+                            float addedSpyPoints = this.Props.baseSpyPoints;
+                            if (!this.Props.relevantSkills.NullOrEmpty())
+                            {
+                                float sumSkilllevel = this.Props.fallbackIfNoSkillLevel;
+                                if (this.Pawn.skills != null)
+                                {
+                                    foreach (SkillDef sd in this.Props.relevantSkills)
+                                    {
+                                        sumSkilllevel += this.Pawn.skills.GetSkill(sd).Level;
+                                    }
+                                }
+                                addedSpyPoints *= sumSkilllevel;
+                            }
+                            if (!this.Props.relevantCapacities.NullOrEmpty())
+                            {
+                                float sumCapLevel = 0f;
+                                foreach (PawnCapacityDef pcd in this.Props.relevantCapacities)
+                                {
+                                    sumCapLevel += this.Pawn.health.capacities.GetLevel(pcd);
+                                }
+                                addedSpyPoints *= sumCapLevel;
+                            }
+                            spyPoints.spyPoints += (int)addedSpyPoints + this.Props.unscalableFlatSpyPoints;
+                        }
+                    }
+                    this.Pawn.health.RemoveHediff(this.parent);
+                }
+            }
+        }
+        public override void CompExposeData()
+        {
+            base.CompExposeData();
             Scribe_References.Look<Faction>(ref this.spyingOnFaction, "spyingOnFaction", false);
             Scribe_References.Look<Faction>(ref this.spyingForFaction, "spyingForFaction", false);
         }
@@ -2146,8 +2246,7 @@ namespace HautsFramework
             float num = 0f;
             DamageDef flame = DamageDefOf.Flame;
             Thing pawn = this.Pawn;
-            ThingDef filthDef = this.Props.filthDef;
-            GenExplosion.DoExplosion(cell, mapHeld, num, flame, pawn, this.Props.damAmount, -1f, null, null, null, null, filthDef, this.Props.filthChance, 1, null, false, null, 0f, 1, 1f, false, null, null, null, false, 0.6f, 0f, false, null, 1f, this.parent.verb.verbProps.flammabilityAttachFireChanceCurve, this.AffectedCells(target));
+            GenExplosion.DoExplosion(cell, mapHeld, num, flame, pawn, this.Props.damAmount, -1f, null, null, null, null, this.Props.filthDef, this.Props.filthChance, 1, null, null, 255, false, null, 0f, 1, 1f, false, null, null, null, false, 0.6f, 0f, false, null, 1f, this.parent.verb.verbProps.flammabilityAttachFireChanceCurve, this.AffectedCells(target), null, null);
             base.Apply(target, dest);
         }
         public override IEnumerable<PreCastAction> GetPreCastActions()
@@ -2423,6 +2522,10 @@ namespace HautsFramework
             } else if ((this.mote != null && !this.mote.Destroyed)) {
                 this.mote.Destroy(DestroyMode.Vanish);
             }
+        }
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
+        {
+            base.CompPostTickInterval(ref severityAdjustment, delta);
             Pawn pawn = this.parent.pawn;
             if (!pawn.IsHashIntervalTick(this.Props.tickPeriodicity) || !this.ShouldBeActive)
             {
@@ -2451,7 +2554,7 @@ namespace HautsFramework
             Caravan caravan = pawn.GetCaravan();
             if (caravan != null)
             {
-                this.AffectPawns(pawn, caravan.pawns.InnerListForReading,true);
+                this.AffectPawns(pawn, caravan.pawns.InnerListForReading, true);
             }
         }
         protected virtual void AffectPawns(Pawn p, List<Pawn> pawns, bool inCaravan = false)
@@ -3026,23 +3129,27 @@ namespace HautsFramework
         public override void CompPostTick(ref float severityAdjustment)
         {
             base.CompPostTick(ref severityAdjustment);
+        }
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
+        {
+            base.CompPostTickInterval(ref severityAdjustment, delta);
             if (this.ticksToReset > 0)
             {
-                this.ticksToReset--;
+                this.ticksToReset -= delta;
                 if (this.ticksToReset <= 0)
                 {
                     if (this.parent.Severity < this.Props.minSeverityToWork)
                     {
                         this.ResetShield();
                     }
-                    this.parent.Severity = Math.Min(this.EnergyGainPerTick + this.parent.Severity, this.MaxEnergy);
+                    this.parent.Severity = Math.Min((this.EnergyGainPerTick*delta) + this.parent.Severity, this.MaxEnergy);
                 }
             } else if (this.parent.Severity < this.Props.minSeverityToWork) {
                 this.ticksToReset = this.ResetDelayTicks;
             } else {
-                this.parent.Severity = Math.Min(this.EnergyGainPerTick + this.parent.Severity, this.MaxEnergy);
+                this.parent.Severity = Math.Min((this.EnergyGainPerTick * delta) + this.parent.Severity, this.MaxEnergy);
             }
-            if (this.Pawn.IsHashIntervalTick(60))
+            if (this.Pawn.IsHashIntervalTick(60, delta))
             {
                 this.RedetermineAllStats();
             }
@@ -3392,7 +3499,7 @@ namespace HautsFramework
                         }
                     }
                 }
-                if (verb is VFECore.Abilities.Verb_CastAbility vcavfe && vcavfe.Caster != null && vcavfe.CasterIsPawn && HautsUtility.IsVPEPsycast(vcavfe.ability))
+                if (verb is VEF.Abilities.Verb_CastAbility vcavfe && vcavfe.Caster != null && vcavfe.CasterIsPawn && HautsUtility.IsVPEPsycast(vcavfe.ability))
                 {
                     GlobalTargetInfo[] targets = new GlobalTargetInfo[]
                     {
@@ -3819,7 +3926,7 @@ namespace HautsFramework
         }
         public float increasedCooldownRecovery = 0f;
         public List<RimWorld.AbilityDef> affectedAbilities = new List<RimWorld.AbilityDef>();
-        public List<VFECore.Abilities.AbilityDef> affectedVEFAbilities = new List<VFECore.Abilities.AbilityDef>();
+        public List<VEF.Abilities.AbilityDef> affectedVEFAbilities = new List<VEF.Abilities.AbilityDef>();
         public List<DefModExtension> affectedDMEs = new List<DefModExtension>();
         public WorkTags abilitiesUsingThisWorkTag = WorkTags.None;
         public bool multiplyBySeverity = false;
@@ -3875,17 +3982,17 @@ namespace HautsFramework
                 return (HediffCompProperties_BoredomAdjustment)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.IsHashIntervalTick(this.Props.ticks) && this.Pawn.needs.joy != null && this.Props.boredoms != null)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(this.Props.ticks, delta) && this.Pawn.needs.joy != null && this.Props.boredoms != null)
             {
                 DefMap<JoyKindDef, float> tolerances = HautsFramework.GetInstanceField(typeof(JoyToleranceSet), this.Pawn.needs.joy.tolerances, "tolerances") as DefMap<JoyKindDef, float>;
                 DefMap<JoyKindDef, bool> bored = HautsFramework.GetInstanceField(typeof(JoyToleranceSet), this.Pawn.needs.joy.tolerances, "bored") as DefMap<JoyKindDef, bool>;
                 foreach (JoyKindDef jkd in this.Props.boredoms.Keys)
                 {
                     float num2 = tolerances[jkd];
-                    num2 = Math.Min(1f,Math.Max(0f,num2-this.Props.boredoms.TryGetValue(jkd)));
+                    num2 = Math.Min(1f, Math.Max(0f, num2 - this.Props.boredoms.TryGetValue(jkd)));
                     tolerances[jkd] = num2;
                     if (bored[jkd] && num2 < 0.3f)
                     {
@@ -3915,10 +4022,10 @@ namespace HautsFramework
                 return (HediffCompProperties_ChangesBasedOnStat)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.IsHashIntervalTick(2500))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(2500, delta))
             {
                 float statVal = this.Pawn.GetStatValue(this.Props.whenStat);
                 if (statVal <= this.Props.goesBelow || statVal > this.Props.goesAbove)
@@ -3997,19 +4104,16 @@ namespace HautsFramework
         public override void CompPostTick(ref float severityAdjustment)
         {
             base.CompPostTick(ref severityAdjustment);
-            if (this.Props.ticksSpentDownedToStop > 0)
+            if (this.Pawn.Downed)
             {
-                if (this.Pawn.Downed)
+                this.ticksSpentDowned++;
+                if (this.ticksSpentDowned >= this.Props.ticksSpentDownedToStop)
                 {
-                    this.ticksSpentDowned++;
-                    if (this.ticksSpentDowned >= this.Props.ticksSpentDownedToStop)
-                    {
-                        this.Pawn.health.RemoveHediff(this.parent);
-                        return;
-                    }
-                } else {
-                    this.ticksSpentDowned = 0;
+                    this.Pawn.health.RemoveHediff(this.parent);
+                    return;
                 }
+            } else {
+                this.ticksSpentDowned = 0;
             }
         }
         public override void CompExposeData()
@@ -4086,9 +4190,9 @@ namespace HautsFramework
                 return (HediffCompProperties_ExitMentalStateOnRemoval)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
+            base.CompPostTickInterval(ref severityAdjustment, delta);
             if (!this.Pawn.InMentalState && this.Props.removeEarlyIfNotInMentalState)
             {
                 this.Pawn.health.RemoveHediff(this.parent);
@@ -4309,10 +4413,10 @@ namespace HautsFramework
                 return "Hauts_GTRtooltip".Translate(this.Props.mtbDays);
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.IsHashIntervalTick(150) && this.Pawn.needs.mood != null && Rand.MTBEventOccurs(Math.Max(this.Props.mtbDays - Math.Min(this.Props.mtbLossPerExtraSeverity* this.parent.Severity,this.Props.mtbLossSeverityCap),0.001f), 60000f, 150f))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(150, delta) && this.Pawn.needs.mood != null && Rand.MTBEventOccurs(Math.Max(this.Props.mtbDays - Math.Min(this.Props.mtbLossPerExtraSeverity * this.parent.Severity, this.Props.mtbLossSeverityCap), 0.001f), 60000f, 150f))
             {
                 Thought_Memory thought = (Thought_Memory)ThoughtMaker.MakeThought(this.Props.thoughtDefs.RandomElement<ThoughtDef>());
                 this.Pawn.needs.mood.thoughts.memories.TryGainMemory(thought, null);
@@ -4563,10 +4667,6 @@ namespace HautsFramework
         {
             Color color = new Color(this.def.graphicData.color.r, this.def.graphicData.color.g, this.def.graphicData.color.b);
             GenMapUI.DrawText(new Vector2(this.exactPosition.x, this.exactPosition.z), this.text, color);
-        }
-        public override void TickRare()
-        {
-            base.TickRare();
         }
         public void UpdateText()
         {
@@ -4935,19 +5035,17 @@ namespace HautsFramework
                 return true;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.IsHashIntervalTick(this.Props.periodicity) && this.ConditionsMetToSatisfyNeeds)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(this.Props.periodicity,delta) && this.ConditionsMetToSatisfyNeeds)
             {
                 foreach (Need n in this.Pawn.needs.AllNeeds)
                 {
                     if (this.Props.needsSatisfied.ContainsKey(n.def))
                     {
                         n.CurLevel += this.Props.needsSatisfied.TryGetValue(n.def);
-                    }
-                    else if (this.Props.satisfiesDrugAddictions && n.def.needClass == typeof(Need_Chemical))
-                    {
+                    } else if (this.Props.satisfiesDrugAddictions && n.def.needClass == typeof(Need_Chemical)) {
                         n.CurLevel += this.Props.drugAddictionSatisfaction;
                     }
                 }
@@ -5001,10 +5099,10 @@ namespace HautsFramework
             base.CompPostMake();
             this.affectsAptitudes = this.Props.affectsAptitudes;
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.IsHashIntervalTick(this.Props.ticks))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(this.Props.ticks,delta))
             {
                 if (this.Props.nullifyingTraits != null && this.Pawn.story != null)
                 {
@@ -5016,12 +5114,13 @@ namespace HautsFramework
                         }
                     }
                 }
-                float skillAdjustment = this.Props.skillAdjustment*(this.Props.statMultiplier!= null ? this.Pawn.GetStatValue(this.Props.statMultiplier) : 1f) /(this.Props.statResistor != null?Math.Max(0.001f,this.Pawn.GetStatValue(this.Props.statResistor)): 1f);
+                float skillAdjustment = this.Props.skillAdjustment * (this.Props.statMultiplier != null ? this.Pawn.GetStatValue(this.Props.statMultiplier) : 1f) / (this.Props.statResistor != null ? Math.Max(0.001f, this.Pawn.GetStatValue(this.Props.statResistor)) : 1f);
                 foreach (SkillRecord s in this.Pawn.skills.skills)
                 {
                     if (this.Props.affectedSkills.Contains(s.def) && s.GetLevel(this.affectsAptitudes) >= this.Props.minLevel && s.GetLevel(this.affectsAptitudes) < this.Props.maxLevel)
                     {
-                        if (skillAdjustment < 0f) {
+                        if (skillAdjustment < 0f)
+                        {
                             if (this.Pawn.story != null && this.Pawn.story.traits.HasTrait(TraitDefOf.GreatMemory))
                             {
                                 skillAdjustment *= 0.5f;
@@ -5077,9 +5176,7 @@ namespace HautsFramework
                 if (this.Props.addToBrain)
                 {
                     this.Pawn.health.AddHediff(hediff, this.Pawn.health.hediffSet.GetBrain());
-                }
-                else
-                {
+                } else {
                     this.Pawn.health.AddHediff(hediff,this.parent.Part);
                 }
                 hediff = this.Pawn.health.hediffSet.GetFirstHediffOfDef(this.Def);
@@ -5115,9 +5212,7 @@ namespace HautsFramework
                 if (this.Props.addToBrain)
                 {
                     this.Pawn.health.AddHediff(hediff, this.Pawn.health.hediffSet.GetBrain());
-                }
-                else
-                {
+                } else {
                     this.Pawn.health.AddHediff(hediff,this.parent.Part);
                 }
                 hediff = this.Pawn.health.hediffSet.GetFirstHediffOfDef(this.Def);
@@ -5278,10 +5373,10 @@ namespace HautsFramework
                 return base.CompTipStringExtra;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.Severity >= this.Props.severityToTrigger)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(150, delta) && this.parent.Severity >= this.Props.severityToTrigger)
             {
                 Hediff hediff = this.Pawn.health.hediffSet.GetFirstHediffOfDef(this.Props.hediffGiven);
                 if (hediff != null)
@@ -5291,9 +5386,7 @@ namespace HautsFramework
                         hediff.Severity = Math.Min(hediff.Severity + this.Props.severityToGive, this.Props.maxSeverityOfCreatedHediff);
                         this.parent.Severity -= this.Props.severityToTrigger;
                     }
-                }
-                else
-                {
+                } else {
                     Hediff hediff2 = HediffMaker.MakeHediff(this.Props.hediffGiven, this.Pawn);
                     this.Pawn.health.AddHediff(hediff2);
                     this.parent.Severity -= this.Props.severityToTrigger;
@@ -5348,10 +5441,10 @@ namespace HautsFramework
                 this.ticksRemaining = 0;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.IsHashIntervalTick(250))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(250, delta))
             {
                 this.maxCharges = this.Props.maxStoredCharges * (int)(this.Props.maxChargesScaleWithSeverity ? Math.Max(this.parent.Severity, 1f) : 1f);
             }
@@ -5366,7 +5459,7 @@ namespace HautsFramework
                     }
                 }
             } else {
-                this.ticksRemaining--;
+                this.ticksRemaining -= delta;
             }
             if (this.charges > 0)
             {
@@ -5380,7 +5473,9 @@ namespace HautsFramework
                     }
                     this.charges--;
                     this.ticksRemaining = this.Props.ticksToNextSpawn.RandomInRange;
-                } else {
+                }
+                else
+                {
                     Hediff hediff2 = HediffMaker.MakeHediff(this.Props.hediffGiven, this.Pawn);
                     this.Pawn.health.AddHediff(hediff2);
                     this.charges--;
@@ -5437,10 +5532,10 @@ namespace HautsFramework
                 return base.CompTipStringExtra;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.Severity >= this.Props.severityToTrigger && (this.Pawn.Spawned || this.Props.spawnInOwnInventory))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(150, delta) && this.parent.Severity >= this.Props.severityToTrigger && (this.Pawn.Spawned || this.Props.spawnInOwnInventory))
             {
                 this.SpawnThings();
             }
@@ -5562,7 +5657,7 @@ namespace HautsFramework
                 GenPlace.TryPlaceThing(thing, loc, this.Pawn.Map, ThingPlaceMode.Near, null, null, default);
             }
             thing.Notify_DebugSpawned();
-            if (thing.Position != null && thing.Map != null && this.Props.spawnFleck1 != null)
+            if (thing.SpawnedOrAnyParentSpawned && thing.Map != null && this.Props.spawnFleck1 != null)
             {
                 FleckCreationData dataStatic = FleckMaker.GetDataStatic(thing.Position.ToVector3Shifted(), thing.Map, this.Props.spawnFleck1, 1f);
                 dataStatic.rotationRate = (float)Rand.Range(-30, 30);
@@ -5621,14 +5716,14 @@ namespace HautsFramework
             base.CompPostPostAdd(dinfo);
             this.ticksRemaining = this.Props.ticksToNextSpawn.RandomInRange;
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
+            base.CompPostTickInterval(ref severityAdjustment, delta);
             if (this.ticksRemaining <= 0 && (this.Pawn.Spawned || this.Props.spawnInOwnInventory))
             {
                 this.SpawnThings();
             } else {
-                this.ticksRemaining--;
+                this.ticksRemaining -= delta;
             }
         }
         public virtual KeyValuePair<ThingDef, FloatRange> GetThingToSpawn()
@@ -5743,7 +5838,7 @@ namespace HautsFramework
                 GenPlace.TryPlaceThing(thing, loc, this.Pawn.Map, ThingPlaceMode.Near, null, null, default);
             }
             thing.Notify_DebugSpawned();
-            if (thing.Position != null && thing.Map != null && this.Props.spawnFleck1 != null)
+            if (thing.SpawnedOrAnyParentSpawned && thing.Map != null && this.Props.spawnFleck1 != null)
             {
                 FleckCreationData dataStatic = FleckMaker.GetDataStatic(thing.Position.ToVector3Shifted(), thing.Map, this.Props.spawnFleck1, 1f);
                 dataStatic.rotationRate = (float)Rand.Range(-30, 30);
@@ -5834,10 +5929,10 @@ namespace HautsFramework
                 this.Pawn.health.RemoveHediff(hediff);
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.IsHashIntervalTick(250) && this.Pawn.needs.mood != null)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(250, delta) && this.Pawn.needs.mood != null)
             {
                 if (this.Pawn.MentalState == null || this.Props.activeDuringMentalStates)
                 {
@@ -5847,19 +5942,31 @@ namespace HautsFramework
                         if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdExtreme)
                         {
                             this.parent.Severity = this.Props.extremeMBseverity;
-                        } else if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdMajor) {
+                        }
+                        else if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdMajor)
+                        {
                             this.parent.Severity = this.Props.majorMBseverity;
-                        } else if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdMinor) {
+                        }
+                        else if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdMinor)
+                        {
                             this.parent.Severity = this.Props.minorMBseverity;
-                        } else if (mood.CurLevel < 0.65f) {
+                        }
+                        else if (mood.CurLevel < 0.65f)
+                        {
                             this.parent.Severity = this.Props.neutralSeverity;
-                        } else if (mood.CurLevel < 0.9f) {
+                        }
+                        else if (mood.CurLevel < 0.9f)
+                        {
                             this.parent.Severity = this.Props.contentSeverity;
-                        } else {
+                        }
+                        else
+                        {
                             this.parent.Severity = this.Props.happySeverity;
                         }
                     }
-                } else {
+                }
+                else
+                {
                     this.parent.Severity = this.Props.severityIfInMentalState;
                 }
             }
@@ -5883,10 +5990,10 @@ namespace HautsFramework
                 return (HediffCompProperties_CapacitySeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.pawn.IsHashIntervalTick(250))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.parent.pawn.IsHashIntervalTick(250, delta))
             {
                 this.parent.Severity = this.Pawn.health.capacities.GetLevel(this.Props.capacity) + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
             }
@@ -5968,10 +6075,10 @@ namespace HautsFramework
                 return (HediffCompProperties_ExpectationSeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.pawn.IsHashIntervalTick(250))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.parent.pawn.IsHashIntervalTick(250, delta))
             {
                 this.parent.Severity = ExpectationsUtility.CurrentExpectationFor(this.parent.pawn).order + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
             }
@@ -5998,23 +6105,25 @@ namespace HautsFramework
                 return (HediffCompProperties_GasSeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.Spawned)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(15,delta) && this.Pawn.Spawned)
             {
                 bool inGas = false;
                 foreach (GasType g in this.Props.gasTypes)
                 {
-                    if (this.Pawn.Position.AnyGas(this.Pawn.Map,g))
+                    if (this.Pawn.Position.AnyGas(this.Pawn.Map, g))
                     {
                         inGas = true;
                         if (this.Props.whileInGas != -999f)
                         {
                             this.parent.Severity = this.Props.whileInGas;
                             break;
-                        } else {
-                            this.parent.Severity += this.Props.perTickInGas;
+                        }
+                        else
+                        {
+                            this.parent.Severity += this.Props.perTickInGas * 15f;
                         }
                     }
                 }
@@ -6023,8 +6132,10 @@ namespace HautsFramework
                     if (this.Props.whileNotInGas != -999f)
                     {
                         this.parent.Severity = this.Props.whileNotInGas;
-                    } else {
-                        this.parent.Severity += this.Props.perTickNoGas;
+                    }
+                    else
+                    {
+                        this.parent.Severity += this.Props.perTickNoGas * 15f;
                     }
                 }
             }
@@ -6049,10 +6160,10 @@ namespace HautsFramework
                 return (HediffCompProperties_HasTraitSeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.pawn.IsHashIntervalTick(200) && this.parent.pawn.story != null)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.parent.pawn.IsHashIntervalTick(200, delta) && this.parent.pawn.story != null)
             {
                 if (this.Props.severityIfLacks != -999f)
                 {
@@ -6068,7 +6179,9 @@ namespace HautsFramework
                     {
                         this.parent.Severity = this.Props.severityIfLacks;
                     }
-                } else if (this.Props.severityIfHas != -999f) {
+                }
+                else if (this.Props.severityIfHas != -999f)
+                {
                     foreach (TraitDef t in this.Props.traits)
                     {
                         if (this.parent.pawn.story.traits.HasTrait(t))
@@ -6101,23 +6214,24 @@ namespace HautsFramework
                 return (HediffCompProperties_IsRestingSeverity) this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.pawn.needs != null && this.parent.pawn.needs.rest != null)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            Pawn pawn = this.Pawn;
+            if (pawn.IsHashIntervalTick(15, delta) && pawn.needs != null && pawn.needs.rest != null)
             {
-                if (this.parent.pawn.needs.rest.Resting)
+                if (pawn.needs.rest.Resting)
                 {
                     if (this.Props.whileResting != -999f)
                     {
                         this.parent.Severity = this.Props.whileResting;
                     } else {
-                        this.parent.Severity += this.Props.perTickResting;
+                        this.parent.Severity += this.Props.perTickResting * 15f;
                     }
                 } else if (this.Props.whileAwake != -999f) {
                     this.parent.Severity = this.Props.whileAwake;
                 } else {
-                    this.parent.Severity += this.Props.perTickAwake;
+                    this.parent.Severity += this.Props.perTickAwake * 15f;
                 }
             }
         }
@@ -6139,15 +6253,17 @@ namespace HautsFramework
                 return (HediffCompProperties_LightingSeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.pawn.IsHashIntervalTick(250))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.parent.pawn.IsHashIntervalTick(250, delta))
             {
                 if (this.parent.pawn.Map != null && this.parent.pawn.Spawned)
                 {
                     this.parent.Severity = this.parent.pawn.Map.glowGrid.GroundGlowAt(this.parent.pawn.Position) + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
-                } else if (this.parent.pawn.Tile != -1) {
+                }
+                else if (this.parent.pawn.Tile != -1)
+                {
                     this.parent.Severity = GenCelestial.CelestialSunGlow(this.parent.pawn.Tile, Find.TickManager.TicksAbs) + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
                 }
             }
@@ -6174,25 +6290,25 @@ namespace HautsFramework
                 return (HediffCompProperties_OnCaravanSeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.pawn.psychicEntropy != null)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(15,delta))
             {
-                if (this.parent.pawn.IsCaravanMember())
+                if (this.Pawn.IsCaravanMember())
                 {
                     if (this.Props.whileOnCaravan != -999f)
                     {
                         this.parent.Severity = this.Props.whileOnCaravan;
                     } else {
-                        this.parent.Severity += this.Props.perOnCaravanTick;
+                        this.parent.Severity += this.Props.perOnCaravanTick * 15f;
                     }
                 } else {
                     if (this.Props.whileInMap != -999f)
                     {
                         this.parent.Severity = this.Props.whileInMap;
                     } else {
-                        this.parent.Severity += this.Props.perInMapTick;
+                        this.parent.Severity += this.Props.perInMapTick * 15f;
                     }
                 }
                 if (this.parent.Severity < this.parent.def.minSeverity && this.Props.respectMinSeverity)
@@ -6229,10 +6345,10 @@ namespace HautsFramework
             base.CompPostPostAdd(dinfo);
             RecalculateRDS();
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.pawn.IsHashIntervalTick(this.Props.periodicity))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.parent.pawn.IsHashIntervalTick(this.Props.periodicity, delta))
             {
                 RecalculateRDS();
             }
@@ -6317,16 +6433,16 @@ namespace HautsFramework
         public override void CompPostPostAdd(DamageInfo? dinfo)
         {
             base.CompPostPostAdd(dinfo);
-            if (this.parent.pawn.skills == null)
+            if (this.Pawn.skills == null)
             {
                 Hediff hediff = this.Pawn.health.hediffSet.GetFirstHediffOfDef(this.Def);
                 this.Pawn.health.RemoveHediff(hediff);
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.pawn.IsHashIntervalTick(250))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(250, delta))
             {
                 float netSkill = 0f;
                 foreach (SkillDef s in this.Props.skills)
@@ -6344,6 +6460,7 @@ namespace HautsFramework
             this.compClass = typeof(HediffComp_StatScalingSeverityPerDay);
         }
         public float baseSeverityPerDay;
+        public int periodicity;
         public StatDef stat;
     }
     public class HediffComp_StatScalingSeverityPerDay : HediffComp
@@ -6355,10 +6472,14 @@ namespace HautsFramework
                 return (HediffCompProperties_StatScalingSeverityPerDay)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            this.parent.Severity += this.Props.baseSeverityPerDay * this.Pawn.GetStatValue(this.Props.stat) / 60000f;
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(this.Props.periodicity,delta))
+            {
+
+                this.parent.Severity += this.Props.baseSeverityPerDay * this.Pawn.GetStatValue(this.Props.stat) *this.Props.periodicity/ 60000f;
+            }
         }
     }
     public class HediffCompProperties_StatScalingSeverityWithMin : HediffCompProperties
@@ -6411,33 +6532,37 @@ namespace HautsFramework
                 return (HediffCompProperties_TemperatureLevelSeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            float temp = this.Pawn.AmbientTemperature;
-            if (this.Props.zeroSeverityAt.Includes(temp))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(15,delta))
             {
-                if (this.parent.Severity > 0f)
+
+                float temp = this.Pawn.AmbientTemperature;
+                if (this.Props.zeroSeverityAt.Includes(temp))
                 {
-                    this.parent.Severity = Math.Max(0f,this.parent.Severity - this.Props.changePerTick);
+                    if (this.parent.Severity > 0f)
+                    {
+                        this.parent.Severity = Math.Max(0f, this.parent.Severity - (this.Props.changePerTick*15f));
+                    } else {
+                        this.parent.Severity = Math.Min(0f, this.parent.Severity + (this.Props.changePerTick*15f));
+                    }
+                } else if (temp > this.Props.zeroSeverityAt.max) {
+                    float desiredTemp = this.Props.perTempAbove * (temp - this.Props.zeroSeverityAt.max);
+                    if (this.parent.Severity > desiredTemp)
+                    {
+                        this.parent.Severity = Math.Max(desiredTemp, this.parent.Severity - (this.Props.changePerTick * 15f));
+                    } else {
+                        this.parent.Severity = Math.Min(desiredTemp, this.parent.Severity + (this.Props.changePerTick * 15f));
+                    }
                 } else {
-                    this.parent.Severity = Math.Min(0f, this.parent.Severity + this.Props.changePerTick);
-                }
-            } else if (temp > this.Props.zeroSeverityAt.max) {
-                float desiredTemp = this.Props.perTempAbove * (temp - this.Props.zeroSeverityAt.max);
-                if (this.parent.Severity > desiredTemp)
-                {
-                    this.parent.Severity = Math.Max(desiredTemp, this.parent.Severity - this.Props.changePerTick);
-                } else {
-                    this.parent.Severity = Math.Min(desiredTemp, this.parent.Severity + this.Props.changePerTick);
-                }
-            } else {
-                float desiredTemp = this.Props.perTempBelow * (this.Props.zeroSeverityAt.min - temp);
-                if (this.parent.Severity > desiredTemp)
-                {
-                    this.parent.Severity = Math.Max(desiredTemp, this.parent.Severity - this.Props.changePerTick);
-                } else {
-                    this.parent.Severity = Math.Min(desiredTemp, this.parent.Severity + this.Props.changePerTick);
+                    float desiredTemp = this.Props.perTempBelow * (this.Props.zeroSeverityAt.min - temp);
+                    if (this.parent.Severity > desiredTemp)
+                    {
+                        this.parent.Severity = Math.Max(desiredTemp, this.parent.Severity - (this.Props.changePerTick * 15f));
+                    } else {
+                        this.parent.Severity = Math.Min(desiredTemp, this.parent.Severity + (this.Props.changePerTick * 15f));
+                    }
                 }
             }
         }
@@ -6466,35 +6591,38 @@ namespace HautsFramework
                 return (HediffCompProperties_WaterImmersionSeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            this.parent.Severity = this.Props.baseSeverity;
-            if (this.Pawn.Spawned && this.Pawn.PositionHeld.GetTerrain(this.Pawn.MapHeld) != null)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(15,delta))
             {
-                if (this.Pawn.PositionHeld.GetTerrain(this.Pawn.MapHeld).IsWater)
+                this.parent.Severity = this.Props.baseSeverity;
+                if (this.Pawn.Spawned && this.Pawn.PositionHeld.GetTerrain(this.Pawn.MapHeld) != null)
                 {
-                    this.parent.Severity += ((this.Pawn.PositionHeld.GetTerrain(this.Pawn.MapHeld).pathCost) / 100f);
-                }
-                if (this.Pawn.PositionHeld.GetRoof(this.Pawn.MapHeld) == null)
-                {
-                    this.parent.Severity += this.Pawn.MapHeld.weatherManager.RainRate*this.Props.rainCountsFor;
-                }
-            } else if (this.Pawn.Tile != -1 && this.Pawn.GetCaravan() != null) {
-                this.parent.Severity = this.Props.baseSeverityCaravan;
-                if (Find.WorldGrid[this.Pawn.Tile].WaterCovered)
-                {
-                    this.parent.Severity += this.Props.caravanWaterTileSeverity;
-                } else if (Find.WorldGrid[this.Pawn.Tile].Rivers != null) {
-                    float riverWidth = 0f;
-                    foreach (Tile.RiverLink rl in Find.WorldGrid[this.Pawn.Tile].Rivers)
+                    if (this.Pawn.PositionHeld.GetTerrain(this.Pawn.MapHeld).IsWater)
                     {
-                        if (rl.river.widthOnMap > riverWidth)
-                        {
-                            riverWidth = rl.river.widthOnMap;
-                        }
+                        this.parent.Severity += ((this.Pawn.PositionHeld.GetTerrain(this.Pawn.MapHeld).pathCost) / 100f);
                     }
-                    this.parent.Severity += this.Props.severityPerCaravanRiverSize.Evaluate(riverWidth);
+                    if (this.Pawn.PositionHeld.GetRoof(this.Pawn.MapHeld) == null)
+                    {
+                        this.parent.Severity += this.Pawn.MapHeld.weatherManager.RainRate * this.Props.rainCountsFor;
+                    }
+                } else if (this.Pawn.Tile != -1 && this.Pawn.GetCaravan() != null) {
+                    this.parent.Severity = this.Props.baseSeverityCaravan;
+                    if (Find.WorldGrid[this.Pawn.Tile].WaterCovered)
+                    {
+                        this.parent.Severity += this.Props.caravanWaterTileSeverity;
+                    } else if (this.Pawn.Tile.Tile is SurfaceTile st && !st.Rivers.NullOrEmpty<SurfaceTile.RiverLink>()) {
+                        float riverWidth = 0f;
+                        foreach (SurfaceTile.RiverLink rl in st.Rivers)
+                        {
+                            if (rl.river.widthOnMap > riverWidth)
+                            {
+                                riverWidth = rl.river.widthOnMap;
+                            }
+                        }
+                        this.parent.Severity += this.Props.severityPerCaravanRiverSize.Evaluate(riverWidth);
+                    }
                 }
             }
         }
@@ -6520,30 +6648,40 @@ namespace HautsFramework
                 return (HediffCompProperties_WindLevelSeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.pawn.Map != null)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(60,delta))
             {
-                if (this.parent.pawn.Spawned)
+                if (this.parent.pawn.Map != null)
                 {
-                    if (this.parent.pawn.Position.GetRoof(this.parent.pawn.Map) != null)
+                    if (this.parent.pawn.Spawned)
                     {
-                        if (!this.Props.worksEnclosedSpace && !this.parent.pawn.Position.UsesOutdoorTemperature(this.parent.pawn.Map)) {
-                            this.parent.Severity = 0f;
-                            return;
-                        } else if (!this.Props.worksUnderThinRoof && !this.parent.pawn.Position.GetRoof(this.parent.pawn.Map).isThickRoof) {
-                            this.parent.Severity = 0f;
-                            return;
-                        } else if (!this.Props.worksUnderThickRoof && this.parent.pawn.Position.GetRoof(this.parent.pawn.Map).isThickRoof) {
-                            this.parent.Severity = 0f;
-                            return;
+                        if (this.parent.pawn.Position.GetRoof(this.parent.pawn.Map) != null)
+                        {
+                            if (!this.Props.worksEnclosedSpace && !this.parent.pawn.Position.UsesOutdoorTemperature(this.parent.pawn.Map))
+                            {
+                                this.parent.Severity = 0f;
+                                return;
+                            }
+                            else if (!this.Props.worksUnderThinRoof && !this.parent.pawn.Position.GetRoof(this.parent.pawn.Map).isThickRoof)
+                            {
+                                this.parent.Severity = 0f;
+                                return;
+                            }
+                            else if (!this.Props.worksUnderThickRoof && this.parent.pawn.Position.GetRoof(this.parent.pawn.Map).isThickRoof)
+                            {
+                                this.parent.Severity = 0f;
+                                return;
+                            }
                         }
+                        this.parent.Severity = this.Pawn.Map.windManager.WindSpeed + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
                     }
-                    this.parent.Severity = this.Pawn.Map.windManager.WindSpeed + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
                 }
-            } else {
-                this.parent.Severity = this.Props.worldMapValue + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
+                else
+                {
+                    this.parent.Severity = this.Props.worldMapValue + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
+                }
             }
         }
     }
@@ -6574,12 +6712,15 @@ namespace HautsFramework
                 this.parent.Severity = this.Props.severityIfNoIdeo;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (ModsConfig.IdeologyActive && this.Pawn.Ideo != null)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(150, delta))
             {
-                this.parent.Severity = Math.Max(this.Pawn.ideo.Certainty,0.001f);
+                if (ModsConfig.IdeologyActive && this.Pawn.Ideo != null)
+                {
+                    this.parent.Severity = Math.Max(this.Pawn.ideo.Certainty, 0.001f);
+                }
             }
         }
     }
@@ -6604,52 +6745,29 @@ namespace HautsFramework
                 return (HediffCompProperties_MeditationSeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.CurJob != null && (this.Pawn.CurJobDef == JobDefOf.Meditate || this.Pawn.CurJobDef == JobDefOf.Reign) && this.Pawn.jobs.curDriver != null && this.Pawn.jobs.curDriver.OnLastToil)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(15, delta))
             {
-                if (this.Props.whileMeditating != -999f)
+                if (this.Pawn.CurJob != null && (this.Pawn.CurJobDef == JobDefOf.Meditate || this.Pawn.CurJobDef == JobDefOf.Reign) && this.Pawn.jobs.curDriver != null && this.Pawn.jobs.curDriver.OnLastToil)
                 {
-                    this.parent.Severity = this.Props.whileMeditating;
-                } else if (this.Props.medFocusSpeedMatters) {
-                    this.parent.Severity += this.Props.perMeditationTick * this.parent.pawn.GetStatValue(StatDefOf.MeditationFocusGain);
+                    if (this.Props.whileMeditating != -999f)
+                    {
+                        this.parent.Severity = this.Props.whileMeditating;
+                    } else if (this.Props.medFocusSpeedMatters) {
+                        this.parent.Severity += this.Props.perMeditationTick * this.Pawn.GetStatValue(StatDefOf.MeditationFocusGain) * 15f;
+                    } else {
+                        this.parent.Severity += this.Props.perMeditationTick * 15f;
+                    }
                 } else {
-                    this.parent.Severity += this.Props.perMeditationTick;
+                    if (this.Props.whileNotMeditating != -999f)
+                    {
+                        this.parent.Severity = this.Props.whileNotMeditating;
+                    } else {
+                        this.parent.Severity += this.Props.perNotMedTick * 15f;
+                    }
                 }
-            } else {
-                if (this.Props.whileNotMeditating != -999f)
-                {
-                    this.parent.Severity = this.Props.whileNotMeditating;
-                } else {
-                    this.parent.Severity += this.Props.perNotMedTick;
-                }
-            }
-        }
-    }
-    public class HediffCompProperties_NeuralHeatSeverity : HediffCompProperties
-    {
-        public HediffCompProperties_NeuralHeatSeverity()
-        {
-            this.compClass = typeof(HediffComp_NeuralHeatSeverity);
-        }
-        public bool plusInitialSeverity;
-    }
-    public class HediffComp_NeuralHeatSeverity : HediffComp
-    {
-        public HediffCompProperties_NeuralHeatSeverity Props
-        {
-            get
-            {
-                return (HediffCompProperties_NeuralHeatSeverity)this.props;
-            }
-        }
-        public override void CompPostTick(ref float severityAdjustment)
-        {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.psychicEntropy != null)
-            {
-                this.parent.Severity = this.Pawn.psychicEntropy.EntropyValue + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
             }
         }
     }
@@ -6718,19 +6836,22 @@ namespace HautsFramework
                 return (HediffCompProperties_PsylinkSeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (ModsConfig.IsActive("VanillaExpanded.VPsycastsE"))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(250, delta))
             {
-                Hediff_Level psylink = (Hediff_Level)this.Pawn.health.hediffSet.GetFirstHediffOfDef(DefDatabase<HediffDef>.GetNamedSilentFail("VPE_PsycastAbilityImplant"));
-                if (psylink == null)
+                if (ModsConfig.IsActive("VanillaExpanded.VPsycastsE"))
                 {
-                    this.parent.Severity = psylink.level;
-                    return;
+                    Hediff_Level psylink = (Hediff_Level)this.Pawn.health.hediffSet.GetFirstHediffOfDef(DefDatabase<HediffDef>.GetNamedSilentFail("VPE_PsycastAbilityImplant"));
+                    if (psylink == null)
+                    {
+                        this.parent.Severity = psylink.level;
+                        return;
+                    }
+                } else {
+                    this.parent.Severity = this.Pawn.GetPsylinkLevel() + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
                 }
-            } else {
-                this.parent.Severity = this.Pawn.GetPsylinkLevel() + (this.Props.plusInitialSeverity ? this.parent.def.initialSeverity : 0f);
             }
         }
     }
@@ -6753,10 +6874,10 @@ namespace HautsFramework
                 return (HediffCompProperties_AnomalousActivitySeverity)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (ModsConfig.AnomalyActive)
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(2500, delta) && ModsConfig.AnomalyActive)
             {
                 if (Find.Storyteller.difficulty.AnomalyPlaystyleDef == DefDatabase<AnomalyPlaystyleDef>.GetNamedSilentFail("AmbientHorror"))
                 {
@@ -6815,10 +6936,10 @@ namespace HautsFramework
             base.CompExposeData();
             Scribe_Values.Look<float>(ref this.severityPerDay, "severityPerDay", 0f, false);
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.IsHashIntervalTick(250))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(250, delta))
             {
                 this.severityPerDay = this.Props.CalculateSeverityPerDay();
             }
@@ -6909,9 +7030,9 @@ namespace HautsFramework
         public override void CompTick()
         {
             base.CompTick();
-            if (this.parent.pawn.IsHashIntervalTick(this.Periodicity) && this.parent.pawn.Spawned && !this.parent.pawn.IsColonistPlayerControlled && !this.parent.GizmoDisabled(out string text) && this.parent.def.aiCanUse && (!this.parent.pawn.InMentalState || this.parent.pawn.InAggroMentalState) && this.parent.CanCast && (this.parent.pawn.CurJob == null || (this.parent.pawn.CurJob.ability == null && !(this.parent.pawn.CurJob.verbToUse is VFECore.Abilities.Verb_CastAbility))) && this.AdditionalQualifiers())
+            if (this.parent.pawn.IsHashIntervalTick(this.Periodicity) && this.parent.pawn.Spawned && !this.parent.pawn.IsColonistPlayerControlled && !this.parent.GizmoDisabled(out string text) && this.parent.def.aiCanUse && (!this.parent.pawn.InMentalState || this.parent.pawn.InAggroMentalState) && this.parent.CanCast && (this.parent.pawn.CurJob == null || (this.parent.pawn.CurJob.ability == null && !(this.parent.pawn.CurJob.verbToUse is VEF.Abilities.Verb_CastAbility))) && this.AdditionalQualifiers())
             {
-                this.parent.pawn.jobs.StartJob(this.parent.GetJob(new LocalTargetInfo(this.parent.pawn),null), JobCondition.InterruptForced);
+                this.parent.pawn.jobs.StartJob(this.parent.GetJob(new LocalTargetInfo(this.parent.pawn), null), JobCondition.InterruptForced);
             }
         }
         public virtual bool AdditionalQualifiers()
@@ -6945,7 +7066,7 @@ namespace HautsFramework
         public override void CompTick()
         {
             base.CompTick();
-            if (this.parent.pawn.IsHashIntervalTick(this.Props.periodicity) && this.parent.pawn.Spawned && !this.parent.pawn.IsColonistPlayerControlled && !this.parent.GizmoDisabled(out string text) && this.parent.def.aiCanUse && this.parent.CanCast && (this.Props.usableInMentalStates || !this.parent.pawn.InMentalState) && (this.parent.pawn.CurJob == null || (this.parent.pawn.CurJob.ability == null && (this.parent.pawn.CurJob.verbToUse == null || !(this.parent.pawn.CurJob.verbToUse is VFECore.Abilities.Verb_CastAbility)))))
+            if (this.parent.pawn.IsHashIntervalTick(this.Props.periodicity) && this.parent.pawn.Spawned && !this.parent.pawn.IsColonistPlayerControlled && !this.parent.GizmoDisabled(out string text) && this.parent.def.aiCanUse && this.parent.CanCast && (this.Props.usableInMentalStates || !this.parent.pawn.InMentalState) && (this.parent.pawn.CurJob == null || (this.parent.pawn.CurJob.ability == null && (this.parent.pawn.CurJob.verbToUse == null || !(this.parent.pawn.CurJob.verbToUse is VEF.Abilities.Verb_CastAbility)))))
             {
                 if (this.Props.scanForPawnsOnly)
                 {
@@ -7052,7 +7173,7 @@ namespace HautsFramework
         }
         private List<Thing> tmpHostiles = new List<Thing>();
     }
-    public class CompProperties_AbilityAttackIncreasesCooldown : CompProperties_AbilityEffect
+    /*public class CompProperties_AbilityAttackIncreasesCooldown : CompProperties_AbilityEffect
     {
         public int cooldownTicksAdded;
         public int maxCooldown = int.MaxValue;
@@ -7067,7 +7188,7 @@ namespace HautsFramework
                 return (CompProperties_AbilityAttackIncreasesCooldown)this.props;
             }
         }
-    }
+    }*/
     public class CompAbilityEffect_AvoidTargetingStunnedPawns : CompAbilityEffect
     {
         public new CompProperties_AbilityEffect Props
@@ -7732,7 +7853,7 @@ namespace HautsFramework
             }
             if (this.nextPeriod > 0)
             {
-                this.nextPeriod--;
+                this.nextPeriod --;
             }
         }
         public override void PostExposeData()
@@ -7777,7 +7898,7 @@ namespace HautsFramework
                 {
                     if (this.Props.stopsWhileNotMeditating)
                     {
-                        HautsUtility.SetNewCooldown(this.parent,this.parent.CooldownTicksRemaining + 1);
+                        HautsUtility.SetNewCooldown(this.parent, this.parent.CooldownTicksRemaining + 1);
                     }
                 } else {
                     HautsUtility.SetNewCooldown(this.parent, this.parent.CooldownTicksRemaining - this.Props.bonusTicksWhileMeditating);
@@ -8108,9 +8229,7 @@ namespace HautsFramework
                 if (!this.parent.def.HasAreaOfEffect)
                 {
                     this.parent.AddEffecterToMaintain(EffecterDefOf.Skip_Entry.Spawn(pawn, pawn.Map, 1f), pawn.Position, 60, null);
-                }
-                else
-                {
+                } else {
                     this.parent.AddEffecterToMaintain(EffecterDefOf.Skip_EntryNoDelay.Spawn(pawn, pawn.Map, 1f), pawn.Position, 60, null);
                 }
                 this.parent.AddEffecterToMaintain(EffecterDefOf.Skip_Exit.Spawn(target.Cell, pawn.Map, 1f), target.Cell, 60, null);
@@ -8120,6 +8239,10 @@ namespace HautsFramework
                     compCanBeDormant.WakeUp();
                 }
                 pawn.Position = target.Cell;
+                if ((pawn.Faction == Faction.OfPlayer || pawn.IsPlayerControlled) && pawn.Position.Fogged(pawn.Map))
+                {
+                    FloodFillerFog.FloodUnfog(pawn.Position, pawn.Map);
+                }
                 pawn.stances.stunner.StunFor(this.Props.stunTicks.RandomInRange, this.parent.pawn, false, false);
                 pawn.Notify_Teleported(true, true);
                 CompAbilityEffect_Teleport.SendSkipUsedSignal(pawn.Position, pawn);
@@ -8131,7 +8254,13 @@ namespace HautsFramework
         }
         public override bool Valid(LocalTargetInfo target, bool throwMessages = false)
         {
-            return this.parent.pawn.Spawned && !this.parent.pawn.kindDef.skipResistant && target.IsValid && (this.parent.verb.verbProps.range <= 0f || target.Cell.DistanceTo(target.Cell) <= this.parent.verb.verbProps.range) && (!this.Props.requiresLineOfSight || GenSight.LineOfSight(target.Cell, this.parent.pawn.Position, this.parent.pawn.Map, false, null, 0, 0)) && !target.Cell.Impassable(this.parent.pawn.Map) && target.Cell.WalkableBy(this.parent.pawn.Map, this.parent.pawn);
+            return this.parent.pawn.Spawned && !this.parent.pawn.kindDef.skipResistant && target.IsValid && (this.parent.verb.verbProps.range <= 0f || target.Cell.DistanceTo(target.Cell) <= this.parent.verb.verbProps.range) && (!this.Props.requiresLineOfSight || GenSight.LineOfSight(target.Cell, this.parent.pawn.Position, this.parent.pawn.Map, false, null, 0, 0)) && this.CanPlaceSelectedTargetAt(target);
+        }
+        public bool CanPlaceSelectedTargetAt(LocalTargetInfo target)
+        {
+            Pawn pawn = this.parent.pawn;
+            Building_Door door = target.Cell.GetDoor(pawn.Map);
+            return (door == null || door.CanPhysicallyPass(pawn)) && (pawn.Spawned && !target.Cell.Impassable(this.parent.pawn.Map)) && target.Cell.WalkableBy(this.parent.pawn.Map, pawn);
         }
     }
     //permits
@@ -8392,9 +8521,9 @@ namespace HautsFramework
                 }
                 if (list.Any<Thing>())
                 {
-                    ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();
-                    activeDropPodInfo.innerContainer.TryAddRangeOrTransfer(list, true, false);
-                    DropPodUtility.MakeDropPodAt(cell, this.map, activeDropPodInfo, null);
+                    ActiveTransporterInfo activeTransporterInfo = new ActiveTransporterInfo();
+                    activeTransporterInfo.innerContainer.TryAddRangeOrTransfer(list, true, false);
+                    DropPodUtility.MakeDropPodAt(cell, this.map, activeTransporterInfo, null);
                     Messages.Message("MessagePermitTransportDrop".Translate(this.faction.Named("FACTION")), new LookTargets(cell, this.map), MessageTypeDefOf.NeutralEvent, true);
                     this.caller.royalty.GetPermit(this.def, this.faction).Notify_Used();
                     if (!this.free)
@@ -8507,7 +8636,7 @@ namespace HautsFramework
             {
                 bookOutcomeDoer.Reset();
                 bookOutcomeDoer.OnBookGenerated(null);
-                List<RulePack> topicRulePacks = bookOutcomeDoer.GetTopicRulePacks();
+				IEnumerable<RulePack> topicRulePacks = bookOutcomeDoer.GetTopicRulePacks();
                 if (topicRulePacks != null)
                 {
                     foreach (RulePack rulePack in topicRulePacks)
@@ -8720,9 +8849,9 @@ namespace HautsFramework
             }
             if (list.Any<Thing>())
             {
-                ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();
-                activeDropPodInfo.innerContainer.TryAddRangeOrTransfer(list, true, false);
-                DropPodUtility.MakeDropPodAt(cell, this.map, activeDropPodInfo, null);
+                ActiveTransporterInfo activeTransporterInfo = new ActiveTransporterInfo();
+                activeTransporterInfo.innerContainer.TryAddRangeOrTransfer(list, true, false);
+                DropPodUtility.MakeDropPodAt(cell, this.map, activeTransporterInfo, null);
                 Messages.Message("MessagePermitTransportDrop".Translate(this.faction.Named("FACTION")), new LookTargets(cell, this.map), MessageTypeDefOf.NeutralEvent, true);
                 this.caller.royalty.GetPermit(this.def, this.faction).Notify_Used();
                 if (!this.free)
@@ -8891,9 +9020,9 @@ namespace HautsFramework
                 }
                 if (list.Any<Thing>())
                 {
-                    ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();
-                    activeDropPodInfo.innerContainer.TryAddRangeOrTransfer(list, true, false);
-                    DropPodUtility.MakeDropPodAt(cell, this.map, activeDropPodInfo, null);
+                    ActiveTransporterInfo activeTransporterInfo = new ActiveTransporterInfo();
+                    activeTransporterInfo.innerContainer.TryAddRangeOrTransfer(list, true, false);
+                    DropPodUtility.MakeDropPodAt(cell, this.map, activeTransporterInfo, null);
                     Messages.Message("MessagePermitTransportDrop".Translate(this.faction.Named("FACTION")), new LookTargets(cell, this.map), MessageTypeDefOf.NeutralEvent, true);
                     this.caller.royalty.GetPermit(this.def, this.faction).Notify_Used();
                     if (!this.free)
@@ -9552,9 +9681,9 @@ namespace HautsFramework
             }
             if (list.Any<Pawn>())
             {
-                ActiveDropPodInfo activeDropPodInfo = new ActiveDropPodInfo();
-                activeDropPodInfo.innerContainer.TryAddRangeOrTransfer(list, true, false);
-                DropPodUtility.MakeDropPodAt(cell, this.map, activeDropPodInfo, null);
+                ActiveTransporterInfo activeTransporterInfo = new ActiveTransporterInfo();
+                activeTransporterInfo.innerContainer.TryAddRangeOrTransfer(list, true, false);
+                DropPodUtility.MakeDropPodAt(cell, this.map, activeTransporterInfo, null);
                 Messages.Message("MessagePermitTransportDrop".Translate(this.faction.Named("FACTION")), new LookTargets(cell, this.map), MessageTypeDefOf.NeutralEvent, true);
                 this.caller.royalty.GetPermit(this.def, this.faction).Notify_Used();
                 if (!this.free)
@@ -9603,7 +9732,7 @@ namespace HautsFramework
             {
                 pawnToMake = pme.allowedPawnKinds.RandomElement();
             } else {
-                List<PawnKindDef> possiblePawnsFromAllowBools = DefDatabase<PawnKindDef>.AllDefsListForReading.Where((PawnKindDef p) => (!pme.needsPen || p.RaceProps.Roamer) && (pme.maxWildness < 0f || p.RaceProps.wildness <= pme.maxWildness) && p.RaceProps.petness >= pme.minPetness && (!pme.mustBePredator || p.RaceProps.predator) && (pme.disallowedPawnKinds ==null || !pme.disallowedPawnKinds.Contains(p)) && (pme.marketValueLimits == null || (pme.marketValueLimits.min <= p.race.GetStatValueAbstract(StatDefOf.MarketValue) && pme.marketValueLimits.max >= p.race.GetStatValueAbstract(StatDefOf.MarketValue))) && (pme.bodySizeCapRange == null || pme.bodySizeCapRange.Includes(p.RaceProps.baseBodySize)) && HautsUtility.AllowCheckPMEs(pme, p)).ToList<PawnKindDef>();
+                List<PawnKindDef> possiblePawnsFromAllowBools = DefDatabase<PawnKindDef>.AllDefsListForReading.Where((PawnKindDef p) => (!pme.needsPen || p.RaceProps.Roamer) && (pme.maxWildness < 0f || p.race.GetStatValueAbstract(StatDefOf.Wildness) <= pme.maxWildness) && p.RaceProps.petness >= pme.minPetness && (!pme.mustBePredator || p.RaceProps.predator) && (pme.disallowedPawnKinds ==null || !pme.disallowedPawnKinds.Contains(p)) && (pme.marketValueLimits == null || (pme.marketValueLimits.min <= p.race.GetStatValueAbstract(StatDefOf.MarketValue) && pme.marketValueLimits.max >= p.race.GetStatValueAbstract(StatDefOf.MarketValue))) && (pme.bodySizeCapRange == null || pme.bodySizeCapRange.Includes(p.RaceProps.baseBodySize)) && HautsUtility.AllowCheckPMEs(pme, p)).ToList<PawnKindDef>();
                 if (!possiblePawnsFromAllowBools.NullOrEmpty())
                 {
                     pawnToMake = possiblePawnsFromAllowBools.RandomElement();
@@ -9837,10 +9966,10 @@ namespace HautsFramework
                 this.faction = this.creator.Faction;
             }
         }
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            if (this.parent.SpawnedOrAnyParentSpawned && this.parent.IsHashIntervalTick(this.Props.periodicity))
+            base.CompTickInterval(delta);
+            if (this.parent.IsHashIntervalTick(this.Props.periodicity, delta) && this.parent.SpawnedOrAnyParentSpawned)
             {
                 this.DoOnTrigger();
                 if (this.Props.scanByPawnListerNotByGrid)
@@ -9953,13 +10082,14 @@ namespace HautsFramework
             base.PostPostMake();
             this.SetTeamColor();
         }
-        public override void CompTick()
+        public override void CompTickInterval(int delta)
         {
-            base.CompTick();
-            if (this.parent.IsHashIntervalTick(15))
+            base.CompTickInterval(delta);
+            if (this.parent.IsHashIntervalTick(15, delta))
             {
                 this.SetTeamColor();
             }
+            //this.SetColor(this.teamColor);
         }
         public void SetTeamColor()
         {
@@ -10190,11 +10320,11 @@ namespace HautsFramework
         {
             return false;
         }
-        public static bool ShouldLowerCooldown(VFECore.Abilities.Ability ability, HediffComp_AbilityCooldownModifier acm)
+        public static bool ShouldLowerCooldown(VEF.Abilities.Ability ability, HediffComp_AbilityCooldownModifier acm)
         {
             return false;
         }
-        public static float GetCooldownModifier (VFECore.Abilities.Ability ability)
+        public static float GetCooldownModifier (VEF.Abilities.Ability ability)
         {
             float netACM = 1f;
             foreach (Hediff h in ability.pawn.health.hediffSet.hediffs)
@@ -10358,7 +10488,7 @@ namespace HautsFramework
                                                         breakout = true;
                                                         break;
                                                     }
-                                                } else if (hcp is AnimalBehaviours.HediffCompProperties_Ability abhcpa) {
+                                                } else if (hcp is VEF.AnimalBehaviours.HediffCompProperties_Ability abhcpa) {
                                                     if (abhcpa.ability != null && abhcpa.ability == ability.def)
                                                     {
                                                         shouldLowerCooldown = true;
@@ -10645,7 +10775,7 @@ namespace HautsFramework
                     }
                 }
             }
-            VFECore.Abilities.CompAbilities comp = pawn.GetComp<VFECore.Abilities.CompAbilities>();
+            VEF.Abilities.CompAbilities comp = pawn.GetComp<VEF.Abilities.CompAbilities>();
             if (tgs.grantedVEFAbilities != null && comp != null)
             {
                 if (tgs.grantedVEFAbilities.ContainsKey(t.Degree)) {
@@ -10713,15 +10843,15 @@ namespace HautsFramework
                     }
                 }
             }
-            VFECore.Abilities.CompAbilities comp2 = pawn.GetComp<VFECore.Abilities.CompAbilities>();
+            VEF.Abilities.CompAbilities comp2 = pawn.GetComp<VEF.Abilities.CompAbilities>();
             if (tgs.grantedVEFAbilities != null && comp2 != null)
             {
                 if (tgs.grantedVEFAbilities.ContainsKey(t.Degree))
                 {
-                    List<VFECore.Abilities.Ability> learnedAbilities = HautsFramework.GetInstanceField(typeof(VFECore.Abilities.CompAbilities), comp2, "learnedAbilities") as List<VFECore.Abilities.Ability>;
+                    List<VEF.Abilities.Ability> learnedAbilities = HautsFramework.GetInstanceField(typeof(VEF.Abilities.CompAbilities), comp2, "learnedAbilities") as List<VEF.Abilities.Ability>;
                     for (int i = 0; i < tgs.grantedVEFAbilities.TryGetValue(t.Degree).Count; i++)
                     {
-                        VFECore.Abilities.Ability ability = learnedAbilities.FirstOrDefault((VFECore.Abilities.Ability x) => x.def == tgs.grantedVEFAbilities.TryGetValue(t.Degree)[i]);
+                        VEF.Abilities.Ability ability = learnedAbilities.FirstOrDefault((VEF.Abilities.Ability x) => x.def == tgs.grantedVEFAbilities.TryGetValue(t.Degree)[i]);
                         if (ability != null)
                         {
                             learnedAbilities.Remove(ability);
@@ -10851,23 +10981,23 @@ namespace HautsFramework
             return terrainDefList;
         }
         //vpe integration
-        public static bool IsVPEPsycast(VFECore.Abilities.Ability ability)
+        public static bool IsVPEPsycast(VEF.Abilities.Ability ability)
         {
             return false;
         }
-        public static int GetVPEPsycastLevel(VFECore.Abilities.Ability ability)
+        public static int GetVPEPsycastLevel(VEF.Abilities.Ability ability)
         {
             return 0;
         }
-        public static float GetVPEEntropyCost(VFECore.Abilities.Ability ability)
+        public static float GetVPEEntropyCost(VEF.Abilities.Ability ability)
         {
             return 0f;
         }
-        public static float GetVPEPsyfocusCost(VFECore.Abilities.Ability ability)
+        public static float GetVPEPsyfocusCost(VEF.Abilities.Ability ability)
         {
             return 0f;
         }
-        public static void VPEUnlockAbility(Pawn pawn, VFECore.Abilities.AbilityDef abilityDef)
+        public static void VPEUnlockAbility(Pawn pawn, VEF.Abilities.AbilityDef abilityDef)
         {
 
         }
@@ -10914,7 +11044,7 @@ namespace HautsFramework
         }
         public static bool IsntCastingAbility(Pawn pawn)
         {
-            return (pawn.CurJob == null || (pawn.CurJob.ability == null && !(pawn.CurJob.verbToUse is VFECore.Abilities.Verb_CastAbility)));
+            return (pawn.CurJob == null || (pawn.CurJob.ability == null && !(pawn.CurJob.verbToUse is VEF.Abilities.Verb_CastAbility)));
         }
         public static float DamageFactorFor(DamageDef def, Thing t)
         {
@@ -11056,7 +11186,7 @@ namespace HautsFramework
                 return;
             }
         }
-        public static bool IsLeapAbility(VFECore.Abilities.AbilityDef abilityDef)
+        public static bool IsLeapAbility(VEF.Abilities.AbilityDef abilityDef)
         {
             if (abilityDef.HasModExtension<AbilityStatEffecters>() && abilityDef.GetModExtension<AbilityStatEffecters>().leap)
             {
@@ -11064,7 +11194,7 @@ namespace HautsFramework
             }
             return false;
         }
-        public static bool IsSkipAbility(VFECore.Abilities.AbilityDef abilityDef)
+        public static bool IsSkipAbility(VEF.Abilities.AbilityDef abilityDef)
         {
             if (abilityDef.HasModExtension<AbilityStatEffecters>() && abilityDef.GetModExtension<AbilityStatEffecters>().skip)
             {

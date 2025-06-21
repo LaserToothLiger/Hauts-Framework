@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>DD Traits Expanded</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--Melee Armor Penetration is not a modifiable stat, and I wanted to make Tenacious Fighter work as the mod author intended.-->
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="figter"]/degreeDatas/li[label="Tenacious fighter"]/statOffsets</xpath>
+					<value>
+						<Hauts_MeleeArmorPenetration>0.1</Hauts_MeleeArmorPenetration>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>
