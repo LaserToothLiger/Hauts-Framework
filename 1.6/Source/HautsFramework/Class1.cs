@@ -62,15 +62,12 @@ namespace HautsFramework
                            prefix: new HarmonyMethod(patchType, nameof(HautsDamageWorker_ApplyPrefix)));
             harmony.Patch(AccessTools.Method(typeof(DamageWorker_AddInjury), nameof(DamageWorker_AddInjury.Apply)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsDamageWorker_AddInjury_ApplyPrefix)));
-            if (ModsConfig.RoyaltyActive)
-            {
-                harmony.Patch(AccessTools.Method(typeof(VerbProperties), nameof(VerbProperties.AdjustedRange)),
-                               postfix: new HarmonyMethod(patchType, nameof(Hauts_AdjustedRangePostfix)));
-                harmony.Patch(AccessTools.Method(typeof(CompAbilityEffect_WithDest), nameof(CompAbilityEffect_WithDest.CanHitTarget)),
-                               prefix: new HarmonyMethod(patchType, nameof(Hauts_CAE_WD_CanHitTargetPrefix)));
-                harmony.Patch(AccessTools.Method(typeof(RimWorld.Verb_CastAbility), nameof(RimWorld.Verb_CastAbility.DrawHighlight)),
-                               prefix: new HarmonyMethod(patchType, nameof(Hauts_VCA_DH_DrawHighlightPrefix)));
-            }
+            harmony.Patch(AccessTools.Method(typeof(VerbProperties), nameof(VerbProperties.AdjustedRange)),
+                           postfix: new HarmonyMethod(patchType, nameof(Hauts_AdjustedRangePostfix)));
+            harmony.Patch(AccessTools.Method(typeof(CompAbilityEffect_WithDest), nameof(CompAbilityEffect_WithDest.CanHitTarget)),
+                           prefix: new HarmonyMethod(patchType, nameof(Hauts_CAE_WD_CanHitTargetPrefix)));
+            harmony.Patch(AccessTools.Method(typeof(RimWorld.Verb_CastAbility), nameof(RimWorld.Verb_CastAbility.DrawHighlight)),
+                           prefix: new HarmonyMethod(patchType, nameof(Hauts_VCA_DH_DrawHighlightPrefix)));
             harmony.Patch(AccessTools.Method(typeof(CaravanVisibilityCalculator), nameof(CaravanVisibilityCalculator.Visibility), new[] { typeof(List<Pawn>), typeof(bool), typeof(StringBuilder) }),
                           postfix: new HarmonyMethod(patchType, nameof(HautsCaravanVisibilityPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_FilthTracker), nameof(Pawn_FilthTracker.GainFilth), new[] { typeof(ThingDef) }),
@@ -136,6 +133,8 @@ namespace HautsFramework
                            postfix: new HarmonyMethod(patchType, nameof(Hauts_SetGuestStatusPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.GetGizmos)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsGetGizmosPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(Recipe_RemoveBodyPart), nameof(Recipe_RemoveBodyPart.ApplyOnPawn)),
+                           prefix: new HarmonyMethod(patchType, nameof(HautsApplyOnPawnPrefix)));
             harmony.Patch(AccessTools.Method(typeof(Recipe_RemoveImplant), nameof(Recipe_RemoveImplant.ApplyOnPawn)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsApplyOnPawnPrefix)));
             MethodInfo methodInfo2 = typeof(StatPart_Glow).GetMethod("ActiveFor", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -688,10 +687,11 @@ namespace HautsFramework
         }
         public static void HautsMoodOffsetOfGroupPostfix(ref float __result, Thought group)
         {
-            if (group.pawn.story != null)
+            ModifyingTraits mt = group.def.GetModExtension<ModifyingTraits>();
+            if (mt != null)
             {
-                ModifyingTraits mt = group.def.GetModExtension<ModifyingTraits>();
-                if (mt != null)
+                int sign = 0;
+                if (group.pawn.story != null)
                 {
                     foreach (TraitDef t in mt.multiplierTraits.Keys)
                     {
@@ -700,7 +700,6 @@ namespace HautsFramework
                             __result *= mt.multiplierTraits.TryGetValue(t);
                         }
                     }
-                    int sign = 0;
                     if (mt.forcePositive != null)
                     {
                         foreach (TraitDef t in mt.forcePositive) {
@@ -720,10 +719,40 @@ namespace HautsFramework
                             }
                         }
                     }
-                    if ((sign > 0 && __result < 0f) || (sign < 0 && __result > 0f))
+                }
+                if (ModsConfig.BiotechActive && group.pawn.genes != null)
+                {
+                    foreach (GeneDef g in mt.multiplierGenes.Keys)
                     {
-                        __result *= -1f;
+                        if (group.pawn.genes.HasActiveGene(g))
+                        {
+                            __result *= mt.multiplierGenes.TryGetValue(g);
+                        }
                     }
+                    if (mt.forcePositiveG != null)
+                    {
+                        foreach (GeneDef g in mt.forcePositiveG)
+                        {
+                            if (group.pawn.genes.HasActiveGene(g))
+                            {
+                                sign++;
+                            }
+                        }
+                    }
+                    if (mt.forceNegativeG != null)
+                    {
+                        foreach (GeneDef g in mt.forceNegativeG)
+                        {
+                            if (group.pawn.genes.HasActiveGene(g))
+                            {
+                                sign--;
+                            }
+                        }
+                    }
+                }
+                if ((sign > 0 && __result < 0f) || (sign < 0 && __result > 0f))
+                {
+                    __result *= -1f;
                 }
             }
             if (ModsConfig.IdeologyActive && group.pawn.Ideo != null)
@@ -758,19 +787,19 @@ namespace HautsFramework
         public static void HautsOpinionOffsetOfGroupPostfix(ref int __result, ThoughtHandler __instance, ISocialThought group)
         {
             Thought thought = (Thought)group;
-            if (__instance.pawn.story != null)
+            ModifyingTraits mt = thought.def.GetModExtension<ModifyingTraits>();
+            if (mt != null)
             {
-                ModifyingTraits mt = thought.def.GetModExtension<ModifyingTraits>();
-                if (mt != null)
+                int sign = 0;
+                if (__instance.pawn.story != null)
                 {
                     foreach (TraitDef t in mt.multiplierTraits.Keys)
                     {
                         if (__instance.pawn.story.traits.HasTrait(t))
                         {
-                            __result = (int)(__result*mt.multiplierTraits.TryGetValue(t));
+                            __result = (int)(__result * mt.multiplierTraits.TryGetValue(t));
                         }
                     }
-                    int sign = 0;
                     if (mt.forcePositive != null)
                     {
                         foreach (TraitDef t in mt.forcePositive)
@@ -791,10 +820,40 @@ namespace HautsFramework
                             }
                         }
                     }
-                    if ((sign > 0 && __result < 0f) || (sign < 0 && __result > 0f))
+                }
+                if (ModsConfig.BiotechActive && __instance.pawn.genes != null)
+                {
+                    foreach (GeneDef g in mt.multiplierGenes.Keys)
                     {
-                        __result *= -1;
+                        if (__instance.pawn.genes.HasActiveGene(g))
+                        {
+                            __result = (int)(__result * mt.multiplierGenes.TryGetValue(g));
+                        }
                     }
+                    if (mt.forcePositiveG != null)
+                    {
+                        foreach (GeneDef g in mt.forcePositiveG)
+                        {
+                            if (__instance.pawn.genes.HasActiveGene(g))
+                            {
+                                sign++;
+                            }
+                        }
+                    }
+                    if (mt.forceNegativeG != null)
+                    {
+                        foreach (GeneDef g in mt.forceNegativeG)
+                        {
+                            if (__instance.pawn.genes.HasActiveGene(g))
+                            {
+                                sign--;
+                            }
+                        }
+                    }
+                }
+                if ((sign > 0 && __result < 0f) || (sign < 0 && __result > 0f))
+                {
+                    __result *= -1;
                 }
             }
             if (ModsConfig.IdeologyActive && __instance.pawn.Ideo != null)
@@ -3053,7 +3112,7 @@ namespace HautsFramework
         }
         public override bool ShouldDoEffect(DamageInfo dinfo)
         {
-            return (this.Props.instantlyOverwhelmedBy != null && dinfo.Def == this.Props.instantlyOverwhelmedBy) || base.ShouldDoEffect(dinfo);
+            return (this.parent.Severity >= this.Props.minSeverityToWork && this.Props.instantlyOverwhelmedBy != null && dinfo.Def == this.Props.instantlyOverwhelmedBy) || base.ShouldDoEffect(dinfo);
         }
         public override void DoModificationInner(ref DamageInfo dinfo, ref bool absorbed, float amount)
         {
@@ -5466,16 +5525,13 @@ namespace HautsFramework
                 Hediff hediff = this.Pawn.health.hediffSet.GetFirstHediffOfDef(this.Props.hediffGiven);
                 if (hediff != null)
                 {
-                    hediff.Severity = hediff.Severity + this.Props.severityToGive;
-                    if (hediff.Severity < this.Props.maxSeverityOfCreatedHediff && this.Props.maxSeverityOfCreatedHediff > 0f)
+                    if (hediff.Severity < this.Props.maxSeverityOfCreatedHediff || this.Props.maxSeverityOfCreatedHediff < 0f)
                     {
-                        hediff.Severity = Math.Min(hediff.Severity, this.Props.maxSeverityOfCreatedHediff);
+                        hediff.Severity = hediff.Severity + this.Props.severityToGive;
+                        this.charges--;
+                        this.ticksRemaining = this.Props.ticksToNextSpawn.RandomInRange;
                     }
-                    this.charges--;
-                    this.ticksRemaining = this.Props.ticksToNextSpawn.RandomInRange;
-                }
-                else
-                {
+                } else {
                     Hediff hediff2 = HediffMaker.MakeHediff(this.Props.hediffGiven, this.Pawn);
                     this.Pawn.health.AddHediff(hediff2);
                     this.charges--;
@@ -7924,7 +7980,7 @@ namespace HautsFramework
                 return (CompProperties_AbilityNova)this.props;
             }
         }
-        public float Radius
+        public virtual float Radius
         {
             get
             {
@@ -10130,6 +10186,9 @@ namespace HautsFramework
         public Dictionary<TraitDef,float> multiplierTraits = new Dictionary<TraitDef, float>();
         public List<TraitDef> forcePositive;
         public List<TraitDef> forceNegative;
+        public Dictionary<GeneDef, float> multiplierGenes = new Dictionary<GeneDef, float>();
+        public List<GeneDef> forcePositiveG;
+        public List<GeneDef> forceNegativeG;
     }
     //EMP immunity
     public class NoEMPReaction : DefModExtension
@@ -11090,6 +11149,13 @@ namespace HautsFramework
         }
         public static bool ReactsToEMP(Pawn p)
         {
+            foreach (Hediff h in p.health.hediffSet.hediffs)
+            {
+                if (h.def.HasModExtension<NoEMPReaction>())
+                {
+                    return false;
+                }
+            }
             if (!p.stances.stunner.Stunned)
             {
                 MethodInfo EMPstunCheck = typeof(StunHandler).GetMethod("CanBeStunnedByDamage", BindingFlags.NonPublic | BindingFlags.Instance);
