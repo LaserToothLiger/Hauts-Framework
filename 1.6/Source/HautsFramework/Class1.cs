@@ -148,12 +148,18 @@ namespace HautsFramework
             harmony.Patch(AccessTools.Method(typeof(MedicalRecipesUtility), nameof(MedicalRecipesUtility.SpawnThingsFromHediffs)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsApplyOnPawnPrefix)));
             //hediff comps
-            harmony.Patch(AccessTools.Method(typeof(Pawn_IdeoTracker), nameof(Pawn_IdeoTracker.SetIdeo)),
-                          postfix: new HarmonyMethod(patchType, nameof(HautsSetIdeoPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(Gene_Resource), nameof(Gene_Resource.ResetMax)),
-                          postfix: new HarmonyMethod(patchType, nameof(HautsResetMaxPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(GeneResourceDrainUtility), nameof(GeneResourceDrainUtility.OffsetResource)),
-                          prefix: new HarmonyMethod(patchType, nameof(HautsOffsetResourcePrefix)));
+            if (ModsConfig.IdeologyActive)
+            {
+                harmony.Patch(AccessTools.Method(typeof(Pawn_IdeoTracker), nameof(Pawn_IdeoTracker.SetIdeo)),
+                              postfix: new HarmonyMethod(patchType, nameof(HautsSetIdeoPostfix)));
+            }
+            if (ModsConfig.BiotechActive)
+            {
+                harmony.Patch(AccessTools.Method(typeof(Gene_Resource), nameof(Gene_Resource.ResetMax)),
+                              postfix: new HarmonyMethod(patchType, nameof(HautsResetMaxPostfix)));
+                harmony.Patch(AccessTools.Method(typeof(GeneResourceDrainUtility), nameof(GeneResourceDrainUtility.OffsetResource)),
+                              prefix: new HarmonyMethod(patchType, nameof(HautsOffsetResourcePrefix)));
+            }
             harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.PreApplyDamage)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsFramework_PreApplyDamagePostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.PostApplyDamage)),
@@ -2719,7 +2725,8 @@ namespace HautsFramework
             base.AffectSelf();
             foreach (HediffDef h in this.Props.hediffs)
             {
-                Hediff hediff = HediffMaker.MakeHediff(h, this.parent.pawn, null);
+                Hediff hediff = HediffMaker.MakeHediff(h, this.Pawn, null);
+                hediff.Severity = this.HediffSeverity(this.Pawn, h);
                 this.parent.pawn.health.AddHediff(hediff, null);
             }
         }
@@ -2729,8 +2736,13 @@ namespace HautsFramework
             foreach (HediffDef h in this.Props.hediffs)
             {
                 Hediff hediff = HediffMaker.MakeHediff(h, pawn, null);
+                hediff.Severity = this.HediffSeverity(pawn,h);
                 pawn.health.AddHediff(hediff, null);
             }
+        }
+        public virtual float HediffSeverity(Pawn p, HediffDef h)
+        {
+            return h.initialSeverity;
         }
     }
     public class HediffCompProperties_AuraThought : HediffCompProperties_Aura
@@ -4901,6 +4913,7 @@ namespace HautsFramework
         {
             this.compClass = typeof(HediffComp_PairedHediff);
         }
+        public bool invalidateLinksIfSuspended = false;
         public bool removeLinkedHediffOnRemoval = true;
         public float addedSeverityToLinkedHediffOnRemoval = 0f;
         public float addSeverityOnLostHediff;
@@ -4967,6 +4980,15 @@ namespace HautsFramework
                     {
                         this.hediffs.RemoveAt(i);
                         this.parent.Severity += this.Props.addSeverityOnLostHediff;
+                    } else if (this.Props.invalidateLinksIfSuspended && this.hediffs[i].pawn.Suspended) {
+                        Hediff h = this.hediffs[i];
+                        this.hediffs.RemoveAt(i);
+                        HediffComp_PairedHediff ph = h.TryGetComp<HediffComp_PairedHediff>();
+                        if (ph != null)
+                        {
+                            ph.hediffs.Remove(this.parent);
+                        }
+                        this.parent.Severity += this.Props.addSeverityOnLostHediff;
                     }
                 }
             }
@@ -4974,6 +4996,10 @@ namespace HautsFramework
         public override void CompPostPostRemoved()
         {
             base.CompPostPostRemoved();
+            this.RemoveLinksOnRemoval();
+        }
+        public virtual void RemoveLinksOnRemoval()
+        {
             foreach (Hediff h in hediffs)
             {
                 if (h != null && h.pawn != null)
@@ -10145,7 +10171,6 @@ namespace HautsFramework
             {
                 this.SetTeamColor();
             }
-            //this.SetColor(this.teamColor);
         }
         public void SetTeamColor()
         {
@@ -10161,6 +10186,7 @@ namespace HautsFramework
                 newColor.b *= this.Props.colorFactor;
             }
             this.teamColor = newColor;
+            this.SetColor(this.teamColor);
         }
         public override void PostExposeData()
         {
