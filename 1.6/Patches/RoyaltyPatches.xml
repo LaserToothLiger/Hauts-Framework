@@ -6,7 +6,6 @@
 		</mods>
 		<match Class="PatchOperationSequence">
 			<operations>
-				<!--fixes the dumb new behavior of Diaboli in 1.5 that makes them prefer Fire Bursting instead of using the Hellsphere Cannon regardless of whether anything is in Fire Burst range-->
 				<li Class="PatchOperationReplace">
 					<xpath>/Defs/DamageDef[defName="Hauts_SkipFrag"]/soundExplosion</xpath>
 					<value>

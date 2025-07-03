@@ -5,7 +5,7 @@
 			<li>Vanilla Factions Expanded - Pirates</li>
 		</mods>
 		<match Class="PatchOperationAddModExtension">
-			<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VFEP_PowerJump"]</xpath>
+			<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VFEP_PowerJump"]</xpath>
 			<value>
 				<li Class="HautsFramework.AbilityStatEffecters">
 					<leap>true</leap>
@@ -26,7 +26,7 @@
 					<match Class="PatchOperationSequence">
 						<operations>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_Charge"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_Charge"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<leap>true</leap>
@@ -34,7 +34,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_ChargeAndSkewer"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_ChargeAndSkewer"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<leap>true</leap>
@@ -42,7 +42,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_VenomSpit"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_VenomSpit"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -50,7 +50,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_SummonBlackScarab"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_SummonBlackScarab"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -58,7 +58,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_SummonBlackSpelopede"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_SummonBlackSpelopede"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -66,7 +66,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_SummonBlackSpider"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_SummonBlackSpider"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -74,7 +74,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_SummonMammothWorm"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_SummonMammothWorm"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -82,7 +82,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_SummonBlackQueen"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_SummonBlackQueen"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -90,7 +90,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_SummonEyeling"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_SummonEyeling"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -98,7 +98,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_OcularSprout"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_OcularSprout"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -106,7 +106,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_EyeEruption"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_EyeEruption"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -114,7 +114,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_SummonOcularOriginator"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_SummonOcularOriginator"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -122,7 +122,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_GreaterOcularSprout"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_GreaterOcularSprout"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -130,7 +130,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_SummonEyelingHorde"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_SummonEyelingHorde"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -138,7 +138,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_Slice"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_Slice"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -146,7 +146,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_SpinCut"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_SpinCut"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -154,7 +154,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_LegSkip"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_LegSkip"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -162,7 +162,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="AAVPE_ChemfuelNodules"]</xpath>
+								<xpath>/Defs/VEF.Abilities.AbilityDef[defName="AAVPE_ChemfuelNodules"]</xpath>
 								<value>
 									<li Class="HautsFramework.AbilityStatEffecters">
 										<skip>true</skip>
@@ -177,7 +177,7 @@
 						<li>Crystalloid</li>
 					</mods>
 					<match Class="PatchOperationAddModExtension">
-						<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Obliterate"]</xpath>
+						<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Obliterate"]</xpath>
 						<value>
 							<li Class="HautsFramework.AbilityStatEffecters">
 								<skip>true</skip>
@@ -186,7 +186,7 @@
 					</match>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_PowerLeap"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_PowerLeap"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<leap>true</leap>
@@ -194,7 +194,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_SolarPinhole"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_SolarPinhole"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -202,7 +202,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Chunkskip"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Chunkskip"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -210,7 +210,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Waterskip"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Waterskip"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -218,7 +218,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_ChaosSkip"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_ChaosSkip"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -226,7 +226,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Skip"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Skip"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -234,7 +234,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Wallraise"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Wallraise"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -242,7 +242,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Smokepop"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Smokepop"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -250,7 +250,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_MassChaosSkip"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_MassChaosSkip"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -258,7 +258,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Skipdoor"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Skipdoor"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -266,7 +266,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Farskip"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Farskip"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -274,7 +274,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Flameball"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Flameball"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -282,7 +282,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Explosion"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Explosion"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -290,7 +290,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_FireShield"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_FireShield"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -298,7 +298,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_BreatheFlame"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_BreatheFlame"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -306,7 +306,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_EyeBlast"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_EyeBlast"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -314,7 +314,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Overshield"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Overshield"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -322,7 +322,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Skipshield"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Skipshield"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -330,7 +330,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Killskip"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Killskip"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -338,7 +338,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Vortex"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Vortex"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -346,7 +346,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Flashstorm"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Flashstorm"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -354,7 +354,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_IceShield"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_IceShield"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -362,7 +362,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_IceCrystal"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_IceCrystal"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -370,7 +370,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_ColdZone"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_ColdZone"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -378,7 +378,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_IceBlock"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_IceBlock"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -386,7 +386,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_SnapFreeze"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_SnapFreeze"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -394,7 +394,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_Darkness"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_Darkness"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -402,7 +402,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPE_LocationSwap"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPE_LocationSwap"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -417,7 +417,7 @@
 			<li>Vanilla Psycasts Expanded - Puppeteer</li>
 		</mods>
 		<match Class="PatchOperationAddModExtension">
-			<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="VPEP_BrainCut"]</xpath>
+			<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VPEP_BrainCut"]</xpath>
 			<value>
 				<li Class="HautsFramework.AbilityStatEffecters">
 					<skip>true</skip>
@@ -432,7 +432,7 @@
 		<match Class="PatchOperationSequence">
 			<operations>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="True_Destruction_SwordRain"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="True_Destruction_SwordRain"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -440,7 +440,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="True_Destruction_Rhongomyniad"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="True_Destruction_Rhongomyniad"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -448,7 +448,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="Golden_Order_ShiveringWind"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="Golden_Order_ShiveringWind"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -456,7 +456,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="Golden_Order_HotGround"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="Golden_Order_HotGround"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -464,7 +464,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="Passioned_Flame_PillarOfLight"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="Passioned_Flame_PillarOfLight"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -472,7 +472,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="DistortedReality_DistortWeapon"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="DistortedReality_DistortWeapon"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -480,7 +480,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="DistortedReality_RandomizedBuilding"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="DistortedReality_RandomizedBuilding"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -488,7 +488,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="DistortedReality_DistortMatter"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="DistortedReality_DistortMatter"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -496,7 +496,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="Perfect_Knowledge_LearnBeacon"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="Perfect_Knowledge_LearnBeacon"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -504,7 +504,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="Perfect_Knowledge_XpBeacon"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="Perfect_Knowledge_XpBeacon"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -512,7 +512,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="Perfect_Knowledge_SpawnLearner"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="Perfect_Knowledge_SpawnLearner"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -520,7 +520,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="CorruptedProphet_NightmareClaw"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="CorruptedProphet_NightmareClaw"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -528,7 +528,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="CorruptedProphet_ClawGrab"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="CorruptedProphet_ClawGrab"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -536,7 +536,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="CorruptedProphet_C_Beacon"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="CorruptedProphet_C_Beacon"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>
@@ -544,7 +544,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/VFECore.Abilities.AbilityDef[defName="CorruptedProphet_MadPillar"]</xpath>
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="CorruptedProphet_MadPillar"]</xpath>
 					<value>
 						<li Class="HautsFramework.AbilityStatEffecters">
 							<skip>true</skip>

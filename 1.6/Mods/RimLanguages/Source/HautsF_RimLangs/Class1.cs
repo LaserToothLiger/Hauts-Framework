@@ -1,4 +1,5 @@
 ﻿using FactionLanguages;
+using FactionLanguages.Utilities;
 using HarmonyLib;
 using HautsFramework;
 using RimWorld;
@@ -25,7 +26,7 @@ namespace HautsF_RimLangs
         }
         public static void Hauts_LearnLanguagePostfix(Pawn pawn, Pawn other, float power)
         {
-            if (pawn.Faction == null || pawn.Faction != Faction.OfPlayerSilentFail)
+            if (pawn.Faction != Faction.OfPlayerSilentFail)
             {
                 return;
             }
@@ -41,7 +42,7 @@ namespace HautsF_RimLangs
                     {
                         if (!dialect.Parent.IsLearned)
                         {
-                            float learnXp = dialect.Parent.Def.GetBaseCost() * power * lla/(Utility.Settings.languageLearnDifficulty* dialect.Def.GetDifficulty(dialect.TechLevel) * dialect.Parent.Def.GetDifficulty());
+                            float learnXp = dialect.Parent.Def.GetBaseCost() * power * lla/(LanguageUtility.Settings.languageLearnDifficulty* dialect.Def.GetDifficulty(dialect.TechLevel) * dialect.Parent.Def.GetDifficulty());
                             if (learnXp > 0f)
                             {
                                 dialect.Parent.AddXp(learnXp, pawn);
@@ -49,7 +50,7 @@ namespace HautsF_RimLangs
                         } else {
                             if (!dialect.IsLearned)
                             {
-                                float learnXp = dialect.Def.GetBaseCost() * power * lla / (Utility.Settings.languageLearnDifficulty * dialect.Def.GetDifficulty(dialect.TechLevel) * dialect.Parent.Def.GetDifficulty());
+                                float learnXp = dialect.Def.GetBaseCost() * power * lla/(LanguageUtility.Settings.languageLearnDifficulty* dialect.Def.GetDifficulty(dialect.TechLevel) * dialect.Parent.Def.GetDifficulty());
                                 if (learnXp > 0f)
                                 {
                                     dialect.AddXp(learnXp, pawn);
@@ -65,7 +66,7 @@ namespace HautsF_RimLangs
                 float factor = 0.1f;
                 if (!StatDefOfLocal.LanguageLearningAbility.Worker.IsDisabledFor(pawn))
                 {
-                    factor = Utility.CalculateLanguageLearnFactor(pawn, other);
+                    factor = LanguageUtility.CalculateLanguageLearnFactor(pawn, other);
                 }
                 if (!dialect.Parent.IsLearned)
                 {

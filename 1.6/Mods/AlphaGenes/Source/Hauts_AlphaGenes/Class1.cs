@@ -18,7 +18,7 @@ namespace Hauts_AlphaGenes
             BlackListedTraitsDef bltd = DefDatabase<BlackListedTraitsDef>.GetRandom();
             foreach (TraitDef t in DefDatabase<TraitDef>.AllDefs)
             {
-                if (t.HasModExtension<ExciseTraitExempt>())
+                if (t.HasModExtension<ExciseTraitExempt>() || !t.canBeSuppressed)
                 {
                     bltd.blackListedTraits.Add(t.defName);
                 }

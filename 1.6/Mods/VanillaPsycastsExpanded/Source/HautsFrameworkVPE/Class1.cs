@@ -21,7 +21,7 @@ namespace HautsFrameworkVPE
             Harmony harmony = new Harmony(id: "rimworld.hautarche.hautsframeworkvpe.main");
             harmony.Patch(AccessTools.Method(typeof(AbilityExtension_Psycast), nameof(AbilityExtension_Psycast.GetPsyfocusUsedByPawn)),
                             postfix: new HarmonyMethod(patchType, nameof(HautsVPEGetPsyfocusUsedByPawnPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(AbilityExtension_Psycast), nameof(AbilityExtension_Psycast.Cast), new[] { typeof(GlobalTargetInfo[]), typeof(VFECore.Abilities.Ability) }),
+            harmony.Patch(AccessTools.Method(typeof(AbilityExtension_Psycast), nameof(AbilityExtension_Psycast.Cast), new[] { typeof(GlobalTargetInfo[]), typeof(VEF.Abilities.Ability) }),
                             postfix: new HarmonyMethod(patchType, nameof(HautsVPECastPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Thing), nameof(Thing.Ingested)),
                             postfix: new HarmonyMethod(patchType, nameof(HautsVPEIngestedPostfix)));
@@ -53,7 +53,7 @@ namespace HautsFrameworkVPE
                 }
             }
         }
-        public static void HautsVPECastPostfix(AbilityExtension_Psycast __instance, VFECore.Abilities.Ability ability)
+        public static void HautsVPECastPostfix(AbilityExtension_Psycast __instance, VEF.Abilities.Ability ability)
         {
             Pawn pawn = ability.pawn;
             if (pawn != null && pawn.psychicEntropy != null)
@@ -134,7 +134,7 @@ namespace HautsFrameworkVPE
                 }
             }
         }
-        public static void HautsIsVPEPSycastPostfix(ref bool __result, VFECore.Abilities.Ability ability)
+        public static void HautsIsVPEPSycastPostfix(ref bool __result, VEF.Abilities.Ability ability)
         {
             if (ability.pawn != null)
             {
@@ -145,7 +145,7 @@ namespace HautsFrameworkVPE
                 }
             }
         }
-        public static void HautsGetPsycastLevel_Postfix(ref int __result, VFECore.Abilities.Ability ability)
+        public static void HautsGetPsycastLevel_Postfix(ref int __result, VEF.Abilities.Ability ability)
         {
             AbilityExtension_Psycast isPsycast = ability.def.GetModExtension<AbilityExtension_Psycast>();
             if (isPsycast != null)
@@ -153,7 +153,7 @@ namespace HautsFrameworkVPE
                 __result = isPsycast.level;
             }
         }
-        public static void HautsGetEntropyCost_Postfix(ref float __result, VFECore.Abilities.Ability ability)
+        public static void HautsGetEntropyCost_Postfix(ref float __result, VEF.Abilities.Ability ability)
         {
             AbilityExtension_Psycast isPsycast = ability.def.GetModExtension<AbilityExtension_Psycast>();
             if (isPsycast != null)
@@ -161,7 +161,7 @@ namespace HautsFrameworkVPE
                 __result = isPsycast.GetEntropyUsedByPawn(ability.pawn);
             }
         }
-        public static void HautsGetPsyfocusCost_Postfix(ref float __result, VFECore.Abilities.Ability ability)
+        public static void HautsGetPsyfocusCost_Postfix(ref float __result, VEF.Abilities.Ability ability)
         {
             AbilityExtension_Psycast isPsycast = ability.def.GetModExtension<AbilityExtension_Psycast>();
             if (isPsycast != null)
@@ -177,7 +177,7 @@ namespace HautsFrameworkVPE
                 }
             }
         }
-        public static void HautsVPEUnlockAbilityPostfix(Pawn pawn, VFECore.Abilities.AbilityDef abilityDef)
+        public static void HautsVPEUnlockAbilityPostfix(Pawn pawn, VEF.Abilities.AbilityDef abilityDef)
         {
             Hediff_PsycastAbilities psylink = pawn.Psycasts();
             if (psylink != null)
