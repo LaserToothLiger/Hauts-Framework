@@ -33,7 +33,7 @@
     <skill>Intellectual</skill>
     <description>An expertise in educating children.</description>
     <statOffsets>
-      <Hauts_InstructiveAbility>0.05</Hauts_InstructiveAbility>
+      <Hauts_InstructiveAbility>0.07</Hauts_InstructiveAbility>
     </statOffsets>
   </VSE.Expertise.ExpertiseDef>
   <VSE.Expertise.ExpertiseDef MayRequire="VanillaExpanded.Recycling">

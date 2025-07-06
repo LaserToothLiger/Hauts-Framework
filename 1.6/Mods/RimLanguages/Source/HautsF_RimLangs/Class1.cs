@@ -66,7 +66,7 @@ namespace HautsF_RimLangs
                 float factor = 0.1f;
                 if (!StatDefOfLocal.LanguageLearningAbility.Worker.IsDisabledFor(pawn))
                 {
-                    factor = LanguageUtility.CalculateLanguageLearnFactor(pawn, other);
+                    factor = Math.Max(0.1f,LanguageUtility.CalculateLanguageLearnFactor(pawn, other));
                 }
                 if (!dialect.Parent.IsLearned)
                 {

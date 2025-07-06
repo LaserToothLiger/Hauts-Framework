@@ -162,16 +162,9 @@ namespace HautsFramework
             }
             harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.PreApplyDamage)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsFramework_PreApplyDamagePostfix)));
-            harmony.Patch(AccessTools.Method(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.PostApplyDamage)),
-                          postfix: new HarmonyMethod(patchType, nameof(HautsPostApplyDamagePostfix)));
             /* missing a transpiler patch that would hit up VerbTracker.Command_VerbTarget's CreateVerbTargetCommand function, doing something similar to FirstApparelPreventingShooting
              * harmony.Patch(AccessTools.Method(typeof(Verb), nameof(Verb.ApparelPreventsShooting)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsApparelPreventsShootingPostfix)));*/
-            MethodInfo methodInfo4 = typeof(DamageWorker_AddInjury).GetMethod("ApplyDamageToPart", BindingFlags.NonPublic | BindingFlags.Instance);
-            harmony.Patch(methodInfo4,
-                          postfix: new HarmonyMethod(patchType, nameof(HautsApplyDamageToPartPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(Thing), nameof(Thing.TakeDamage)),
-                          postfix: new HarmonyMethod(patchType, nameof(HautsTakeDamagePostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_PsychicEntropyTracker), nameof(Pawn_PsychicEntropyTracker.OffsetPsyfocusDirectly)),
                            prefix: new HarmonyMethod(patchType, nameof(Hauts_OffsetPsyfocusDirectlyPrefix)));
             harmony.Patch(AccessTools.Method(typeof(HediffComp_ReactOnDamage), nameof(HediffComp_ReactOnDamage.Notify_PawnPostApplyDamage)),
@@ -1155,27 +1148,6 @@ namespace HautsFramework
                 }
             }
         }
-        public static void HautsPostApplyDamagePostfix(Pawn_HealthTracker __instance, DamageInfo dinfo, float totalDamageDealt)
-        {
-            Pawn pawn = GetInstanceField(typeof(Pawn_HealthTracker), __instance, "pawn") as Pawn;
-            if (!(dinfo.Def.Worker is DamageWorker_AddInjury) && !pawn.DestroyedOrNull() && dinfo.Instigator is Pawn attacker)
-            {
-                foreach (Hediff h in attacker.health.hediffSet.hediffs)
-                {
-                    if (h is HediffWithComps hwc)
-                    {
-                        foreach (HediffComp hc in hwc.comps)
-                        {
-                            if (hc is HediffComp_ExtraOnHitEffects hoH && hoH != null && hoH.Props.appliedViaAttacks && hoH.cooldown <= Find.TickManager.TicksGame && totalDamageDealt >= hoH.Props.minDmgToTrigger && hoH.CanAffectTarget(pawn))
-                            {
-                                hoH.DoExtraEffects(pawn,hoH.Props.damageScaling?totalDamageDealt:1f,dinfo.HitPart);
-                                hoH.cooldown = Find.TickManager.TicksGame + hoH.Props.tickCooldown.RandomInRange;
-                            }
-                        }
-                    }
-                }
-            }
-        }
         /*public static void HautsApparelPreventsShootingPostfix(ref bool __result, Verb __instance)
         {
             if (__instance.CasterIsPawn)
@@ -1193,68 +1165,6 @@ namespace HautsFramework
                 }
             }
         }*/
-        public static void HautsApplyDamageToPartPostfix(DamageInfo dinfo, Pawn pawn, DamageWorker.DamageResult result)
-        {
-            if (!pawn.DestroyedOrNull() && dinfo.Instigator is Pawn attacker)
-            {
-                HediffDef hd = dinfo.WeaponLinkedHediff;
-                if (hd != null)
-                {
-                    foreach (HediffCompProperties hcp in hd.comps)
-                    {
-                        if (hcp is HediffCompProperties_ExtraOnHitEffects)
-                        {
-                            return;
-                        }
-                    }
-                }
-                foreach (Hediff h in attacker.health.hediffSet.hediffs)
-                {
-                    if (h is HediffWithComps hwc)
-                    {
-                        foreach (HediffComp hc in hwc.comps)
-                        {
-                            if (hc is HediffComp_ExtraOnHitEffects hoH && hoH != null && hoH.Props.appliedViaAttacks && hoH.cooldown <= Find.TickManager.TicksGame && result.totalDamageDealt >= hoH.Props.minDmgToTrigger && hoH.CanAffectTarget(pawn))
-                            {
-                                hoH.DoExtraEffects(pawn, hoH.Props.damageScaling ? result.totalDamageDealt : 1f, dinfo.HitPart);
-                                hoH.cooldown = Find.TickManager.TicksGame + hoH.Props.tickCooldown.RandomInRange;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        public static void HautsTakeDamagePostfix(Thing __instance, DamageInfo dinfo, DamageWorker.DamageResult __result)
-        {
-            if (!__instance.DestroyedOrNull() && !(__instance is Pawn) && dinfo.Instigator != null && dinfo.Instigator is Pawn attacker)
-            {
-                HediffDef hd = dinfo.WeaponLinkedHediff;
-                if (hd != null)
-                {
-                    foreach (HediffCompProperties hcp in hd.comps)
-                    {
-                        if (hcp is HediffCompProperties_ExtraOnHitEffects)
-                        {
-                            return;
-                        }
-                    }
-                }
-                foreach (Hediff h in attacker.health.hediffSet.hediffs)
-                {
-                    if (h is HediffWithComps hwc)
-                    {
-                        foreach (HediffComp hc in hwc.comps)
-                        {
-                            if (hc is HediffComp_ExtraOnHitEffects hoH && hoH != null && hoH.Props.appliedViaAttacks && hoH.cooldown <= Find.TickManager.TicksGame && __result.totalDamageDealt >= hoH.Props.minDmgToTrigger && hoH.CanAffectTargetThing(__instance))
-                            {
-                                hoH.DoExtraEffectsThing(__instance, hoH.Props.damageScaling ? __result.totalDamageDealt : 1f);
-                                hoH.cooldown = Find.TickManager.TicksGame + hoH.Props.tickCooldown.RandomInRange;
-                            }
-                        }
-                    }
-                }
-            }
-        }
         public static void Hauts_OffsetPsyfocusDirectlyPrefix(Pawn_PsychicEntropyTracker __instance, ref float offset)
         {
             if (offset < 0)
@@ -3345,6 +3255,38 @@ namespace HautsFramework
         }
         private int graphicCooldown = 0;
     }
+    public class Hediff_HasExtraOnHitEffects : HediffWithComps
+    {
+        public override void Notify_PawnDamagedThing(Thing thing, DamageInfo dinfo, DamageWorker.DamageResult result)
+        {
+            base.Notify_PawnDamagedThing(thing, dinfo, result);
+            HautsUtility.DoExtraOnHitEffects(this,thing,dinfo,result);
+        }
+    }
+    public class Hediff_ImplantHasExtraOnHitEffects : Hediff_Implant
+    {
+        public override void Notify_PawnDamagedThing(Thing thing, DamageInfo dinfo, DamageWorker.DamageResult result)
+        {
+            base.Notify_PawnDamagedThing(thing, dinfo, result);
+            HautsUtility.DoExtraOnHitEffects(this, thing, dinfo, result);
+        }
+    }
+    public class Hediff_AddedPartHasExtraOnHitEffects : Hediff_AddedPart
+    {
+        public override void Notify_PawnDamagedThing(Thing thing, DamageInfo dinfo, DamageWorker.DamageResult result)
+        {
+            base.Notify_PawnDamagedThing(thing, dinfo, result);
+            HautsUtility.DoExtraOnHitEffects(this, thing, dinfo, result);
+        }
+    }
+    public class Hediff_PreDamageModificationHasExtraOnHitEffects : Hediff_PreDamageModification
+    {
+        public override void Notify_PawnDamagedThing(Thing thing, DamageInfo dinfo, DamageWorker.DamageResult result)
+        {
+            base.Notify_PawnDamagedThing(thing, dinfo, result);
+            HautsUtility.DoExtraOnHitEffects(this, thing, dinfo, result);
+        }
+    }
     public class HediffCompProperties_ExtraOnHitEffects : HediffCompProperties
     {
         public HediffCompProperties_ExtraOnHitEffects()
@@ -5204,15 +5146,16 @@ namespace HautsFramework
                 {
                     if (this.Props.affectedSkills.Contains(s.def) && s.GetLevel(this.affectsAptitudes) >= this.Props.minLevel && s.GetLevel(this.affectsAptitudes) < this.Props.maxLevel)
                     {
-                        if (skillAdjustment < 0f)
+                        float skillAdjustment2 = skillAdjustment;
+                        if (skillAdjustment2 < 0f)
                         {
                             if (this.Pawn.story != null && this.Pawn.story.traits.HasTrait(TraitDefOf.GreatMemory))
                             {
-                                skillAdjustment *= 0.5f;
+                                skillAdjustment2 *= 0.5f;
                             }
-                            skillAdjustment *= this.ForgettingSpeed(s);
+                            skillAdjustment2 *= this.ForgettingSpeed(s);
                         }
-                        s.Learn(skillAdjustment, true);
+                        s.Learn(skillAdjustment2, true);
                         if (s.Level < 0)
                         {
                             s.Level = 0;
@@ -10996,6 +10939,41 @@ namespace HautsFramework
             if (target.IsValid)
             {
                 ability.ability.DrawEffectPreviews(target);
+            }
+        }
+        //extra on hit effects
+        public static void DoExtraOnHitEffects(HediffWithComps hediff, Thing thing, DamageInfo dinfo, DamageWorker.DamageResult result)
+        {
+            if (!thing.DestroyedOrNull())
+            {
+                Pawn attacker = hediff.pawn;
+                HediffDef hd = dinfo.WeaponLinkedHediff;
+                if (hd != null)
+                {
+                    foreach (HediffCompProperties hcp in hd.comps)
+                    {
+                        if (hcp is HediffCompProperties_ExtraOnHitEffects)
+                        {
+                            return;
+                        }
+                    }
+                }
+                foreach (HediffComp hc in hediff.comps)
+                {
+                    if (hc is HediffComp_ExtraOnHitEffects hoH && hoH != null && hoH.Props.appliedViaAttacks && hoH.cooldown <= Find.TickManager.TicksGame && result.totalDamageDealt >= hoH.Props.minDmgToTrigger)
+                    {
+                        if (thing is Pawn p)
+                        {
+                            if (hoH.CanAffectTarget(p))
+                            {
+                                hoH.DoExtraEffects(p, hoH.Props.damageScaling ? result.totalDamageDealt : 1f, dinfo.HitPart);
+                            }
+                        } else if (hoH.CanAffectTargetThing(thing)) {
+                            hoH.DoExtraEffectsThing(thing, hoH.Props.damageScaling ? result.totalDamageDealt : 1f);
+                        }
+                        hoH.cooldown = Find.TickManager.TicksGame + hoH.Props.tickCooldown.RandomInRange;
+                    }
+                }
             }
         }
         //misc

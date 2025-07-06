@@ -32,5 +32,6 @@
 		<li IfModActive="VanillaExpanded.VPsycastsE">1.6/Mods/VanillaPsycastsExpanded</li>
 		<li IfModActive="lts.I" IfModNotActive="MSE2.Core">1.6/Mods/ThisIsGettingALittleIntoTheWeeds</li>
 		<li IfModActive="DimonSever000.FactionLanguages">1.6/Mods/RimLanguages</li>
+		<li IfModActive="vanillaexpanded.skills">1.6/Mods/VE_Skills</li>
 	</v1.6>
 </loadFolders>
