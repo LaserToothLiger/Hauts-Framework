@@ -33,5 +33,8 @@
 		<li IfModActive="lts.I" IfModNotActive="MSE2.Core">1.6/Mods/ThisIsGettingALittleIntoTheWeeds</li>
 		<li IfModActive="DimonSever000.FactionLanguages">1.6/Mods/RimLanguages</li>
 		<li IfModActive="vanillaexpanded.skills">1.6/Mods/VE_Skills</li>
+		<li IfModActive="OskarPotocki.VFE.Pirates">1.6/Mods/VFE_Pirates</li>
+		<li IfModActive="VanillaExpanded.VPE.Puppeteer">1.6/Mods/VPE_Puppeteer</li>
+		<li IfModActive="vanillaracesexpanded.sanguophage">1.6/Mods/VRE_Sanguophage</li>
 	</v1.6>
 </loadFolders>

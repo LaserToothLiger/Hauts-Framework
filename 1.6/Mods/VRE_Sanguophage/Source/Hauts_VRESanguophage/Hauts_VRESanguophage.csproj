@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\..\..\..\..\..\..\Users\ianti\OneDrive\Pictures\modstuff\HarmonyMod\1.4\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\..\Users\ianti\OneDrive\Pictures\modstuff\HarmonyMod\Current\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
@@ -56,7 +56,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="VanillaRacesExpanded-Sanguophage">
-      <HintPath>..\..\..\..\..\..\..\..\..\..\..\..\Users\ianti\OneDrive\Pictures\modstuff\VanillaRacesExpanded-Sanguophage-main\1.5\Assemblies\VanillaRacesExpanded-Sanguophage.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\..\..\Users\ianti\OneDrive\Pictures\modstuff\VanillaRacesExpanded-Sanguophage-main\1.6\Assemblies\VanillaRacesExpanded-Sanguophage.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
