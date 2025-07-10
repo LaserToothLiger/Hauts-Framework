@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using VFECore;
+using VEF;
 using VFEInsectoids;
 
 namespace HautsFramework_VFEInsectoids2
@@ -80,7 +80,7 @@ namespace HautsFramework_VFEInsectoids2
             DamageDef vfei2_AcidSpit = VFEI_DefOf.VFEI2_AcidSpit;
             Thing pawn = this.Pawn;
             ThingDef filthDef = this.Props.filthDef;
-            GenExplosion.DoExplosion(cell, mapHeld, num, vfei2_AcidSpit, pawn, this.Props.damAmount, -1f, null, null, null, null, filthDef, 1f, 1, null, false, null, 0f, 1, 0f, false, null, null, null, false, 0.6f, 0f, false, null, 1f, null, this.AffectedCells(target));
+            GenExplosion.DoExplosion(cell, mapHeld, num, vfei2_AcidSpit, pawn, this.Props.damAmount, -1f, null, null, null, null, filthDef, 1f, 1, null, null, 255, false, null, 0f, 1, 0f, false, null, null, null, false, 0.6f, 0f, false, null, 1f, null, this.AffectedCells(target));
             base.Apply(target, dest);
         }
         public override IEnumerable<PreCastAction> GetPreCastActions()
@@ -211,7 +211,7 @@ namespace HautsFramework_VFEInsectoids2
             DamageDef blunt = DamageDefOf.Blunt;
             Thing pawn = this.Pawn;
             ThingDef filthDef = this.Props.filthDef;
-            GenExplosion.DoExplosion(cell, mapHeld, num, blunt, pawn, this.Props.damAmount, -1f, null, null, null, null, filthDef, 0.75f, 1, null, false, null, 0f, 1, 0f, false, null, null, null, false, 0.6f, 0f, false, null, 1f, null, this.AffectedCells(target));
+            GenExplosion.DoExplosion(cell, mapHeld, num, blunt, pawn, this.Props.damAmount, -1f, null, null, null, null, filthDef, 0.75f, 1, null, null, 255, false, null, 0f, 1, 0f, false, null, null, null, false, 0.6f, 0f, false, null, 1f, null, this.AffectedCells(target));
             base.Apply(target, dest);
         }
         public override IEnumerable<PreCastAction> GetPreCastActions()
