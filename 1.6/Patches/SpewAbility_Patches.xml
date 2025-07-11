@@ -381,4 +381,25 @@
 			</operations>
 		</match>
 	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Odyssey</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityDef[defName="EggSpew"]</xpath>
+					<value>
+						<li Class="HautsFramework.Hauts_SpewAbility" />
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityDef[defName="SludgeSpew"]</xpath>
+					<value>
+						<li Class="HautsFramework.Hauts_SpewAbility" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
 </Patch>

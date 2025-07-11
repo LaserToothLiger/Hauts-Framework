@@ -10895,7 +10895,7 @@ namespace HautsFramework
         }
         public static bool IsSpewAbility(RimWorld.AbilityDef ability)
         {
-            return ModsConfig.BiotechActive && ability.HasModExtension<Hauts_SpewAbility>();
+            return ability.HasModExtension<Hauts_SpewAbility>();
         }
         public static bool IsLeapVerb(Verb verb)
         {

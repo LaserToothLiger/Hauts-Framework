@@ -220,7 +220,7 @@
 		<displayPriorityInCategory>8795</displayPriorityInCategory>
         <toStringStyle>PercentZero</toStringStyle>
 	</StatDef>
-	<StatDef MayRequire="Ludeon.RimWorld.Biotech">
+	<StatDef>
 		<defName>Hauts_SpewRangeFactor</defName>
 		<label>spew range factor</label>
 		<description>A multiplier to the range of spray or spew abilities used by this character.</description>
