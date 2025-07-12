@@ -675,7 +675,8 @@ namespace HautsFramework
         {
             if (__instance.Pawn.Spawned && __instance.AnySelectedDraftedMechs)
             {
-                GenDraw.DrawRadiusRing(__instance.Pawn.Position, __instance.Pawn.GetStatValue(HautsDefOf.Hauts_MechCommandRange), Color.white, (IntVec3 c) => __instance.CanCommandTo(c));
+                float mcr = __instance.Pawn.GetStatValue(HautsDefOf.Hauts_MechCommandRange);
+                GenDraw.DrawRadiusRing(__instance.Pawn.Position, mcr, Color.white, (IntVec3 c) => c.InBounds(__instance.Pawn.MapHeld));
                 return false;
             }
             return true;
@@ -4918,12 +4919,13 @@ namespace HautsFramework
             {
                 for (int i = this.hediffs.Count - 1; i >= 0; i--)
                 {
-                    if (this.hediffs[i] == null)
+                    Hediff h = this.hediffs[i];
+                    Pawn p = h.pawn;
+                    if (p.DestroyedOrNull() || (p.IsWorldPawn() && !p.IsCaravanMember() && !PawnUtility.IsTravelingInTransportPodWorldObject(p) && !p.IsBorrowedByAnyFaction()))
                     {
                         this.hediffs.RemoveAt(i);
                         this.parent.Severity += this.Props.addSeverityOnLostHediff;
-                    } else if (this.Props.invalidateLinksIfSuspended && this.hediffs[i].pawn.Suspended) {
-                        Hediff h = this.hediffs[i];
+                    } else if (this.Props.invalidateLinksIfSuspended && p.Suspended) {
                         this.hediffs.RemoveAt(i);
                         HediffComp_PairedHediff ph = h.TryGetComp<HediffComp_PairedHediff>();
                         if (ph != null)
@@ -11017,8 +11019,12 @@ namespace HautsFramework
             }
             return 0f;
         }
-        public static List<TerrainDef> FertilityTerrainDefs(Map map)
+        public static List<TerrainDef> FertilityTerrainDefs(Map map, bool requiresBedrock = false)
         {
+            if (requiresBedrock && !map.Biome.hasBedrock)
+            {
+                return null;
+            }
             List<TerrainDef> terrainDefList = new List<TerrainDef>();
             terrainDefList.Add(TerrainDefOf.Gravel);
             terrainDefList.Add(TerrainDefOf.Soil);
