@@ -89,13 +89,16 @@ namespace HautsFramework
                           postfix: new HarmonyMethod(patchType, nameof(HautsJoyToleranceSet_NeedIntervalPostfix)));
             harmony.Patch(AccessTools.Method(typeof(LearningUtility), nameof(LearningUtility.LearningRateFactor)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsLearningRateFactorPostfix)));
-            if (!ModsConfig.IsActive("lts.I"))
+            if (ModsConfig.BiotechActive)
             {
-                harmony.Patch(AccessTools.Method(typeof(Pawn_MechanitorTracker), nameof(Pawn_MechanitorTracker.DrawCommandRadius)),
-                               prefix: new HarmonyMethod(patchType, nameof(Hauts_DrawCommandRadiusPrefix)));
+                if (!ModsConfig.IsActive("lts.I"))
+                {
+                    harmony.Patch(AccessTools.Method(typeof(Pawn_MechanitorTracker), nameof(Pawn_MechanitorTracker.DrawCommandRadius)),
+                                   prefix: new HarmonyMethod(patchType, nameof(Hauts_DrawCommandRadiusPrefix)));
+                }
+                harmony.Patch(AccessTools.Method(typeof(Pawn_MechanitorTracker), nameof(Pawn_MechanitorTracker.CanCommandTo)),
+                               postfix: new HarmonyMethod(patchType, nameof(HautsCanCommandToPostfix)));
             }
-            harmony.Patch(AccessTools.Method(typeof(Pawn_MechanitorTracker), nameof(Pawn_MechanitorTracker.CanCommandTo)),
-                           postfix: new HarmonyMethod(patchType, nameof(HautsCanCommandToPostfix)));
             harmony.Patch(AccessTools.Method(typeof(ThoughtHandler), nameof(ThoughtHandler.MoodOffsetOfGroup)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsMoodOffsetOfGroupPostfix)));
             harmony.Patch(AccessTools.Method(typeof(ThoughtHandler), nameof(ThoughtHandler.OpinionOffsetOfGroup)),
@@ -675,9 +678,17 @@ namespace HautsFramework
         {
             if (__instance.Pawn.Spawned && __instance.AnySelectedDraftedMechs)
             {
-                float mcr = __instance.Pawn.GetStatValue(HautsDefOf.Hauts_MechCommandRange);
-                GenDraw.DrawRadiusRing(__instance.Pawn.Position, mcr, Color.white, (IntVec3 c) => c.InBounds(__instance.Pawn.MapHeld));
-                return false;
+                Hediff mechlink = __instance.Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.MechlinkImplant);
+                if (mechlink != null)
+                {
+                    HediffComp_MCR_Storage hcmcrs = mechlink.TryGetComp<HediffComp_MCR_Storage>();
+                    if (hcmcrs != null)
+                    {
+                        float mcr = hcmcrs.mechCommandRadius;
+                        GenDraw.DrawRadiusRing(__instance.Pawn.Position, mcr, Color.white, (IntVec3 c) => c.InBounds(__instance.Pawn.MapHeld));
+                        return false;
+                    }
+                }
             }
             return true;
         }
@@ -2351,6 +2362,50 @@ namespace HautsFramework
             Hediff firstHediffOfDef = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss, false);
             return firstHediffOfDef == null || firstHediffOfDef.Severity < 0.45f;
         }
+    }
+    public class HediffCompProperties_MCR_Storage : HediffCompProperties
+    {
+        public HediffCompProperties_MCR_Storage()
+        {
+            this.compClass = typeof(HediffComp_MCR_Storage);
+        }
+    }
+    public class HediffComp_MCR_Storage : HediffComp
+    {
+        public HediffCompProperties_MCR_Storage Props
+        {
+            get
+            {
+                return (HediffCompProperties_MCR_Storage)this.props;
+            }
+        }
+        public override void CompPostPostAdd(DamageInfo? dinfo)
+        {
+            base.CompPostPostAdd(dinfo);
+            this.RedetermineMCR();
+        }
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
+        {
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(250,delta))
+            {
+                this.RedetermineMCR();
+            }
+        }
+        public void RedetermineMCR()
+        {
+            if (ModsConfig.BiotechActive)
+            {
+                this.mechCommandRadius = this.Pawn.GetStatValue(HautsDefOf.Hauts_MechCommandRange);
+            } else {
+                this.mechCommandRadius = 25f;
+            }
+        }
+        public override void CompExposeData()
+        {
+            base.CompExposeData();
+        }
+        public float mechCommandRadius = 25f;
     }
     //hediffcomps misc.
     public class Hediff_PsycastLoopBreaker : Hediff

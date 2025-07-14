@@ -39,5 +39,6 @@
 		<li IfModActive="OskarPotocki.VFE.Insectoid2">1.6/Mods/VFE_Insectoids2</li>
 		<li IfModActive="OskarPotocki.VFE.Tribals">1.6/Mods/VFE_Tribal</li>
 		<li IfModActive="Neronix17.TweaksGalore">1.6/Mods/TweaksGalore</li>
+		<li IfModActive="doug.conn">1.6/Mods/COaNN</li>
 	</v1.6>
 </loadFolders>
