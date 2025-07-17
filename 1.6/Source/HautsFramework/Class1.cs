@@ -7065,6 +7065,45 @@ namespace HautsFramework
         }
         public float severityPerDay;
     }
+    public class HediffCompProperties_PlanetLayerSeverity : HediffCompProperties
+    {
+        public HediffCompProperties_PlanetLayerSeverity()
+        {
+            this.compClass = typeof(HediffComp_PlanetLayerSeverity);
+        }
+        public float defaultSeverity;
+        public int periodicity = 250;
+        public Dictionary<PlanetLayerDef, float> setToInLayer;
+        public Dictionary<PlanetLayerDef, float> incrementInLayer;
+    }
+    public class HediffComp_PlanetLayerSeverity : HediffComp
+    {
+        public HediffCompProperties_PlanetLayerSeverity Props
+        {
+            get
+            {
+                return (HediffCompProperties_PlanetLayerSeverity)this.props;
+            }
+        }
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
+        {
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(this.Props.periodicity, delta) && this.Pawn.Tile != null && this.Pawn.Tile.Layer != null)
+            {
+                if (!this.Props.setToInLayer.NullOrEmpty() && this.Props.setToInLayer.TryGetValue(this.Pawn.Tile.LayerDef, out float value))
+                {
+                    this.parent.Severity = value;
+                    return;
+                }
+                if (!this.Props.incrementInLayer.NullOrEmpty() && this.Props.incrementInLayer.TryGetValue(this.Pawn.Tile.LayerDef, out value))
+                {
+                    this.parent.Severity += value;
+                    return;
+                }
+                this.parent.Severity = this.Props.defaultSeverity;
+            }
+        }
+    }
     //ability comps
     public class CompProperties_AbilityAiTargetingDistanceRange : CompProperties_AbilityEffect
     {
