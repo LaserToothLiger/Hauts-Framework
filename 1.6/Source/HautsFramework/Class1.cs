@@ -7104,6 +7104,76 @@ namespace HautsFramework
             }
         }
     }
+    public class HediffCompProperties_VacuumSeverity : HediffCompProperties
+    {
+        public HediffCompProperties_VacuumSeverity()
+        {
+            this.compClass = typeof(HediffComp_VacuumSeverity);
+        }
+        public float vacuumThreshold = 0.5f;
+        public float perTickInVacuum;
+        public float perTickNotInVacuum;
+        public float whileInVacuum = -999f;
+        public float whileNotInVacuum = -999f;
+        public bool onlyInVacuumIfHarmedByIt = true;
+        public bool freezeAtVacuumImmunityInVacuum;
+    }
+    public class HediffComp_VacuumSeverity : HediffComp
+    {
+        public HediffCompProperties_VacuumSeverity Props
+        {
+            get
+            {
+                return (HediffCompProperties_VacuumSeverity)this.props;
+            }
+        }
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
+        {
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.IsHashIntervalTick(15, delta))
+            {
+                Pawn pawn = this.Pawn;
+                if (pawn.Spawned && pawn.Map.Biome.inVacuum && pawn.Position.GetVacuum(pawn.Map) >= this.Props.vacuumThreshold)
+                {
+                    if (!pawn.HarmedByVacuum)
+                    {
+                        if (this.Props.freezeAtVacuumImmunityInVacuum)
+                        {
+                            return;
+                        }
+                        if (this.Props.onlyInVacuumIfHarmedByIt)
+                        {
+                            this.NonVacuumEffects();
+                        } else {
+                            this.VacuumEffects();
+                        }
+                    } else {
+                        this.VacuumEffects();
+                    }
+                } else {
+                    this.NonVacuumEffects();
+                }
+            }
+        }
+        public void VacuumEffects()
+        {
+            if (this.Props.whileInVacuum != -999f)
+            {
+                this.parent.Severity = this.Props.whileInVacuum;
+            } else if (this.Props.perTickInVacuum != 0f) {
+                this.parent.Severity += this.Props.perTickInVacuum * 15f;
+            }
+        }
+        public void NonVacuumEffects()
+        {
+            if (this.Props.whileNotInVacuum != -999f)
+            {
+                this.parent.Severity = this.Props.whileNotInVacuum;
+            } else {
+                this.parent.Severity += this.Props.perTickNotInVacuum * 15f;
+            }
+        }
+    }
     //ability comps
     public class CompProperties_AbilityAiTargetingDistanceRange : CompProperties_AbilityEffect
     {
