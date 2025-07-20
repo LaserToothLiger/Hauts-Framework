@@ -9,6 +9,15 @@
       <Hauts_BreachDamageFactor>0.05</Hauts_BreachDamageFactor>
     </statOffsets>
   </VSE.Expertise.ExpertiseDef>
+  <VSE.Expertise.ExpertiseDef>
+    <defName>Hauts_Surveyor</defName>
+    <label>Surveying</label>
+    <skill>Intellectual</skill>
+    <description>An expertise in scanning the terrain for valuable resources.</description>
+    <statOffsets>
+      <Hauts_SurveySpeed>0.075</Hauts_SurveySpeed>
+    </statOffsets>
+  </VSE.Expertise.ExpertiseDef>
   <VSE.Expertise.ExpertiseDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>Hauts_GauranlenExpert</defName>
     <label>Gautending</label>
