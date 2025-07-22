@@ -263,6 +263,14 @@
 		<statFactors>
 		  <li>ResearchSpeed</li>
 		</statFactors>
+		<skillNeedFactors>
+		  <li Class="SkillNeed_Direct">
+			<skill>Intellectual</skill><!--disable if incapable of Int-->
+			<valuesPerLevel>
+			  <li>1</li>
+			</valuesPerLevel>
+		  </li>
+		</skillNeedFactors>
 		<displayPriorityInCategory>4290</displayPriorityInCategory>
 	</StatDef>
 	<StatDef MayRequire="VanillaExpanded.Recycling">
