@@ -2562,7 +2562,7 @@ namespace HautsFramework
             {
                 return;
             }
-            if (!pawn.IsPlayerControlled)
+            if (pawn.Spawned && !pawn.IsPlayerControlled)
             {
                 this.visSetting = AuraVisSetting.Enabled;
             }
