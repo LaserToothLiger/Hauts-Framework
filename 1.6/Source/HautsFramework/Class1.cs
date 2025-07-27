@@ -77,10 +77,13 @@ namespace HautsFramework
                           postfix: new HarmonyMethod(patchType, nameof(HautsDropCarriedFilthPostfix)));
             harmony.Patch(AccessTools.Method(typeof(VEF.Abilities.Ability), nameof(VEF.Abilities.Ability.GetRangeForPawn)),
                            postfix: new HarmonyMethod(patchType, nameof(Hauts_GetRangeForPawnPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(CompAbilityEffect_GiveMentalState), nameof(CompAbilityEffect_GiveMentalState.Apply), new[] { typeof(LocalTargetInfo), typeof(LocalTargetInfo) }),
-                          postfix: new HarmonyMethod(patchType, nameof(HautsGiveMentalStatePostfix)));
-            harmony.Patch(AccessTools.Property(typeof(CompTreeConnection), nameof(CompTreeConnection.MaxDryads)).GetGetMethod(),
-                           postfix: new HarmonyMethod(patchType, nameof(HautsMaxDryadsPostfix)));
+            if (ModsConfig.IdeologyActive)
+            {
+                harmony.Patch(AccessTools.Method(typeof(CompAbilityEffect_GiveMentalState), nameof(CompAbilityEffect_GiveMentalState.Apply), new[] { typeof(LocalTargetInfo), typeof(LocalTargetInfo) }),
+                              postfix: new HarmonyMethod(patchType, nameof(HautsGiveMentalStatePostfix)));
+                harmony.Patch(AccessTools.Property(typeof(CompTreeConnection), nameof(CompTreeConnection.MaxDryads)).GetGetMethod(),
+                               postfix: new HarmonyMethod(patchType, nameof(HautsMaxDryadsPostfix)));
+            }
             harmony.Patch(AccessTools.Method(typeof(Book), nameof(Book.OnBookReadTick)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsOnBookReadTickPostfix)));
             harmony.Patch(AccessTools.Method(typeof(JoyUtility), nameof(JoyUtility.JoyTickCheckEnd)),
