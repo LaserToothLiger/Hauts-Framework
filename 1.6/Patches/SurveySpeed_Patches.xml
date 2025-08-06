@@ -12,4 +12,19 @@
 			<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
 		</value>
 	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Asteroid Mineral Scanner</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/ThingDef[defName="AsteroidMineralScanner"]/comps/li[@Class="AsteroidMineralScanner.CompProperties_AsteroidMineralScanner"]/scanSpeedStat</xpath>
+					<value>
+						<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
 </Patch>

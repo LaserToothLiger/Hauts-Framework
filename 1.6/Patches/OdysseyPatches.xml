@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Odyssey</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>Defs/ThingDef[defName="Apparel_CerebrexNode"]/equippedStatOffsets</xpath>
+					<value>
+						<Hauts_MechCommandRange MayRequire="Ludeon.RimWorld.Biotech">10</Hauts_MechCommandRange>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

@@ -549,6 +549,7 @@
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 			<li>Kenshi Fauna</li>
+			<li>Kenshi Fauna 1.6 (Forked)</li>
 		</mods>
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/IncidentDef[defName="KenshiAnimals_LeviathanPasses"]</xpath>

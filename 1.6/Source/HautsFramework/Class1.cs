@@ -2874,6 +2874,7 @@ namespace HautsFramework
         public int priority = 100;
         public bool reactsToRanged = true;
         public bool reactsToExplosive = true;
+        public bool reactsToShieldBypassers = true;
         public bool reactsToOther = true;
     }
     public class HediffComp_PreDamageModification : HediffComp
@@ -2887,7 +2888,7 @@ namespace HautsFramework
         }
         public virtual bool ShouldDoEffect(DamageInfo dinfo)
         {
-            return this.parent.Severity >= this.Props.minSeverityToWork && (!this.Props.harmfulDamageTypesOnly || dinfo.Def.harmsHealth) && (dinfo.Def.isRanged ? this.Props.reactsToRanged : (dinfo.Def.isExplosive ? this.Props.reactsToExplosive : this.Props.reactsToOther)) && (this.Props.affectedDamageTypes == null || this.Props.affectedDamageTypes.Contains(dinfo.Def)) && (this.Props.unaffectedDamageTypes == null || !this.Props.unaffectedDamageTypes.Contains(dinfo.Def));
+            return this.parent.Severity >= this.Props.minSeverityToWork && (!this.Props.harmfulDamageTypesOnly || dinfo.Def.harmsHealth) && (dinfo.Def.isRanged ? this.Props.reactsToRanged : (dinfo.Def.isExplosive ? this.Props.reactsToExplosive : this.Props.reactsToOther)) && (this.Props.affectedDamageTypes == null || this.Props.affectedDamageTypes.Contains(dinfo.Def)) && (!dinfo.Def.ignoreShields || this.Props.reactsToShieldBypassers) && (this.Props.unaffectedDamageTypes == null || !this.Props.unaffectedDamageTypes.Contains(dinfo.Def));
         }
         public virtual bool ShouldDoModificationInner(DamageInfo dinfo)
         {
@@ -9031,6 +9032,10 @@ namespace HautsFramework
                 {
                     compQuality.SetQuality(this.def.royalAid.itemsToDrop[i].quality, new ArtGenerationContext?(ArtGenerationContext.Outsider));
                 }
+                if (thing.TryGetComp(out CompPowerBattery compBattery))
+                {
+                    compBattery.SetStoredEnergyPct(1f);
+                }
                 if (thing.def.Minifiable)
                 {
                     MinifiedThing minifiedThing = thing.MakeMinified();
@@ -9287,8 +9292,7 @@ namespace HautsFramework
             }
             Action action = null;
             string text = this.def.LabelCap + ": ";
-            bool free;
-            if (base.FillAidOption(pawn, faction, ref text, out free))
+            if (base.FillAidOption(pawn, faction, ref text, out bool free))
             {
                 action = delegate
                 {
