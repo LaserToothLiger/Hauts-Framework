@@ -4732,10 +4732,6 @@ namespace HautsFramework
     }
     public class MoteConditionalText : MoteAttached
     {
-        public override void PostMake()
-        {
-            base.PostMake();
-        }
         public override void DrawGUIOverlay()
         {
             Color color = new Color(this.def.graphicData.color.r, this.def.graphicData.color.g, this.def.graphicData.color.b);
@@ -8463,6 +8459,20 @@ namespace HautsFramework
     public class PermitMoreEffects : DefModExtension
     {
         public PermitMoreEffects() { }
+        public float GetIncidentPoints(Pawn caller)
+        {
+            if (this.incidentPoints != null)
+            {
+                return this.incidentPoints.RandomInRange;
+            }
+            if (caller.Map != null && caller.Map.IsPlayerHome)
+            {
+                return StorytellerUtility.DefaultThreatPointsNow(caller.Map);
+            } else if (Find.AnyPlayerHomeMap != null) {
+                return StorytellerUtility.DefaultThreatPointsNow(Find.RandomPlayerHomeMap);
+            }
+            return 100f;
+        }
         //giving hediffs
         public List<HediffDef> hediffs;
         //spawning stuff
@@ -8486,7 +8496,7 @@ namespace HautsFramework
         public List<QuestScriptDef> questScriptDefs;
         public List<IncidentDef> incidentDefs;
         public int questCount = 1;
-        public IntRange incidentPoints = new IntRange(100, 100);
+        public IntRange incidentPoints;
         public IntRange incidentDelay;
         public bool incidentUsesPermitFaction = true;
         //causing conditions
@@ -9411,20 +9421,23 @@ namespace HautsFramework
                     int questCount = pme.questScriptDefs != null ? pme.questScriptDefs.Count : 0;
                     int incidentCount = pme.incidentDefs != null ? pme.incidentDefs.Count : 0;
                     bool questNotIncident = Rand.Chance((float)questCount / Math.Max(1f, questCount + incidentCount));
+                    parms.points = pme.GetIncidentPoints(caller);
                     if (questNotIncident)
                     {
                         QuestScriptDef questDef = pme.questScriptDefs.RandomElement();
+                        Slate slate = new Slate();
+                        slate.Set<TaggedString>("discoveryMethod", "Hauts_QuestDiscoveredByPermit".Translate(caller.Named("PERMITUSER")), false);
+                        slate.Set<float>("points", parms.points, false);
                         if (questDef.HasModExtension<LumpQuest>())
                         {
                             List<ThingDef> mineables = ((GenStep_PreciousLump)GenStepDefOf.PreciousLump.genStep).mineables;
                             ThingDef targetMineable = mineables.RandomElement();
-                            Slate slate = new Slate();
                             slate.Set<ThingDef>("targetMineable", targetMineable, false);
                             slate.Set<ThingDef>("targetMineableThing", targetMineable.building.mineableThing, false);
                             Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
                             Find.LetterStack.ReceiveLetter(quest.name, quest.description, LetterDefOf.PositiveEvent, null, null, quest, null, null, 0, true);
                         } else {
-                            Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, parms.points);
+                            Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
                             if (!quest.hidden && questDef.sendAvailableLetter)
                             {
                                 QuestUtility.SendLetterQuestAvailable(quest);
@@ -9438,7 +9451,7 @@ namespace HautsFramework
                         IncidentParms incidentParms = new IncidentParms
                         {
                             forced = true,
-                            points = pme.incidentPoints.RandomInRange,
+                            points = parms.points,
                             faction = funcFaction,
                             raidArrivalMode = PawnsArrivalModeDefOf.EdgeWalkIn,
                             raidStrategy = RaidStrategyDefOf.ImmediateAttack,

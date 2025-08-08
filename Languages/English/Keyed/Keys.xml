@@ -75,6 +75,7 @@
 <Hauts_IdeoBookUpsetChance>Chance to upset non-believers: {0}</Hauts_IdeoBookUpsetChance>
 <Hauts_IdeoBookMemeList>{0} ({1} structure ideo): </Hauts_IdeoBookMemeList>
 <Hauts_LetterConvertIdeoBook_Success>Reading {0} has caused {1} to turn away from {2} and towards {3}.</Hauts_LetterConvertIdeoBook_Success>
+<Hauts_QuestDiscoveredByPermit>{PERMITUSER_nameDef} was informed of</Hauts_QuestDiscoveredByPermit>
 <!--Error messages-->
 <Hauts_CantSpawnUnminified>Cannot add {0} to inventory of {1} because it is not haulable.</Hauts_CantSpawnUnminified>
 <Hauts_CannotRemoveBionicsFrom>Body parts cannot be removed from {0} due to the {1} trait.</Hauts_CannotRemoveBionicsFrom>
