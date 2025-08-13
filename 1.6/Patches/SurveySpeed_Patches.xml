@@ -27,4 +27,19 @@
 			</operations>
 		</match>
 	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Complementary Odyssey</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/ThingDef[defName="CO_TerrainScanner"]/comps/li[@Class="ComplementaryOdyssey.CompProperties_TerrainScanner"]/scanSpeedStat</xpath>
+					<value>
+						<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
 </Patch>
