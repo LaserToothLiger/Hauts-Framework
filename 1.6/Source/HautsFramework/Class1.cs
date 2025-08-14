@@ -1457,39 +1457,6 @@ namespace HautsFramework
         {
             __result = true;
         }
-        /*public static void HautsAICanTargetNowPostfixBluh(RimWorld.Ability __instance, ref bool __result, LocalTargetInfo target)
-        {
-            Log.Error("Ability " + __instance.def.label.CapitalizeFirst() + " usability: " + __result);
-            if (!__instance.def.aiCanUse || !__instance.CanCast)
-            {
-                Log.Warning("should be unusable");
-            } else {
-                Log.Message("technically usable");
-            }
-            if (!__instance.CanApplyOn(target))
-            {
-                Log.Warning("should be inapplicable");
-            } else {
-                Log.Message("technically applicable");
-            }
-            List<CompAbilityEffect> effectComps = (List<CompAbilityEffect>)GetInstanceField(typeof(RimWorld.Ability), __instance, "effectComps");
-            if (effectComps != null)
-            {
-                Log.Warning("iterates through effect comps");
-            } else {
-                Log.Message("likely it's skipping them bc they haven't been initialized?");
-            }
-            if (__instance.EffectComps != null)
-            {
-                using (List<CompAbilityEffect>.Enumerator enumerator = __instance.EffectComps.GetEnumerator())
-                {
-                    while (enumerator.MoveNext())
-                    {
-                        Log.Message(enumerator.Current.ToString() + " says: " + enumerator.Current.AICanTargetNow(target));
-                    }
-                }
-            }
-        }*/
         //history event def dme
         public static bool HautsTryAffectGoodwillWithPrefix(ref bool __result, Faction __instance, Faction other, int goodwillChange, bool canSendMessage, bool canSendHostilityLetter, HistoryEventDef reason, GlobalTargetInfo? lookTarget)
         {
@@ -2436,6 +2403,7 @@ namespace HautsFramework
         public bool affectsHostiles;
         public bool affectsAllies;
         public bool affectsMechs = true;
+        public bool affectsDrones = true;
         public bool affectsFleshies = true;
         public bool affectsEntities = true;
         public bool mutantsAreEntities = true;
@@ -2611,6 +2579,10 @@ namespace HautsFramework
                 return false;
             }
             if (!this.Props.affectsMechs && p.RaceProps.IsMechanoid)
+            {
+                return false;
+            }
+            if (!this.Props.affectsDrones && p.RaceProps.IsDrone)
             {
                 return false;
             }
@@ -3219,6 +3191,7 @@ namespace HautsFramework
         public bool hitInstigatorRegardlessOfRange;
         public bool canAffectAnimals = true;
         public bool canAffectMechs = true;
+        public bool canAffectDrones = true;
         public bool canAffectHumanlikes = true;
         public bool canAffectEntities = true;
         public bool canAffectMutants = true;
@@ -3274,7 +3247,7 @@ namespace HautsFramework
         }
         public virtual bool CanHit(Pawn pawn, float amount)
         {
-            return (this.Props.friendlyFire || pawn.HostileTo(this.Pawn) || this.Pawn.HostileTo(pawn)) && (pawn.IsMutant ? this.Props.canAffectMutants : ((this.Props.canAffectAnimals || !pawn.RaceProps.Animal) && (this.Props.canAffectMechs || !pawn.RaceProps.IsMechanoid) && (this.Props.canAffectHumanlikes || !pawn.RaceProps.Humanlike) && (this.Props.canAffectEntities || !pawn.RaceProps.IsAnomalyEntity)));
+            return (this.Props.friendlyFire || pawn.HostileTo(this.Pawn) || this.Pawn.HostileTo(pawn)) && (pawn.IsMutant ? this.Props.canAffectMutants : ((this.Props.canAffectAnimals || !pawn.RaceProps.Animal) && (this.Props.canAffectMechs || !pawn.RaceProps.IsMechanoid) && (this.Props.canAffectDrones || !pawn.RaceProps.IsDrone) && (this.Props.canAffectHumanlikes || !pawn.RaceProps.Humanlike) && (this.Props.canAffectEntities || !pawn.RaceProps.IsAnomalyEntity)));
         }
         public override void DoModificationInner(ref DamageInfo dinfo, ref bool absorbed, float amount)
         {
@@ -3364,6 +3337,7 @@ namespace HautsFramework
         public float minDmgToTrigger = 0.01f;
         public bool canAffectAnimals = true;
         public bool canAffectMechs = true;
+        public bool canAffectDrones = true;
         public bool canAffectHumanlikes = true;
         public bool canAffectEntities = true;
         public bool canAffectMutants = true;
@@ -3474,7 +3448,7 @@ namespace HautsFramework
                             result += "Hauts_ExtraHitFXScaleVictim".Translate(this.Props.victimScalar.label);
                         }
                     }
-                    if (!this.Props.canAffectAnimals || !this.Props.canAffectFriendlies || !this.Props.canAffectHostiles || !this.Props.canAffectHumanlikes || !this.Props.canAffectMechs)
+                    if (!this.Props.canAffectAnimals || !this.Props.canAffectFriendlies || !this.Props.canAffectHostiles || !this.Props.canAffectHumanlikes || !this.Props.canAffectMechs || !this.Props.canAffectDrones)
                     {
                         result += "\n";
                         result += "Hauts_ExtraHitFXSuffix".Translate();
@@ -3516,6 +3490,14 @@ namespace HautsFramework
                             }
                             result += "Hauts_ExtraHitFXSuffix2M".Translate();
                         }
+                        if (!this.Props.canAffectDrones)
+                        {
+                            if (prev2)
+                            {
+                                result += ",";
+                            }
+                            result += "Hauts_ExtraHitFXSuffix2D".Translate();
+                        }
                         if (!this.Props.canAffectMutants)
                         {
                             if (prev2)
@@ -3545,7 +3527,7 @@ namespace HautsFramework
         }
         public virtual bool CanAffectTarget(Pawn pawn)
         {
-            return Rand.Chance(this.ChanceForVictim(pawn)) && (this.Pawn.HostileTo(pawn) ? this.Props.canAffectHostiles : this.Props.canAffectFriendlies) && (pawn.IsMutant ? this.Props.canAffectMutants : ((this.Props.canAffectAnimals || !pawn.RaceProps.Animal) && (this.Props.canAffectHumanlikes || !pawn.RaceProps.Humanlike) && (this.Props.canAffectMechs || !pawn.RaceProps.IsMechanoid) && (this.Props.canAffectEntities || !pawn.RaceProps.IsAnomalyEntity))) && ((pawn.SpawnedOrAnyParentSpawned && this.Pawn.SpawnedOrAnyParentSpawned && pawn.SpawnedParentOrMe.Position.InHorDistOf(this.Pawn.SpawnedParentOrMe.Position, Math.Max(1.42f, this.Props.cellRange))) || (pawn.Tile != this.Pawn.Tile && Find.WorldGrid.TraversalDistanceBetween(pawn.Tile, this.Pawn.Tile, true) <= this.Props.worldTileRange));
+            return Rand.Chance(this.ChanceForVictim(pawn)) && (this.Pawn.HostileTo(pawn) ? this.Props.canAffectHostiles : this.Props.canAffectFriendlies) && (pawn.IsMutant ? this.Props.canAffectMutants : ((this.Props.canAffectAnimals || !pawn.RaceProps.Animal) && (this.Props.canAffectHumanlikes || !pawn.RaceProps.Humanlike) && (this.Props.canAffectMechs || !pawn.RaceProps.IsMechanoid) && (this.Props.canAffectDrones || !pawn.RaceProps.IsDrone) && (this.Props.canAffectEntities || !pawn.RaceProps.IsAnomalyEntity))) && ((pawn.SpawnedOrAnyParentSpawned && this.Pawn.SpawnedOrAnyParentSpawned && pawn.SpawnedParentOrMe.Position.InHorDistOf(this.Pawn.SpawnedParentOrMe.Position, Math.Max(1.42f, this.Props.cellRange))) || (pawn.Tile != this.Pawn.Tile && Find.WorldGrid.TraversalDistanceBetween(pawn.Tile, this.Pawn.Tile, true) <= this.Props.worldTileRange));
         }
         public virtual bool CanAffectTargetThing(Thing thing)
         {
@@ -5050,6 +5032,7 @@ namespace HautsFramework
         public HediffDef hediffIfEntity;
         public HediffDef hediffIfHumanlike;
         public HediffDef hediffIfMech;
+        public HediffDef hediffIfDrone;
         public HediffDef hediffIfMutant;
     }
     public class HediffComp_PhylumMorphsHediff : HediffComp
@@ -5075,7 +5058,10 @@ namespace HautsFramework
                 this.ReplaceHediff(this.Props.hediffIfHumanlike);
             } else if (this.Pawn.RaceProps.IsMechanoid && this.Props.hediffIfMech != null) {
                 this.ReplaceHediff(this.Props.hediffIfMech);
-            } else if (this.Pawn.IsMutant && this.Props.hediffIfMutant != null) {
+            } else if (this.Pawn.RaceProps.IsDrone && this.Props.hediffIfDrone != null) {
+                this.ReplaceHediff(this.Props.hediffIfDrone);
+            }
+            else if (this.Pawn.IsMutant && this.Props.hediffIfMutant != null) {
                 this.ReplaceHediff(this.Props.hediffIfMutant);
             }
         }
@@ -5812,7 +5798,7 @@ namespace HautsFramework
         {
             return this.Props.spawnedThingAndCountPerTrigger.RandomElement();
         }
-        public void SpawnThings()
+        public virtual void SpawnThings()
         {
             KeyValuePair<ThingDef, FloatRange> toSpawn = this.GetThingToSpawn();
             ThingDef def = toSpawn.Key;
@@ -8514,6 +8500,7 @@ namespace HautsFramework
         //drop pawns
         public List<PawnKindDef> allowedPawnKinds;
         public bool allowMechs;
+        public bool allowDrones;
         public bool allowDryads;
         public bool allowInsectoids;
         public bool allowEntities;
@@ -11274,7 +11261,7 @@ namespace HautsFramework
             {
                 return false;
             }
-            return (pme.allowAnyFlesh && p.RaceProps.IsFlesh) || (pme.allowAnyNonflesh && !p.RaceProps.IsFlesh) || ((pme.allowDryads || !p.RaceProps.Dryad) && (pme.allowEntities || !p.RaceProps.IsAnomalyEntity) && (pme.allowInsectoids || !p.RaceProps.Insect) && (pme.allowMechs || !p.RaceProps.IsMechanoid) && (pme.allowAnimals || !p.RaceProps.Animal) && (pme.allowHumanlikes || !p.RaceProps.Humanlike));
+            return (pme.allowAnyFlesh && p.RaceProps.IsFlesh) || (pme.allowAnyNonflesh && !p.RaceProps.IsFlesh) || ((pme.allowDryads || !p.RaceProps.Dryad) && (pme.allowEntities || !p.RaceProps.IsAnomalyEntity) && (pme.allowInsectoids || !p.RaceProps.Insect) && (pme.allowMechs || !p.RaceProps.IsMechanoid) && (pme.allowDrones || !p.RaceProps.IsDrone) && (pme.allowAnimals || !p.RaceProps.Animal) && (pme.allowHumanlikes || !p.RaceProps.Humanlike));
         }
         //checkers and lists
         public static bool CanBeHitByAirToSurface(IntVec3 iv3, Map map, bool blockedByThinRoofs)

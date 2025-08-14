@@ -49,6 +49,7 @@
 <Hauts_ExtraHitFXSuffixH> hostiles</Hauts_ExtraHitFXSuffixH>
 <Hauts_ExtraHitFXSuffix2H> humanlikes</Hauts_ExtraHitFXSuffix2H>
 <Hauts_ExtraHitFXSuffix2M> mechs</Hauts_ExtraHitFXSuffix2M>
+<Hauts_ExtraHitFXSuffix2D> drones</Hauts_ExtraHitFXSuffix2D>
 <Hauts_ExtraHitFXSuffix2Mu> anomaly-mutated creatures</Hauts_ExtraHitFXSuffix2Mu>
 <Hauts_ExtraHitFXSuffix2E> unnatural entities</Hauts_ExtraHitFXSuffix2E>
 <Hauts_GotInspiredOnHit>{0} gained an inspiration due to the {1} on-hit effect.</Hauts_GotInspiredOnHit>
