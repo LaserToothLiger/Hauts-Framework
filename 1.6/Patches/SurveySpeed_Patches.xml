@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Patch>
-	<Operation Class="PatchOperationReplace">
-		<xpath>Defs/ThingDef[defName="GroundPenetratingScanner"]/comps/li[@Class="CompProperties_ScannerMineralsDeep"]/scanSpeedStat</xpath>
-		<value>
-			<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
-		</value>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Better ground-penetrating scanner</li>
+		</mods>
+		<nomatch Class="PatchOperationReplace">
+			<xpath>Defs/ThingDef[defName="GroundPenetratingScanner"]/comps/li[@Class="CompProperties_ScannerMineralsDeep"]/scanSpeedStat</xpath>
+			<value>
+				<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
+			</value>
+		</nomatch>
+		<match Class="PatchOperationReplace">
+			<xpath>Defs/ThingDef[defName="GroundPenetratingScanner"]/comps/li[@Class="BGPScanner.CompProperties_BetterScannerMineralsDeep"]/scanSpeedStat</xpath>
+			<value>
+				<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
+			</value>
+		</match>
 	</Operation>
 	<Operation Class="PatchOperationReplace">
 		<xpath>Defs/ThingDef[defName="LongRangeMineralScanner"]/comps/li[@Class="CompProperties_LongRangeMineralScanner"]/scanSpeedStat</xpath>

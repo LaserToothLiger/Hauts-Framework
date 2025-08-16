@@ -5027,6 +5027,8 @@ namespace HautsFramework
         {
             this.compClass = typeof(HediffComp_PhylumMorphsHediff);
         }
+        public HediffDef hediffIfOrganic;
+        public HediffDef hediffIfInorganic;
         public HediffDef hediffIfAnimal;
         public HediffDef hediffIfDryad;
         public HediffDef hediffIfEntity;
@@ -5060,9 +5062,16 @@ namespace HautsFramework
                 this.ReplaceHediff(this.Props.hediffIfMech);
             } else if (this.Pawn.RaceProps.IsDrone && this.Props.hediffIfDrone != null) {
                 this.ReplaceHediff(this.Props.hediffIfDrone);
-            }
-            else if (this.Pawn.IsMutant && this.Props.hediffIfMutant != null) {
+            } else if (this.Pawn.IsMutant && this.Props.hediffIfMutant != null) {
                 this.ReplaceHediff(this.Props.hediffIfMutant);
+            } else if (this.Pawn.RaceProps.IsFlesh) {
+                if (this.Props.hediffIfOrganic != null)
+                {
+                    this.ReplaceHediff(this.Props.hediffIfOrganic);
+                }
+            } else if (this.Props.hediffIfInorganic != null) {
+                this.ReplaceHediff(this.Props.hediffIfInorganic);
+                return;
             }
         }
         public void ReplaceHediff(HediffDef newHediff)
