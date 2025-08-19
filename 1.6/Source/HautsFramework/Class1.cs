@@ -5981,6 +5981,7 @@ namespace HautsFramework
         public bool activeDuringMentalStates = true;
         public float severityIfInMentalState = 0.001f;
         public bool removeFromMoodless = false;
+        public float severityForMoodless = 0.001f;
         public float extremeMBseverity = 1f;
         public float majorMBseverity = 2f;
         public float minorMBseverity = 3f;
@@ -6009,42 +6010,35 @@ namespace HautsFramework
         public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
             base.CompPostTickInterval(ref severityAdjustment, delta);
-            if (this.Pawn.IsHashIntervalTick(250, delta) && this.Pawn.needs.mood != null)
+            if (this.Pawn.IsHashIntervalTick(250, delta))
             {
-                if (this.Pawn.MentalState == null || this.Props.activeDuringMentalStates)
+                if (this.Pawn.needs.mood != null)
                 {
-                    Need_Mood mood = this.Pawn.needs.mood;
-                    if (mood != null)
+                    if (this.Pawn.MentalState == null || this.Props.activeDuringMentalStates)
                     {
-                        if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdExtreme)
+                        Need_Mood mood = this.Pawn.needs.mood;
+                        if (mood != null)
                         {
-                            this.parent.Severity = this.Props.extremeMBseverity;
+                            if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdExtreme)
+                            {
+                                this.parent.Severity = this.Props.extremeMBseverity;
+                            } else if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdMajor) {
+                                this.parent.Severity = this.Props.majorMBseverity;
+                            } else if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdMinor) {
+                                this.parent.Severity = this.Props.minorMBseverity;
+                            } else if (mood.CurLevel < 0.65f) {
+                                this.parent.Severity = this.Props.neutralSeverity;
+                            } else if (mood.CurLevel < 0.9f) {
+                                this.parent.Severity = this.Props.contentSeverity;
+                            } else {
+                                this.parent.Severity = this.Props.happySeverity;
+                            }
                         }
-                        else if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdMajor)
-                        {
-                            this.parent.Severity = this.Props.majorMBseverity;
-                        }
-                        else if (mood.CurLevel < this.Pawn.mindState.mentalBreaker.BreakThresholdMinor)
-                        {
-                            this.parent.Severity = this.Props.minorMBseverity;
-                        }
-                        else if (mood.CurLevel < 0.65f)
-                        {
-                            this.parent.Severity = this.Props.neutralSeverity;
-                        }
-                        else if (mood.CurLevel < 0.9f)
-                        {
-                            this.parent.Severity = this.Props.contentSeverity;
-                        }
-                        else
-                        {
-                            this.parent.Severity = this.Props.happySeverity;
-                        }
+                    } else {
+                        this.parent.Severity = this.Props.severityIfInMentalState;
                     }
-                }
-                else
-                {
-                    this.parent.Severity = this.Props.severityIfInMentalState;
+                } else {
+                    this.parent.Severity = this.Props.severityForMoodless;
                 }
             }
         }
