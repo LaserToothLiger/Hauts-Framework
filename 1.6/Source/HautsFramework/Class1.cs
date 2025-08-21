@@ -8481,6 +8481,7 @@ namespace HautsFramework
         public TechLevel maxTechLevelInCategory = TechLevel.Archotech;
         public IntRange marketValueLimits = new IntRange(0,9999999);
         public IntRange numFromCategory;
+        public bool allRandomOutcomesMustBeSamePerUse;
         //making quests
         public List<QuestScriptDef> questScriptDefs;
         public List<IncidentDef> incidentDefs;
@@ -9192,11 +9193,23 @@ namespace HautsFramework
             if (pme != null)
             {
                 List<Thing> list = new List<Thing>();
+                ThingDef oneThing = null;
+                if (pme.allRandomOutcomesMustBeSamePerUse)
+                {
+                    if (!pme.targetableThings.NullOrEmpty())
+                    {
+                        oneThing = pme.targetableThings.RandomElement();
+                    } else {
+                        DefDatabase<ThingDef>.AllDefsListForReading.TryRandomElement((ThingDef x) => this.IsValidItemOption(x, pme), out oneThing);
+                    }
+                }
                 for (int i = 0; i < pme.numFromCategory.RandomInRange; i++)
                 {
                     ThingDef randomThing;
-                    if (!pme.targetableThings.NullOrEmpty())
+                    if (oneThing != null)
                     {
+                        randomThing = oneThing;
+                    } else if (!pme.targetableThings.NullOrEmpty()) {
                         randomThing = pme.targetableThings.RandomElement();
                     } else {
                         DefDatabase<ThingDef>.AllDefsListForReading.TryRandomElement((ThingDef x) => this.IsValidItemOption(x, pme), out randomThing);
@@ -9871,9 +9884,10 @@ namespace HautsFramework
             if (pme != null)
             {
                 int pawnSpawnCount = pme.numFromCategory != null ? pme.numFromCategory.RandomInRange : pme.phenomenonCount;
+                PawnKindDef onePkd = pme.allRandomOutcomesMustBeSamePerUse ? this.ChoosePawnKindToDrop(pme) : null;
                 for (int i = 0; i < pawnSpawnCount; i++)
                 {
-                    PawnKindDef pkd = this.ChoosePawnKindToDrop(pme);
+                    PawnKindDef pkd = onePkd??this.ChoosePawnKindToDrop(pme);
                     if (pkd != null)
                     {
                         list.Add(PawnGenerator.GeneratePawn(pkd, pme.startsTamed ? this.caller.Faction : null));
