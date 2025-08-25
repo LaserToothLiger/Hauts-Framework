@@ -2503,33 +2503,36 @@ namespace HautsFramework
         public override void CompPostTick(ref float severityAdjustment)
         {
             base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.Spawned)
+            if (this.Props.mote != null)
             {
-                if (this.ShouldBeActive && (this.visSetting == AuraVisSetting.Enabled || (this.Pawn.Drafted && this.visSetting == AuraVisSetting.WhileDrafted) || (Find.Selector.SelectedPawns.Contains(this.Pawn) && this.visSetting == AuraVisSetting.WhileSelected)))
+                if (this.Pawn.Spawned)
                 {
-                    if (this.mote == null || this.mote.Destroyed)
+                    if (this.ShouldBeActive && (this.visSetting == AuraVisSetting.Enabled || (this.Pawn.Drafted && this.visSetting == AuraVisSetting.WhileDrafted) || (Find.Selector.SelectedPawns.Contains(this.Pawn) && this.visSetting == AuraVisSetting.WhileSelected)))
                     {
-                        this.mote = (MoteThrownAttached_Aura)MoteMaker.MakeAttachedOverlay(base.Pawn, this.Props.mote, Vector3.zero, 2*this.FunctionalRange, -1f);
-                        this.mote.instanceColor = this.Props.color;
-                        this.mote.range = this.FunctionalRange;
-                        if (this.Pawn.IsHashIntervalTick(10))
+                        if (this.mote == null || this.mote.Destroyed)
                         {
-                            this.mote.link1.UpdateDrawPos();
+                            this.mote = (MoteThrownAttached_Aura)MoteMaker.MakeAttachedOverlay(base.Pawn, this.Props.mote, Vector3.zero, 2 * this.FunctionalRange, -1f);
+                            this.mote.instanceColor = this.Props.color;
+                            this.mote.range = this.FunctionalRange;
+                            if (this.Pawn.IsHashIntervalTick(10))
+                            {
+                                this.mote.link1.UpdateDrawPos();
+                            }
+                        } else {
+                            this.mote.range = this.FunctionalRange;
+                            this.mote.Maintain();
                         }
-                    } else {
-                        this.mote.range = this.FunctionalRange;
-                        this.mote.Maintain();
                     }
+                } else if ((this.mote != null && !this.mote.Destroyed)) {
+                    this.mote.Destroy(DestroyMode.Vanish);
                 }
-            } else if ((this.mote != null && !this.mote.Destroyed)) {
-                this.mote.Destroy(DestroyMode.Vanish);
             }
         }
         public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
             base.CompPostTickInterval(ref severityAdjustment, delta);
             Pawn pawn = this.parent.pawn;
-            if (!pawn.IsHashIntervalTick(this.Props.tickPeriodicity) || !this.ShouldBeActive)
+            if (!pawn.IsHashIntervalTick(this.Props.tickPeriodicity, delta) || !this.ShouldBeActive)
             {
                 return;
             }
@@ -8526,86 +8529,6 @@ namespace HautsFramework
         public string returnMessage;
     }
     [StaticConstructorOnStartup]
-    public class RoyalTitlePermitWorker_CaravanBoost : RoyalTitlePermitWorker
-    {
-        public override IEnumerable<FloatMenuOption> GetRoyalAidOptions(Map map, Pawn pawn, Faction faction)
-        {
-            if (pawn.GetCaravan() == null)
-            {
-                yield return new FloatMenuOption(this.def.LabelCap + ": " + "Hauts_MustBeCaravanning".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
-                yield break;
-            }
-            if (faction.HostileTo(Faction.OfPlayer))
-            {
-                yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
-                yield break;
-            }
-            Action action = null;
-            string text = this.def.LabelCap + ": ";
-            bool free;
-            if (base.FillAidOption(pawn, faction, ref text, out free))
-            {
-                action = delegate
-                {
-                };
-            }
-            yield return new FloatMenuOption(text, action, faction.def.FactionIcon, faction.Color, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0, HorizontalJustification.Left, false);
-            yield break;
-        }
-        public override IEnumerable<Gizmo> GetCaravanGizmos(Pawn pawn, Faction faction)
-        {
-            string text;
-            bool flag;
-            if (!base.FillCaravanAidOption(pawn, faction, out text, out this.free, out flag))
-            {
-                yield break;
-            }
-            Command_Action command_Action = new Command_Action
-            {
-                defaultLabel = this.def.LabelCap + " (" + pawn.LabelShort + ")",
-                defaultDesc = text,
-                icon = RoyalTitlePermitWorker_CaravanBoost.CommandTex,
-                action = delegate
-                {
-                    this.BoostCaravan(pawn, faction, this.free);
-                }
-            };
-            if (faction.HostileTo(Faction.OfPlayer))
-            {
-                command_Action.Disable("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")));
-            }
-            if (flag)
-            {
-                command_Action.Disable("CommandCallRoyalAidNotEnoughFavor".Translate());
-            }
-            yield return command_Action;
-            yield break;
-        }
-        private void BoostCaravan(Pawn caller, Faction faction, bool free)
-        {
-            Caravan caravan = caller.GetCaravan();
-            PermitMoreEffects ph = this.def.GetModExtension<PermitMoreEffects>();
-            if (ph != null && ph.hediffs != null)
-            {
-                foreach (Pawn p in caravan.PawnsListForReading)
-                {
-                    foreach (HediffDef h in ph.hediffs)
-                    {
-                        p.health.AddHediff(h);
-                    }
-                }
-                Messages.Message("Hauts_MessagePermitBoostCaravan".Translate(faction.Named("FACTION"), caller.Named("PAWN")), caravan, MessageTypeDefOf.NeutralEvent, true);
-                caller.royalty.GetPermit(this.def, faction).Notify_Used();
-                if (!free)
-                {
-                    caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
-                }
-            }
-        }
-        protected bool free;
-        private static readonly Texture2D CommandTex = ContentFinder<Texture2D>.Get("UI/Commands/CallAid", true);
-    }
-    [StaticConstructorOnStartup]
     public class RoyalTitlePermitWorker_DropBook : RoyalTitlePermitWorker_Targeted
     {
         public override void OrderForceTarget(LocalTargetInfo target)
@@ -8619,7 +8542,7 @@ namespace HautsFramework
                 yield return new FloatMenuOption(this.def.LabelCap + ": " + "CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
             }
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
@@ -8627,7 +8550,7 @@ namespace HautsFramework
             Action action = null;
             string text = this.def.LabelCap + ": ";
             bool free;
-            if (base.FillAidOption(pawn, faction, ref text, out free))
+            if (this.OverridableFillAidOption(pawn,faction,ref text,out free))
             {
                 action = delegate
                 {
@@ -8636,6 +8559,14 @@ namespace HautsFramework
             }
             yield return new FloatMenuOption(text, action, faction.def.FactionIcon, faction.Color, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0, HorizontalJustification.Left, false);
             yield break;
+        }
+        public virtual bool IsFactionHostileToPlayer(Faction faction, Pawn pawn)
+        {
+            return faction.HostileTo(Faction.OfPlayer);
+        }
+        public virtual bool OverridableFillAidOption(Pawn pawn, Faction faction, ref string text, out bool free)
+        {
+            return base.FillAidOption(pawn, faction, ref text, out free);
         }
         public override IEnumerable<Gizmo> GetCaravanGizmos(Pawn pawn, Faction faction)
         {
@@ -8680,7 +8611,7 @@ namespace HautsFramework
             {
                 command_Action.Disable("CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")));
             }
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 command_Action.Disable("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")));
             }
@@ -8726,8 +8657,13 @@ namespace HautsFramework
                     {
                         this.caller.royalty.TryRemoveFavor(this.faction, this.def.royalAid.favorCost);
                     }
+                    this.DoOtherEffect(this.caller, this.faction);
                 }
             }
+        }
+        public virtual void DoOtherEffect(Pawn caller, Faction faction)
+        {
+
         }
         private void CallResourcesToCaravan(Pawn caller, Faction faction, bool free)
         {
@@ -8746,6 +8682,7 @@ namespace HautsFramework
                 {
                     caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
                 }
+                this.DoOtherEffect(caller, faction);
             }
         }
         private Book MakeBook(PermitMoreEffects pme)
@@ -8940,7 +8877,7 @@ namespace HautsFramework
                 yield return new FloatMenuOption(this.def.LabelCap + ": " + "CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
             }
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
@@ -8948,7 +8885,7 @@ namespace HautsFramework
             Action action = null;
             string text = this.def.LabelCap + ": ";
             bool free;
-            if (base.FillAidOption(pawn, faction, ref text, out free))
+            if (this.OverridableFillAidOption(pawn,faction,ref text,out free))
             {
                 action = delegate
                 {
@@ -8957,6 +8894,14 @@ namespace HautsFramework
             }
             yield return new FloatMenuOption(text, action, faction.def.FactionIcon, faction.Color, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0, HorizontalJustification.Left, false);
             yield break;
+        }
+        public virtual bool IsFactionHostileToPlayer(Faction faction, Pawn pawn)
+        {
+            return faction.HostileTo(Faction.OfPlayer);
+        }
+        public virtual bool OverridableFillAidOption(Pawn pawn, Faction faction, ref string text, out bool free)
+        {
+            return base.FillAidOption(pawn, faction, ref text, out free);
         }
         public override IEnumerable<Gizmo> GetCaravanGizmos(Pawn pawn, Faction faction)
         {
@@ -8998,7 +8943,7 @@ namespace HautsFramework
             {
                 command_Action.Disable("CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")));
             }
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 command_Action.Disable("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")));
             }
@@ -9058,7 +9003,12 @@ namespace HautsFramework
                 {
                     this.caller.royalty.TryRemoveFavor(this.faction, this.def.royalAid.favorCost);
                 }
+                this.DoOtherEffect(this.caller,this.faction);
             }
+        }
+        public virtual void DoOtherEffect(Pawn caller, Faction faction)
+        {
+
         }
         private void CallResourcesToCaravan(Pawn caller, Faction faction, bool free)
         {
@@ -9087,6 +9037,7 @@ namespace HautsFramework
             {
                 caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
             }
+            this.DoOtherEffect(caller, faction);
         }
         private Faction faction;
         private static readonly Texture2D CommandTex = ContentFinder<Texture2D>.Get("UI/Commands/CallAid", true);
@@ -9105,7 +9056,7 @@ namespace HautsFramework
                 yield return new FloatMenuOption(this.def.LabelCap + ": " + "CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
             }
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
@@ -9113,7 +9064,7 @@ namespace HautsFramework
             Action action = null;
             string text = this.def.LabelCap + ": ";
             bool free;
-            if (base.FillAidOption(pawn, faction, ref text, out free))
+            if (this.OverridableFillAidOption(pawn,faction,ref text,out free))
             {
                 action = delegate
                 {
@@ -9122,6 +9073,14 @@ namespace HautsFramework
             }
             yield return new FloatMenuOption(text, action, faction.def.FactionIcon, faction.Color, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0, HorizontalJustification.Left, false);
             yield break;
+        }
+        public virtual bool IsFactionHostileToPlayer(Faction faction, Pawn pawn)
+        {
+            return faction.HostileTo(Faction.OfPlayer);
+        }
+        public virtual bool OverridableFillAidOption(Pawn pawn, Faction faction, ref string text, out bool free)
+        {
+            return base.FillAidOption(pawn, faction, ref text, out free);
         }
         public override IEnumerable<Gizmo> GetCaravanGizmos(Pawn pawn, Faction faction)
         {
@@ -9163,7 +9122,7 @@ namespace HautsFramework
             {
                 command_Action.Disable("CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")));
             }
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 command_Action.Disable("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")));
             }
@@ -9241,8 +9200,13 @@ namespace HautsFramework
                     {
                         this.caller.royalty.TryRemoveFavor(this.faction, this.def.royalAid.favorCost);
                     }
+                    this.DoOtherEffect(this.caller,this.faction);
                 }
             }
+        }
+        public virtual void DoOtherEffect(Pawn caller, Faction faction)
+        {
+
         }
         public bool IsValidItemOption(ThingDef x, PermitMoreEffects pme)
         {
@@ -9286,6 +9250,7 @@ namespace HautsFramework
                         {
                             caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
                         }
+                        this.DoOtherEffect(this.caller,this.faction);
                     }
                 }
             }
@@ -9298,14 +9263,14 @@ namespace HautsFramework
     {
         public override IEnumerable<FloatMenuOption> GetRoyalAidOptions(Map map, Pawn pawn, Faction faction)
         {
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
             }
             Action action = null;
             string text = this.def.LabelCap + ": ";
-            if (base.FillAidOption(pawn, faction, ref text, out bool free))
+            if (this.OverridableFillAidOption(pawn,faction,ref text,out free))
             {
                 action = delegate
                 {
@@ -9314,6 +9279,14 @@ namespace HautsFramework
             }
             yield return new FloatMenuOption(text, action, faction.def.FactionIcon, faction.Color, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0, HorizontalJustification.Left, false);
             yield break;
+        }
+        public virtual bool IsFactionHostileToPlayer(Faction faction, Pawn pawn)
+        {
+            return faction.HostileTo(Faction.OfPlayer);
+        }
+        public virtual bool OverridableFillAidOption(Pawn pawn, Faction faction, ref string text, out bool free)
+        {
+            return base.FillAidOption(pawn, faction, ref text, out free);
         }
         public override IEnumerable<Gizmo> GetCaravanGizmos(Pawn pawn, Faction faction)
         {
@@ -9341,7 +9314,12 @@ namespace HautsFramework
                 {
                     caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
                 }
+                this.DoOtherEffect(caller,faction);
             }
+        }
+        public virtual void DoOtherEffect(Pawn caller, Faction faction)
+        {
+
         }
     }
     public class LumpQuest : DefModExtension
@@ -9361,7 +9339,7 @@ namespace HautsFramework
         }
         public override IEnumerable<FloatMenuOption> GetRoyalAidOptions(Map map, Pawn pawn, Faction faction)
         {
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
@@ -9374,7 +9352,7 @@ namespace HautsFramework
             Action action = null;
             string text = this.def.LabelCap + ": ";
             bool free;
-            if (base.FillAidOption(pawn, faction, ref text, out free))
+            if (this.OverridableFillAidOption(pawn,faction,ref text,out free))
             {
                 action = delegate
                 {
@@ -9383,6 +9361,14 @@ namespace HautsFramework
             }
             yield return new FloatMenuOption(text, action, faction.def.FactionIcon, faction.Color, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0, HorizontalJustification.Left, false);
             yield break;
+        }
+        public virtual bool IsFactionHostileToPlayer(Faction faction, Pawn pawn)
+        {
+            return faction.HostileTo(Faction.OfPlayer);
+        }
+        public virtual bool OverridableFillAidOption(Pawn pawn, Faction faction, ref string text, out bool free)
+        {
+            return base.FillAidOption(pawn, faction, ref text, out free);
         }
         public override IEnumerable<Gizmo> GetCaravanGizmos(Pawn pawn, Faction faction)
         {
@@ -9402,7 +9388,7 @@ namespace HautsFramework
                     this.GiveQuest(pawn, faction, new IncidentParms(), this.free);
                 }
             };
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 command_Action.Disable("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")));
             }
@@ -9486,8 +9472,13 @@ namespace HautsFramework
                     {
                         caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
                     }
+                    this.DoOtherEffect(caller,faction);
                 }
             }
+        }
+        public virtual void DoOtherEffect(Pawn caller, Faction faction)
+        {
+
         }
         private static readonly Texture2D CommandTex = ContentFinder<Texture2D>.Get("UI/Commands/CallAid", true);
     }
@@ -9552,9 +9543,19 @@ namespace HautsFramework
         }
         public override IEnumerable<FloatMenuOption> GetRoyalAidOptions(Map map, Pawn pawn, Faction faction)
         {
+            if (map.generatorDef.isUnderground)
+            {
+                yield return new FloatMenuOption(this.def.LabelCap + ": " + "CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
+                yield break;
+            }
+            if (this.IsFactionHostileToPlayer(faction,pawn))
+            {
+                yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
+                yield break;
+            }
             Action action = null;
             string text = this.def.LabelCap + ": ";
-            if (base.FillAidOption(pawn, faction, ref text, out bool free))
+            if (this.OverridableFillAidOption(pawn,faction,ref text,out free))
             {
                 action = delegate
                 {
@@ -9564,9 +9565,13 @@ namespace HautsFramework
             yield return new FloatMenuOption(text, action, faction.def.FactionIcon, faction.Color, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0, HorizontalJustification.Left, false);
             yield break;
         }
+        public virtual bool OverridableFillAidOption(Pawn pawn, Faction faction, ref string text, out bool free)
+        {
+            return base.FillAidOption(pawn, faction, ref text, out free);
+        }
         private void BeginInvest(Pawn pawn, Map map, Faction faction, bool free)
         {
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 return;
             }
@@ -9583,6 +9588,10 @@ namespace HautsFramework
             this.calledFaction = faction;
             this.free = free;
             Find.Targeter.BeginTargeting(this, null, false, null, null, true);
+        }
+        public virtual bool IsFactionHostileToPlayer(Faction faction, Pawn pawn)
+        {
+            return faction.HostileTo(Faction.OfPlayer);
         }
         private void Invest(Thing thing, Faction faction)
         {
@@ -9620,7 +9629,12 @@ namespace HautsFramework
                 {
                     this.caller.royalty.TryRemoveFavor(this.calledFaction, this.def.royalAid.favorCost);
                 }
+                this.DoOtherEffect(this.caller,this.calledFaction);
             }
+        }
+        public virtual void DoOtherEffect(Pawn caller, Faction faction)
+        {
+
         }
         private Faction calledFaction;
     }
@@ -9719,9 +9733,19 @@ namespace HautsFramework
         }
         public override IEnumerable<FloatMenuOption> GetRoyalAidOptions(Map map, Pawn pawn, Faction faction)
         {
+            if (map.generatorDef.isUnderground)
+            {
+                yield return new FloatMenuOption(this.def.LabelCap + ": " + "CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
+                yield break;
+            }
+            if (this.IsFactionHostileToPlayer(faction, pawn))
+            {
+                yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
+                yield break;
+            }
             Action action = null;
             string text = this.def.LabelCap + ": ";
-            if (base.FillAidOption(pawn, faction, ref text, out bool free))
+            if (this.OverridableFillAidOption(pawn,faction,ref text,out free))
             {
                 action = delegate
                 {
@@ -9731,9 +9755,17 @@ namespace HautsFramework
             yield return new FloatMenuOption(text, action, faction.def.FactionIcon, faction.Color, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0, HorizontalJustification.Left, false);
             yield break;
         }
+        public virtual bool IsFactionHostileToPlayer(Faction faction, Pawn pawn)
+        {
+            return faction.HostileTo(Faction.OfPlayer);
+        }
+        public virtual bool OverridableFillAidOption(Pawn pawn, Faction faction, ref string text, out bool free)
+        {
+            return base.FillAidOption(pawn, faction, ref text, out free);
+        }
         private void BeginAffectPawn(Pawn pawn, Map map, Faction faction, bool free)
         {
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 return;
             }
@@ -9770,7 +9802,12 @@ namespace HautsFramework
                 {
                     caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
                 }
+                this.DoOtherEffect(caller,faction);
             }
+        }
+        public virtual void DoOtherEffect(Pawn caller, Faction faction)
+        {
+
         }
         public Faction CalledFaction { 
             get {
@@ -9813,7 +9850,7 @@ namespace HautsFramework
                 yield return new FloatMenuOption(this.def.LabelCap + ": " + "CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
             }
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 yield return new FloatMenuOption("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")), null, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0);
                 yield break;
@@ -9821,7 +9858,7 @@ namespace HautsFramework
             Action action = null;
             string text = this.def.LabelCap + ": ";
             bool free;
-            if (base.FillAidOption(pawn, faction, ref text, out free))
+            if (this.OverridableFillAidOption(pawn,faction,ref text,out free))
             {
                 action = delegate
                 {
@@ -9830,6 +9867,14 @@ namespace HautsFramework
             }
             yield return new FloatMenuOption(text, action, faction.def.FactionIcon, faction.Color, MenuOptionPriority.Default, null, null, 0f, null, null, true, 0, HorizontalJustification.Left, false);
             yield break;
+        }
+        public virtual bool IsFactionHostileToPlayer(Faction faction, Pawn pawn)
+        {
+            return faction.HostileTo(Faction.OfPlayer);
+        }
+        public virtual bool OverridableFillAidOption(Pawn pawn, Faction faction, ref string text, out bool free)
+        {
+            return base.FillAidOption(pawn, faction, ref text, out free);
         }
         public override IEnumerable<Gizmo> GetCaravanGizmos(Pawn pawn, Faction faction)
         {
@@ -9853,7 +9898,7 @@ namespace HautsFramework
             {
                 command_Action.Disable("CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")));
             }
-            if (faction.HostileTo(Faction.OfPlayer))
+            if (this.IsFactionHostileToPlayer(faction, pawn))
             {
                 command_Action.Disable("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")));
             }
@@ -9905,7 +9950,12 @@ namespace HautsFramework
                 {
                     this.caller.royalty.TryRemoveFavor(this.faction, this.def.royalAid.favorCost);
                 }
+                this.DoOtherEffect(this.caller,this.faction);
             }
+        }
+        public virtual void DoOtherEffect(Pawn caller, Faction faction)
+        {
+
         }
         private void CallResourcesToCaravan(Pawn caller, Faction faction, bool free)
         {
@@ -9939,6 +9989,7 @@ namespace HautsFramework
             {
                 caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
             }
+            this.DoOtherEffect(caller,faction);
         }
         private PawnKindDef ChoosePawnKindToDrop(PermitMoreEffects pme)
         {
@@ -11473,6 +11524,51 @@ namespace HautsFramework
         public static void AddBadEvent(IncidentDef def)
         {
             badEventPool.Add(def);
+        }
+        public static void MakeGoodEvent(Pawn p)
+        {
+            List<IncidentDef> incidents = HautsUtility.goodEventPool;
+            if (incidents.Count > 0)
+            {
+                bool incidentFired = false;
+                int tries = 0;
+                while (!incidentFired && tries <= 50)
+                {
+                    IncidentDef toTryFiring = incidents.RandomElement<IncidentDef>();
+                    IncidentParms parms = null;
+                    if (toTryFiring.TargetAllowed(Find.World))
+                    {
+                        parms = new IncidentParms
+                        {
+                            target = Find.World
+                        };
+                    }
+                    else if (Find.Maps.Count > 0)
+                    {
+                        Map mapToHit = Find.Maps.RandomElement<Map>();
+                        if (Find.AnyPlayerHomeMap != null && Rand.Value <= 0.5f)
+                        {
+                            mapToHit = Find.AnyPlayerHomeMap;
+                        }
+                        parms = new IncidentParms
+                        {
+                            target = mapToHit
+                        };
+                    }
+                    if (parms != null)
+                    {
+                        IncidentParms incidentParms = StorytellerUtility.DefaultParmsNow(toTryFiring.category, parms.target);
+                        incidentParms.forced = true;
+                        if (toTryFiring.Worker.CanFireNow(parms))
+                        {
+                            incidentFired = true;
+                            toTryFiring.Worker.TryExecute(parms);
+                            break;
+                        }
+                    }
+                    tries++;
+                }
+            }
         }
         public static bool COaNN_TraitReset_ShouldDoBonusEffect(TraitDef def)
         {
