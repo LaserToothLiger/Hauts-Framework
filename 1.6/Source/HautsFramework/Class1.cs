@@ -9598,15 +9598,27 @@ namespace HautsFramework
             PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
             if (pme != null)
             {
+                int amountTaken = Math.Min(thing.stackCount, (int)pme.extraNumber.max);
                 if (pme.gambaDropPodSoNotInstant)
                 {
                     IncidentParms parms = new IncidentParms();
-                    parms.gifts = new List<Thing>
-                    {
-                        thing
-                    };
                     parms.target = thing.Map;
-                    thing.DeSpawn();
+                    if (amountTaken < thing.stackCount)
+                    {
+                        thing.stackCount -= amountTaken;
+                        Thing thing2 = ThingMaker.MakeThing(thing.def,thing.Stuff);
+                        thing2.stackCount = amountTaken;
+                        parms.gifts = new List<Thing>
+                        {
+                            thing2
+                        };
+                    } else {
+                        parms.gifts = new List<Thing>
+                        {
+                            thing
+                        };
+                        thing.DeSpawn();
+                    }
                     //this.calledFaction.leader.inventory.TryAddAndUnforbid(thing);
                     parms.controllerPawn = this.caller;
                     parms.biocodeWeaponsChance = pme.gambaFactorRange.min;
@@ -9615,12 +9627,18 @@ namespace HautsFramework
                     parms.faction = faction;
                     Find.Storyteller.incidentQueue.Add(HautsDefOf.Hauts_InvestmentReturn, Find.TickManager.TicksGame + pme.gambaReturnDelay.RandomInRange, parms, 600);
                 } else {
-                    float comeOn = thing.stackCount * pme.gambaFactorRange.RandomInRange;
-                    thing.stackCount = (int)comeOn;
-                    if (thing.stackCount > thing.def.stackLimit)
+                    float comeOn = amountTaken * pme.gambaFactorRange.RandomInRange;
+                    thing.stackCount -= amountTaken;
+                    thing.stackCount += (int)comeOn;
+                    if (thing.stackCount <= 0)
                     {
-                        Thing thing2 = thing.SplitOff(thing.stackCount - thing.def.stackLimit);
-                        GenDrop.TryDropSpawn(thing2, thing.PositionHeld, map, ThingPlaceMode.Near, out Thing resultingThing, null, null, true);
+                        thing.Destroy();
+                    } else {
+                        while (thing.stackCount > thing.def.stackLimit)
+                        {
+                            Thing thing2 = thing.SplitOff(thing.stackCount - thing.def.stackLimit);
+                            GenDrop.TryDropSpawn(thing2, thing.PositionHeld, map, ThingPlaceMode.Near, out Thing resultingThing, null, null, true);
+                        }
                     }
                 }
                 Messages.Message(pme.onUseMessage.Translate(faction.Named("FACTION")), null, MessageTypeDefOf.NeutralEvent, true);
@@ -9671,6 +9689,7 @@ namespace HautsFramework
             return false;
         }
     }
+    [StaticConstructorOnStartup]
     public class RoyalTitlePermitWorker_TargetPawn : RoyalTitlePermitWorker_Targeted
     {
         public AcceptanceReport IsValidThing(LocalTargetInfo lti)
@@ -9730,6 +9749,48 @@ namespace HautsFramework
                     }
                 }
             }
+        }
+        public override IEnumerable<Gizmo> GetCaravanGizmos(Pawn pawn, Faction faction)
+        {
+            string text;
+            bool flag;
+            if (!base.FillCaravanAidOption(pawn, faction, out text, out this.free, out flag))
+            {
+                yield break;
+            }
+            Command_Action command_Action = new Command_Action
+            {
+                defaultLabel = this.def.LabelCap + " (" + pawn.LabelShort + ")",
+                defaultDesc = text,
+                icon = RoyalTitlePermitWorker_TargetPawn.CommandTex,
+                action = delegate
+                {
+                    this.GiveHediffInCaravan(pawn, faction, this.free);
+                }
+            };
+            if (pawn.MapHeld != null && pawn.MapHeld.generatorDef.isUnderground)
+            {
+                command_Action.Disable("CommandCallRoyalAidMapUnreachable".Translate(faction.Named("FACTION")));
+            }
+            if (this.IsFactionHostileToPlayer(faction, pawn))
+            {
+                command_Action.Disable("CommandCallRoyalAidFactionHostile".Translate(faction.Named("FACTION")));
+            }
+            if (flag)
+            {
+                command_Action.Disable("CommandCallRoyalAidNotEnoughFavor".Translate());
+            }
+            yield return command_Action;
+            yield break;
+        }
+        private void GiveHediffInCaravan(Pawn caller, Faction faction, bool free)
+        {
+            Caravan caravan = caller.GetCaravan();
+            this.GiveHediffInCaravanInner(caller,faction,free,caravan);
+        }
+        public virtual void GiveHediffInCaravanInner(Pawn caller, Faction faction, bool free, Caravan caravan)
+        {
+            this.AffectPawn(caller, faction);
         }
         public override IEnumerable<FloatMenuOption> GetRoyalAidOptions(Map map, Pawn pawn, Faction faction)
         {
@@ -9818,6 +9879,7 @@ namespace HautsFramework
         {
         }
         private Faction calledFaction;
+        private static readonly Texture2D CommandTex = ContentFinder<Texture2D>.Get("UI/Commands/CallAid", true);
     }
     public class RoyalTitlePermitWorker_GiveHediffs : RoyalTitlePermitWorker_TargetPawn
     {
