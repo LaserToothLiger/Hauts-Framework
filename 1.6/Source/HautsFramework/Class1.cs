@@ -1050,7 +1050,7 @@ namespace HautsFramework
         }
         public static void HautsNotify_LifeStageStartedPostfix(Pawn pawn)
         {
-            if (pawn.story != null && pawn.story.bodyType != null)
+            if (pawn.story != null && pawn.story.bodyType != null && pawn.def == ThingDefOf.Human)
             {
                 foreach (Trait t in pawn.story.traits.TraitsSorted)
                 {
@@ -9765,6 +9765,7 @@ namespace HautsFramework
                 icon = RoyalTitlePermitWorker_TargetPawn.CommandTex,
                 action = delegate
                 {
+                    this.caller = pawn;
                     this.GiveHediffInCaravan(pawn, faction, this.free);
                 }
             };
@@ -9844,7 +9845,7 @@ namespace HautsFramework
             this.free = free;
             Find.Targeter.BeginTargeting(this, null, false, null, null, true);
         }
-        private void AffectPawn(Pawn pawn, Faction faction)
+        protected void AffectPawn(Pawn pawn, Faction faction)
         {
             PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
             if (pme != null)
@@ -9853,17 +9854,17 @@ namespace HautsFramework
                 {
                     Messages.Message(pme.onUseMessage.Translate(faction.Named("FACTION"), pawn.Named("PAWN")), pawn, MessageTypeDefOf.NeutralEvent, true);
                 }
-                if (pme.soundDef != null)
+                if (pme.soundDef != null && pawn.SpawnedOrAnyParentSpawned)
                 {
                     pme.soundDef.PlayOneShot(new TargetInfo(pawn.PositionHeld, pawn.MapHeld, false));
                 }
                 this.AffectPawnInner(pme,pawn,faction);
-                caller.royalty.GetPermit(this.def, faction).Notify_Used();
-                if (!free)
+                this.caller.royalty.GetPermit(this.def, faction).Notify_Used();
+                if (!this.free)
                 {
-                    caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
+                    this.caller.royalty.TryRemoveFavor(faction, this.def.royalAid.favorCost);
                 }
-                this.DoOtherEffect(caller,faction);
+                this.DoOtherEffect(this.caller,faction);
             }
         }
         public virtual void DoOtherEffect(Pawn caller, Faction faction)
