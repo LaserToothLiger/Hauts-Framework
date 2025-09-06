@@ -165,6 +165,14 @@ namespace HautsFramework
                               postfix: new HarmonyMethod(patchType, nameof(HautsResetMaxPostfix)));
                 harmony.Patch(AccessTools.Method(typeof(GeneResourceDrainUtility), nameof(GeneResourceDrainUtility.OffsetResource)),
                               prefix: new HarmonyMethod(patchType, nameof(HautsOffsetResourcePrefix)));
+                HautsUtility.mechlinkDefs = new List<HediffDef>();
+                foreach (HediffDef h in DefDatabase<HediffDef>.AllDefsListForReading)
+                {
+                    if (h.HasComp(typeof(HediffComp_MCR_Storage)))
+                    {
+                        HautsUtility.mechlinkDefs.Add(h);
+                    }
+                }
             }
             harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.PreApplyDamage)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsFramework_PreApplyDamagePostfix)));
@@ -253,6 +261,7 @@ namespace HautsFramework
             //ignore natural goodwill's influence on the amount of goodwill gained or lost by a particular HED
             harmony.Patch(AccessTools.Method(typeof(Faction), nameof(Faction.TryAffectGoodwillWith)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsTryAffectGoodwillWithPrefix)));
+            HautsUtility.isHighFantasy = ModsConfig.IsActive("MrSamuelStreamer.RPGAdventureFlavour.DEV");
             Log.Message("Hauts_Initialize".Translate().CapitalizeFirst());
         }
         internal static object GetInstanceField(Type type, object instance, string fieldName)
@@ -681,7 +690,7 @@ namespace HautsFramework
         {
             if (__instance.Pawn.Spawned && __instance.AnySelectedDraftedMechs)
             {
-                Hediff mechlink = __instance.Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.MechlinkImplant);
+                Hediff mechlink = HautsUtility.GetStrongestMechlink(__instance.Pawn);
                 if (mechlink != null)
                 {
                     HediffComp_MCR_Storage hcmcrs = mechlink.TryGetComp<HediffComp_MCR_Storage>();
@@ -4791,6 +4800,10 @@ namespace HautsFramework
                 return false;
             }
         }
+        public virtual void DoToDistanceBrokenLink(Thing other)
+        {
+
+        }
         public override void CompPostTick(ref float severityAdjustment)
         {
             base.CompPostTick(ref severityAdjustment);
@@ -4812,6 +4825,7 @@ namespace HautsFramework
                     {
                         if (this.Props.maxDistance > 0f && !this.Pawn.PositionHeld.InHorDistOf(this.others[i].PositionHeld, this.Props.maxDistance))
                         {
+                            this.DoToDistanceBrokenLink(this.others[i]);
                             bool letPairedHediffRemoveItself = false;
                             if (this.others[i] is Pawn p2)
                             {
@@ -11643,7 +11657,33 @@ namespace HautsFramework
         }
         public static bool IsHighFantasy()
         {
-            return ModsConfig.IsActive("MrSamuelStreamer.RPGAdventureFlavour.DEV");
+            return HautsUtility.isHighFantasy;
+        }
+        public static Hediff GetStrongestMechlink(Pawn p)
+        {
+            float bestCommandRange = 0f;
+            Hediff result = null;
+            foreach (Hediff h in p.health.hediffSet.hediffs)
+            {
+                if (HautsUtility.IsMechlink(h))
+                {
+                    HediffStage cs = h.CurStage;
+                    if (cs != null)
+                    {
+                        float cr = cs.statOffsets.GetStatOffsetFromList(HautsDefOf.Hauts_MechCommandRange);
+                        if (cr > bestCommandRange)
+                        {
+                            result = h;
+                            bestCommandRange = cr;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+        public static bool IsMechlink(Hediff h)
+        {
+            return HautsUtility.mechlinkDefs.Contains(h.def);
         }
         public static bool IsAwakenedPsychic(Pawn pawn)
         {
@@ -11652,6 +11692,8 @@ namespace HautsFramework
         private static readonly List<TraitDef> exciseTraitExemptions = new List<TraitDef>() { };
         public static readonly List<IncidentDef> goodEventPool = new List<IncidentDef>() { };
         public static readonly List<IncidentDef> badEventPool = new List<IncidentDef>() { };
+        public static bool isHighFantasy;
+        public static List<HediffDef> mechlinkDefs;
         public struct BookSubjectSymbol
         {
             public string keyword;

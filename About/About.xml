@@ -30,6 +30,7 @@ Patch notes for all mods, including unreleased (I'm tired of maintaining separat
 	</modDependencies>
 	<loadBefore>
 		<li>lts.I</li>
+		<li>Veltaris.Framework</li>
 	</loadBefore>
 	<loadAfter>
 		<li>OskarPotocki.VanillaFactionsExpanded.Core</li>
