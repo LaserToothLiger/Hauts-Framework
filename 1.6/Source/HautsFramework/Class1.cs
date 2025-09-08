@@ -971,14 +971,6 @@ namespace HautsFramework
                 pawn.needs.AddOrRemoveNeedsAsAppropriate();
             }
         }
-        /*public static void HautsPostGameStartPostfix()
-        {
-            HautsUtility.TraitGrantedStuffLoadCheck(Find.WorldPawns.AllPawnsAlive);
-            foreach (Map m in Find.Maps)
-            {
-                HautsUtility.TraitGrantedStuffLoadCheck(m.mapPawns.AllPawns);
-            }
-        }*/
         public static IEnumerable<Gizmo> HautsGetGizmosPostfix(IEnumerable<Gizmo> __result, Pawn __instance)
         {
             foreach (Gizmo gizmo in __result)
@@ -1454,6 +1446,10 @@ namespace HautsFramework
                 if (__state != null)
                 {
                     __state.AddPawn(pawn, true);
+                }
+                if (pawn.story != null && pawn.story.traits != null)
+                {
+                    HautsUtility.TraitGrantedStuffRegeneration(pawn);
                 }
             }
         }
