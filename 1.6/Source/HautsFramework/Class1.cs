@@ -7829,6 +7829,8 @@ namespace HautsFramework
         public bool applyToTarget = true;
         public float severity = -1f;
         public bool ignoreSelf;
+        public bool autoSelectIfAI = true;
+        public string menuString;
     }
     public class CompAbilityEffect_GiveHediffFromMenu : CompAbilityEffect_WithDuration
     {
@@ -7859,23 +7861,40 @@ namespace HautsFramework
                 this.ApplyInner(this.parent.pawn, target.Pawn);
             }
         }
+        public override void CompTick()
+        {
+            base.CompTick();
+            if (this.Props.autoSelectIfAI && this.parent.pawn.Faction != Faction.OfPlayer)
+            {
+                this.Apply(this.parent.pawn, this.parent.pawn);
+            }
+        }
         protected void ApplyInner(Pawn target, Pawn other)
         {
             if (target != null)
             {
                 if (this.parent.pawn != null && this.parent.pawn.Faction == Faction.OfPlayer)
                 {
-                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, target, other, this.parent.pawn, this.Props.hediffs));
+                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, target, other, this.parent.pawn, this.Props.hediffs, this.Props.menuString));
                 } else {
                     Hediff hediff = HediffMaker.MakeHediff(this.Props.hediffs.RandomElement<HediffDef>(), target, null);
                     target.health.AddHediff(hediff, this.Props.onlyBrain ? target.health.hediffSet.GetBrain() : null, null, null);
+                    CompAbilityEffect_RemoveHediff caerh = this.parent.CompOfType<CompAbilityEffect_RemoveHediff>();
+                    if (caerh != null)
+                    {
+                        Hediff h = this.parent.pawn.health.hediffSet.GetFirstHediffOfDef(caerh.Props.hediffDef);
+                        if (h != null)
+                        {
+                            this.parent.pawn.health.RemoveHediff(h);
+                        }
+                    }
                 }
             }
         }
     }
     public class Dialog_GiveHediffFromMenu : Window
     {
-        public Dialog_GiveHediffFromMenu(CompAbilityEffect_GiveHediffFromMenu ability, Pawn pawn, Pawn other, Pawn caster, List<HediffDef> hediffs)
+        public Dialog_GiveHediffFromMenu(CompAbilityEffect_GiveHediffFromMenu ability, Pawn pawn, Pawn other, Pawn caster, List<HediffDef> hediffs, string menuLabel)
         {
             this.pawn = pawn;
             this.other = other;
@@ -7887,7 +7906,7 @@ namespace HautsFramework
             this.closeOnClickedOutside = true;
             this.closeOnAccept = false;
             this.closeOnCancel = true;
-            this.optionalTitle = "HVT_HediffMenu".Translate(this.pawn.Name.ToStringShort);
+            this.optionalTitle = menuLabel.Translate(this.pawn.Name.ToStringShort);
             this.possibleHediffs = hediffs;
         }
         private float Height

@@ -17,11 +17,22 @@
 			</value>
 		</match>
 	</Operation>
-	<Operation Class="PatchOperationReplace">
-		<xpath>Defs/ThingDef[defName="LongRangeMineralScanner"]/comps/li[@Class="CompProperties_LongRangeMineralScanner"]/scanSpeedStat</xpath>
-		<value>
-			<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
-		</value>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>[SR]Realistic Ore Generation (Continued)</li>
+		</mods>
+		<nomatch Class="PatchOperationReplace">
+			<xpath>Defs/ThingDef[defName="LongRangeMineralScanner"]/comps/li[@Class="CompProperties_LongRangeMineralScanner"]/scanSpeedStat</xpath>
+			<value>
+				<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
+			</value>
+		</nomatch>
+		<match Class="PatchOperationReplace">
+			<xpath>Defs/ThingDef[defName="LongRangeMineralScanner"]/comps/li[@Class="RabiSquare.RealisticOreGeneration.CompPropertiesOreScanner"]/scanSpeedStat</xpath>
+			<value>
+				<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
+			</value>
+		</match>
 	</Operation>
 	<Operation Class="PatchOperationFindMod">
 		<mods>
