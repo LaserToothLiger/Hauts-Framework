@@ -3535,11 +3535,28 @@ namespace HautsFramework
         }
         public virtual bool CanAffectTarget(Pawn pawn)
         {
-            return Rand.Chance(this.ChanceForVictim(pawn)) && (this.Pawn.HostileTo(pawn) ? this.Props.canAffectHostiles : this.Props.canAffectFriendlies) && (pawn.IsMutant ? this.Props.canAffectMutants : ((this.Props.canAffectAnimals || !pawn.RaceProps.Animal) && (this.Props.canAffectHumanlikes || !pawn.RaceProps.Humanlike) && (this.Props.canAffectMechs || !pawn.RaceProps.IsMechanoid) && (this.Props.canAffectDrones || !pawn.RaceProps.IsDrone) && (this.Props.canAffectEntities || !pawn.RaceProps.IsAnomalyEntity))) && ((pawn.SpawnedOrAnyParentSpawned && this.Pawn.SpawnedOrAnyParentSpawned && pawn.SpawnedParentOrMe.Position.InHorDistOf(this.Pawn.SpawnedParentOrMe.Position, Math.Max(1.42f, this.Props.cellRange))) || (pawn.Tile != this.Pawn.Tile && Find.WorldGrid.TraversalDistanceBetween(pawn.Tile, this.Pawn.Tile, true) <= this.Props.worldTileRange));
+            return Rand.Chance(this.ChanceForVictim(pawn)) && (this.Pawn.HostileTo(pawn) ? this.Props.canAffectHostiles : this.Props.canAffectFriendlies) && (pawn.IsMutant ? this.Props.canAffectMutants : ((this.Props.canAffectAnimals || !pawn.RaceProps.Animal) && (this.Props.canAffectHumanlikes || !pawn.RaceProps.Humanlike) && (this.Props.canAffectMechs || !pawn.RaceProps.IsMechanoid) && (this.Props.canAffectDrones || !pawn.RaceProps.IsDrone) && (this.Props.canAffectEntities || !pawn.RaceProps.IsAnomalyEntity)));
         }
         public virtual bool CanAffectTargetThing(Thing thing)
         {
-            return Rand.Chance(this.ChanceForVictimThing(thing)) && (this.Pawn.HostileTo(thing) ? this.Props.canAffectHostiles : this.Props.canAffectFriendlies) && ((thing is Building && this.Props.canAffectBuildings) || (thing is Plant && this.Props.canAffectPlants) || (thing.def.category == ThingCategory.Item)) && ((thing.SpawnedOrAnyParentSpawned && this.Pawn.SpawnedOrAnyParentSpawned && thing.SpawnedParentOrMe.Position.InHorDistOf(this.Pawn.SpawnedParentOrMe.Position, Math.Max(1.42f, this.Props.cellRange))) || (thing.Tile != this.Pawn.Tile && Find.WorldGrid.TraversalDistanceBetween(thing.Tile, this.Pawn.Tile, true) <= this.Props.worldTileRange));
+            return Rand.Chance(this.ChanceForVictimThing(thing)) && (this.Pawn.HostileTo(thing) ? this.Props.canAffectHostiles : this.Props.canAffectFriendlies) && ((thing is Building && this.Props.canAffectBuildings) || (thing is Plant && this.Props.canAffectPlants) || (thing.def.category == ThingCategory.Item));
+        }
+        public virtual bool RangeCheck(Thing thing, DamageInfo dinfo)
+        {
+            if (thing.Tile != this.Pawn.Tile)
+            {
+                return Find.WorldGrid.TraversalDistanceBetween(thing.Tile, this.Pawn.Tile, true) <= this.Props.worldTileRange;
+            }
+            if (thing.SpawnedOrAnyParentSpawned && this.Pawn.SpawnedOrAnyParentSpawned)
+            {
+                float cellDist = thing.Position.DistanceTo(this.Pawn.Position) - Math.Max(1.42f,this.Props.cellRange);
+                if (cellDist > 0 && dinfo.Weapon != null && dinfo.Weapon.StatBaseDefined(VEFDefOf.VEF_MeleeWeaponRange))
+                {
+                    cellDist -= dinfo.Weapon.GetStatValueAbstract(VEFDefOf.VEF_MeleeWeaponRange);
+                }
+                return cellDist <= 0f;
+            }
+            return false;
         }
         public override void Notify_PawnUsedVerb(Verb verb, LocalTargetInfo target)
         {
@@ -6665,6 +6682,7 @@ namespace HautsFramework
             new CurvePoint(0f, 0f)
         });
         public float caravanWaterTileSeverity = 3f;
+        public bool disabledIfNotSlowedInWater;
     }
     public class HediffComp_WaterImmersionSeverity : HediffComp
     {
@@ -6683,6 +6701,18 @@ namespace HautsFramework
                 this.parent.Severity = this.Props.baseSeverity;
                 if (this.Pawn.Spawned && this.Pawn.PositionHeld.GetTerrain(this.Pawn.MapHeld) != null)
                 {
+                    if (this.Props.disabledIfNotSlowedInWater)
+                    {
+                        if (VEF.AnimalBehaviours.StaticCollectionsClass.floating_animals.Contains(this.Pawn))
+                        {
+                            return;
+                        }
+                        int? wcc = this.Pawn.WaterCellCost;
+                        if (wcc != null && wcc <= 1)
+                        {
+                            return;
+                        }
+                    }
                     if (this.Pawn.PositionHeld.GetTerrain(this.Pawn.MapHeld).IsWater)
                     {
                         this.parent.Severity += ((this.Pawn.PositionHeld.GetTerrain(this.Pawn.MapHeld).pathCost) / 100f);
@@ -7879,6 +7909,7 @@ namespace HautsFramework
                 } else {
                     Hediff hediff = HediffMaker.MakeHediff(this.Props.hediffs.RandomElement<HediffDef>(), target, null);
                     target.health.AddHediff(hediff, this.Props.onlyBrain ? target.health.hediffSet.GetBrain() : null, null, null);
+                    HautsUtility.AddHediffFromMenu(this.Props.hediffs.RandomElement<HediffDef>(), this.parent.pawn, this, this.parent.pawn, this.parent.pawn);
                     CompAbilityEffect_RemoveHediff caerh = this.parent.CompOfType<CompAbilityEffect_RemoveHediff>();
                     if (caerh != null)
                     {
@@ -7975,38 +8006,7 @@ namespace HautsFramework
             {
                 if (acceptanceReport.Accepted)
                 {
-                    Hediff hediff = HediffMaker.MakeHediff(this.chosenHediff, this.pawn, ability.Props.onlyBrain ? this.pawn.health.hediffSet.GetBrain() : null);
-                    HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
-                    if (hediffComp_Disappears != null)
-                    {
-                        hediffComp_Disappears.ticksToDisappear = ability.GetDurationSeconds(this.pawn).SecondsToTicks();
-                    }
-                    if (ability.Props.severity >= 0f)
-                    {
-                        hediff.Severity = ability.Props.severity;
-                    }
-                    HediffComp_Link hediffComp_Link = hediff.TryGetComp<HediffComp_Link>();
-                    if (hediffComp_Link != null)
-                    {
-                        hediffComp_Link.other = this.other;
-                        hediffComp_Link.drawConnection = (this.pawn == this.caster);
-                    }
-                    HediffComp_MultiLink hcml = hediff.TryGetComp<HediffComp_MultiLink>();
-                    if (hcml != null)
-                    {
-                        if (hcml.others == null)
-                        {
-                            hcml.others = new List<Thing>();
-                        }
-                        hcml.others.Add(other);
-                        if (hcml.motes == null)
-                        {
-                            hcml.motes = new List<MoteDualAttached>();
-                        }
-                        hcml.motes.Add(null);
-                        hcml.drawConnection = true;
-                    }
-                    this.pawn.health.AddHediff(hediff, null, null, null);
+                    HautsUtility.AddHediffFromMenu(this.chosenHediff, this.pawn, this.ability, this.other, this.caster);
                     this.Close(true);
                 } else {
                     Messages.Message(acceptanceReport.Reason, null, MessageTypeDefOf.RejectInput, false);
@@ -11293,7 +11293,7 @@ namespace HautsFramework
                 }
                 foreach (HediffComp hc in hediff.comps)
                 {
-                    if (hc is HediffComp_ExtraOnHitEffects hoH && hoH != null && hoH.Props.appliedViaAttacks && hoH.cooldown <= Find.TickManager.TicksGame && result.totalDamageDealt >= hoH.Props.minDmgToTrigger)
+                    if (hc is HediffComp_ExtraOnHitEffects hoH && hoH != null && hoH.Props.appliedViaAttacks && hoH.cooldown <= Find.TickManager.TicksGame && result.totalDamageDealt >= hoH.Props.minDmgToTrigger && hoH.RangeCheck(thing,dinfo))
                     {
                         if (thing is Pawn p)
                         {
@@ -11379,6 +11379,41 @@ namespace HautsFramework
                 }
             }
             return terrainDefList;
+        }
+        public static void AddHediffFromMenu(HediffDef chosenHediff, Pawn pawn, CompAbilityEffect_GiveHediffFromMenu ability, Pawn other, Pawn caster)
+        {
+            Hediff hediff = HediffMaker.MakeHediff(chosenHediff, pawn, ability.Props.onlyBrain ? pawn.health.hediffSet.GetBrain() : null);
+            HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
+            if (hediffComp_Disappears != null)
+            {
+                hediffComp_Disappears.ticksToDisappear = ability.GetDurationSeconds(pawn).SecondsToTicks();
+            }
+            if (ability.Props.severity >= 0f)
+            {
+                hediff.Severity = ability.Props.severity;
+            }
+            HediffComp_Link hediffComp_Link = hediff.TryGetComp<HediffComp_Link>();
+            if (hediffComp_Link != null)
+            {
+                hediffComp_Link.other = other;
+                hediffComp_Link.drawConnection = (pawn == caster);
+            }
+            HediffComp_MultiLink hcml = hediff.TryGetComp<HediffComp_MultiLink>();
+            if (hcml != null)
+            {
+                if (hcml.others == null)
+                {
+                    hcml.others = new List<Thing>();
+                }
+                hcml.others.Add(other);
+                if (hcml.motes == null)
+                {
+                    hcml.motes = new List<MoteDualAttached>();
+                }
+                hcml.motes.Add(null);
+                hcml.drawConnection = true;
+            }
+            pawn.health.AddHediff(hediff, null, null, null);
         }
         //vpe integration
         public static bool IsVPEPsycast(VEF.Abilities.Ability ability)
