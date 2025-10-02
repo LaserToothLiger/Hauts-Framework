@@ -26,7 +26,7 @@
     <defName>HVT_Spy</defName>
     <hediffClass>HediffWithComps</hediffClass>
     <label>spy</label>
-    <description>Spies that escape your clutches will release information on your colony, increasing the power of subsequent raids. This effect scales with their sight and Intellectual skill.</description>
+    <description>Spies that escape your clutches will release information on your colony, granting their own faction a cache of bonus 'raid power' that is spent to empower subsequent raids. This effect scales with their sight, hearing, Construction skill, and Intellectual skill.</description>
     <stages>
       <li>
 		<becomeVisible>false</becomeVisible>
@@ -46,6 +46,7 @@
 			<li>Sight</li>
 			<li>Hearing</li>
 		</relevantCapacities>
+		<spyPointAttribution>OwnFaction</spyPointAttribution>
 	  </li>
 	</comps>
   </HediffDef>

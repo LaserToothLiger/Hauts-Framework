@@ -27,6 +27,7 @@ using VEF;
 using static System.Collections.Specialized.BitVector32;
 using static UnityEngine.GraphicsBuffer;
 using VEF.Abilities;
+using System.Linq.Expressions;
 
 namespace HautsFramework
 {
@@ -1985,6 +1986,14 @@ namespace HautsFramework
         public Faction spyingOnFaction;
         public Faction spyingForFaction;
     }
+    public enum SpyPointAttribution : byte
+    {
+        OwnFaction,
+        AllPermaHostile,
+        AllHostile,
+        RandomHostileFactions,
+        All
+    }
     public class HediffCompProperties_Espionage : HediffCompProperties
     {
         public HediffCompProperties_Espionage()
@@ -1996,6 +2005,8 @@ namespace HautsFramework
         public List<SkillDef> relevantSkills;
         public float fallbackIfNoSkillLevel = 1f;
         public List<PawnCapacityDef> relevantCapacities;
+        public int randomFactionCount;
+        public SpyPointAttribution spyPointAttribution = SpyPointAttribution.OwnFaction;
     }
     public class HediffComp_Espionage : HediffComp
     {
@@ -2029,39 +2040,96 @@ namespace HautsFramework
             if (this.Pawn.IsWorldPawn() && !this.Pawn.Dead) {
                 if (!this.Pawn.IsPrisonerOfColony)
                 {
+                    int spyPointsToGain = this.SpyPointsToGain();
                     WorldComponent_HautsFactionComps WCFC = (WorldComponent_HautsFactionComps)Find.World.GetComponent(typeof(WorldComponent_HautsFactionComps));
-                    Hauts_FactionCompHolder fch = WCFC.FindCompsFor(this.spyingForFaction);
-                    if (fch != null)
+                    Faction playerF = Faction.OfPlayerSilentFail;
+                    switch (this.Props.spyPointAttribution)
                     {
-                        HautsFactionComp_SpyPoints spyPoints = fch.TryGetComp<HautsFactionComp_SpyPoints>();
-                        if (spyPoints != null)
-                        {
-                            float addedSpyPoints = this.Props.baseSpyPoints;
-                            if (!this.Props.relevantSkills.NullOrEmpty())
+                        case SpyPointAttribution.OwnFaction:
+                            this.GrantSpyPoints(WCFC,this.spyingForFaction);
+                            break;
+                        case SpyPointAttribution.AllPermaHostile:
+                            foreach (Faction f in Find.FactionManager.AllFactions)
                             {
-                                float sumSkilllevel = this.Props.fallbackIfNoSkillLevel;
-                                if (this.Pawn.skills != null)
+                                if (f != playerF && f.def.PermanentlyHostileTo(playerF.def) && f.HostileTo(playerF))
                                 {
-                                    foreach (SkillDef sd in this.Props.relevantSkills)
-                                    {
-                                        sumSkilllevel += this.Pawn.skills.GetSkill(sd).Level;
-                                    }
+                                    this.GrantSpyPoints(WCFC, f);
                                 }
-                                addedSpyPoints *= sumSkilllevel;
                             }
-                            if (!this.Props.relevantCapacities.NullOrEmpty())
+                            break;
+                        case SpyPointAttribution.AllHostile:
+                            foreach (Faction f in Find.FactionManager.AllFactions)
                             {
-                                float sumCapLevel = 0f;
-                                foreach (PawnCapacityDef pcd in this.Props.relevantCapacities)
+                                if (f != playerF && f.HostileTo(playerF))
                                 {
-                                    sumCapLevel += this.Pawn.health.capacities.GetLevel(pcd);
+                                    this.GrantSpyPoints(WCFC, f);
                                 }
-                                addedSpyPoints *= sumCapLevel;
                             }
-                            spyPoints.spyPoints += (int)addedSpyPoints + this.Props.unscalableFlatSpyPoints;
-                        }
+                            break;
+                        case SpyPointAttribution.RandomHostileFactions:
+                            int randomCount = Math.Max(1,this.Props.randomFactionCount);
+                            foreach (Faction f in Find.FactionManager.AllFactions.InRandomOrder())
+                            {
+                                if (f != playerF)
+                                {
+                                    this.GrantSpyPoints(WCFC, f);
+                                }
+                                randomCount--;
+                                if (randomCount <= 0)
+                                {
+                                    break;
+                                }
+                            }
+                            break;
+                        case SpyPointAttribution.All:
+                            foreach (Faction f in Find.FactionManager.AllFactions)
+                            {
+                                this.GrantSpyPoints(WCFC, f);
+                            }
+                            break;
+                        default:
+                            this.GrantSpyPoints(WCFC, this.spyingForFaction);
+                            break;
                     }
                     this.Pawn.health.RemoveHediff(this.parent);
+                }
+            }
+        }
+        public virtual int SpyPointsToGain()
+        {
+            float addedSpyPoints = this.Props.baseSpyPoints;
+            if (!this.Props.relevantSkills.NullOrEmpty())
+            {
+                float sumSkilllevel = this.Props.fallbackIfNoSkillLevel;
+                if (this.Pawn.skills != null)
+                {
+                    foreach (SkillDef sd in this.Props.relevantSkills)
+                    {
+                        sumSkilllevel += this.Pawn.skills.GetSkill(sd).Level;
+                    }
+                }
+                addedSpyPoints *= sumSkilllevel;
+            }
+            if (!this.Props.relevantCapacities.NullOrEmpty())
+            {
+                float sumCapLevel = 0f;
+                foreach (PawnCapacityDef pcd in this.Props.relevantCapacities)
+                {
+                    sumCapLevel += this.Pawn.health.capacities.GetLevel(pcd);
+                }
+                addedSpyPoints *= sumCapLevel;
+            }
+            return (int)addedSpyPoints + this.Props.unscalableFlatSpyPoints;
+        }
+        public virtual void GrantSpyPoints(WorldComponent_HautsFactionComps WCFC, Faction f)
+        {
+            Hauts_FactionCompHolder fch = WCFC.FindCompsFor(f);
+            if (fch != null)
+            {
+                HautsFactionComp_SpyPoints spyPoints = fch.TryGetComp<HautsFactionComp_SpyPoints>();
+                if (spyPoints != null)
+                {
+                    spyPoints.spyPoints += this.SpyPointsToGain();
                 }
             }
         }
