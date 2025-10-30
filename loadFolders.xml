@@ -40,5 +40,6 @@
 		<li IfModActive="OskarPotocki.VFE.Tribals">1.6/Mods/VFE_Tribal</li>
 		<li IfModActive="Neronix17.TweaksGalore">1.6/Mods/TweaksGalore</li>
 		<li IfModActive="doug.conn">1.6/Mods/COaNN</li>
+		<li IfModActive="ferny.ProgressionEducation">1.6/Mods/ProgressionEducation</li>
 	</v1.6>
 </loadFolders>

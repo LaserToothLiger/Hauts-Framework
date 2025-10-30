@@ -39,6 +39,48 @@
 	</Operation>
 	<Operation Class="PatchOperationFindMod">
 		<mods>
+			<li>Progression: Education</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="PE_LowTechProficiency"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExemption" />
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="PE_FirearmProficiency"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExemption" />
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="PE_HighTechProficiency"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExemption" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Colonist Tech Background</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="TechBackground"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExemption" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
 			<li>Reunion</li>
 		</mods>
 		<match Class="PatchOperationAddModExtension">

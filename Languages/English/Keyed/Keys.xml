@@ -7,6 +7,8 @@
 <Hauts_TooltipAWRFC>If enabled, grants -1% apparel wear rate factor per level of crafting skill.</Hauts_TooltipAWRFC>
 <Hauts_SettingBDFC>Construction skill affects damage vs buildings</Hauts_SettingBDFC>
 <Hauts_TooltipBDFC>If enabled, grants +1.5% breach damage factor per level of construction skill.</Hauts_TooltipBDFC>
+<Hauts_SettingPSC>Social skill affects pilfering stealth</Hauts_SettingPSC>
+<Hauts_TooltipPSC>If enabled, grants +0.01x pilfering stealth per level of social skill. Note, however, that the base value for pilfering stealth is 0, and only the Biotech DLC or certain other mods (such as Hauts' Added Traits or Vanilla Skills Expanded) provide sources of flat pilfering stealth.</Hauts_TooltipPSC>
 <!--UI-->
 <Hauts_AbilityNeedsHigherStatToUse>Requires at least {0} {1}.</Hauts_AbilityNeedsHigherStatToUse>
 <HVT_JumpRangeFactorScalar>Jump range factor</HVT_JumpRangeFactorScalar>
@@ -58,6 +60,8 @@
 <Hauts_SkillAdjustmentTooltip>Grants {0} {1} xp per day</Hauts_SkillAdjustmentTooltip>
 <Hauts_StatWorkerPsyfocusBand>From current psyfocus band</Hauts_StatWorkerPsyfocusBand>
 <Hauts_StatWorkerExpectationLevel>From current expectation level</Hauts_StatWorkerExpectationLevel>
+<Hauts_StatWorkerLackOfFactor>x (1 - {0}), min {1}</Hauts_StatWorkerLackOfFactor>
+<Hauts_StatWorkerIsInvisible>Is invisible: minimum {0}</Hauts_StatWorkerIsInvisible>
 <Hauts_TilNextSpawn>\n{0}/{1} charge</Hauts_TilNextSpawn>
 <Hauts_TilNextSpawnCountdown>\n{0} hours to next spawn</Hauts_TilNextSpawnCountdown>
 <Hauts_ChargesStored>\n{0}/{1} charges stored</Hauts_ChargesStored>
@@ -78,6 +82,24 @@
 <Hauts_LetterConvertIdeoBook_Success>Reading {0} has caused {1} to turn away from {2} and towards {3}.</Hauts_LetterConvertIdeoBook_Success>
 <Hauts_QuestDiscoveredByPermit>{PERMITUSER_nameDef} was informed of</Hauts_QuestDiscoveredByPermit>
 <Hauts_AttackedAlliedFaction>Attacked a close ally</Hauts_AttackedAlliedFaction>
+<Hauts_BurgleIcon>Burgle</Hauts_BurgleIcon>
+<Hauts_PickpocketLabel>Pickpocket {0}</Hauts_PickpocketLabel>
+<Hauts_ActivityPilfering>Burgling from {0}</Hauts_ActivityPilfering>
+<Hauts_BurgleTooltip>Anyone in this caravan whose pilfering stealth stat exceeds 0% will infiltrate this settlement to steal as many trade goods as they can carry. Higher-tech settlements or those whose factions have been stolen from recently are more difficult to succeed against, requiring a higher sum pilfering stealth.\n\nA settlement that cannot be traded with cannot be burgled from; either because they have nothing to steal, or because their lack of intention to trade allows them to use tighter, more inconvenient security measures for their goods.</Hauts_BurgleTooltip>
+<Hauts_BurgleWindow1>You can steal up to {0} silver worth of goods from {1}, weighing up to {2}kg.\n\nChance of success: {3}%</Hauts_BurgleWindow1>
+<Hauts_BurgleWindow2>The maximum weight of goods you can steal depends on your burglars' carrying capacity.\nThe maximum market value depends on their burglary yield.\nSuccess chance is based on pilfering stealth. Higher-tech settlements or those whose factions have been stolen from recently are more difficult to succeed against.</Hauts_BurgleWindow2>
+<Hauts_BurgleWindow3>Select specific types of goods to steal. If you don't select any, random goods will be stolen.</Hauts_BurgleWindow3>
+<Hauts_BurgleWindowCategories>Prioritize stealing {0}</Hauts_BurgleWindowCategories>
+<Hauts_PilferLetter1>Pilfered nothing</Hauts_PilferLetter1>
+<Hauts_BurgleOutcome1>Your burglars weren't caught, but they couldn't find anything of value.\n\nThe alert level of the settlement's faction has been raised slightly, making future attempts more difficult for the next 5 days.</Hauts_BurgleOutcome1>
+<Hauts_PickpocketOutcome1>{0} wasn't caught pickpocketing, but also didn't manage to steal anything.\n\nThe target's alert level has been raised, making future attempts against that target more difficult, but there are no other consequences.</Hauts_PickpocketOutcome1>
+<Hauts_PilferLetter2>Pilfering successful</Hauts_PilferLetter2>
+<Hauts_BurgleOutcome2>The burglary went off without a hitch! Check your caravan's inventory for the stolen goods.\n\nThe alert level of the settlement's faction has been raised in proportion to the total market value of stolen goods. Future burglary attempts against them will be more difficult.</Hauts_BurgleOutcome2>
+<Hauts_PickpocketOutcome2>The pickpocket attempt went off without a hitch! Check the inventory of {0} for the stolen goods.\n\nThough they can't prove you did it, the alert level of everyone nearby from {1} has been increased, and your goodwill with them has decreased slightly.</Hauts_PickpocketOutcome2>
+<Hauts_PilferLetter3>Pilfering foiled!</Hauts_PilferLetter3>
+<Hauts_BurgleOutcome3>Relations with {0} have changed by {1}, and you did not manage to steal any items.\n\nThe alert level of the settlement's faction has been raised slightly, making future attempts more difficult for the next 5 days.</Hauts_BurgleOutcome3>
+<Hauts_PickpocketOutcome3>{0} did not manage to steal any items.\n\nThe alert level of everyone nearby from {1} has been increased, and your goodwill with them has decreased moderately.</Hauts_PickpocketOutcome3>
+<Hauts_PickpocketOutcome3_Factionless>{0} did not manage to steal any items from {1}, who has become enraged by the attempt!</Hauts_PickpocketOutcome3_Factionless>
 <!--Error messages-->
 <Hauts_CantSpawnUnminified>Cannot add {0} to inventory of {1} because it is not haulable.</Hauts_CantSpawnUnminified>
 <Hauts_CannotRemoveBionicsFrom>Body parts cannot be removed from {0} due to the {1} trait.</Hauts_CannotRemoveBionicsFrom>
@@ -86,7 +108,14 @@
 <Hauts_MustBeCaravanning>Only usable on a caravan</Hauts_MustBeCaravanning>
 <Hauts_PMEMisconfig>Permit is of a type that requires PermitMoreEffects, but there isn't one in its definition</Hauts_PMEMisconfig>
 <Hauts_NoFactionCanFieldIncident>There are no factions that can cause this event</Hauts_NoFactionCanFieldIncident>
+<Hauts_HediffMenuException>Please select a condition to gain.</Hauts_HediffMenuException>
+<Hauts_NotBurglable>Burglary can only be performed on settlements willing to trade goods.</Hauts_NotBurglable>
+<Hauts_NoPilferers>How are you attempting to steal something without any pawn that has a pilfering stealth stat higher than 0.00? That shouldn't be possible.</Hauts_NoPilferers>
+<Hauts_PilfererErrorPrefix>Can't pilfer</Hauts_PilfererErrorPrefix>
+<Hauts_PilfererNoCarryCap>your burglars lack the carrying capacity to carry any stolen goods.</Hauts_PilfererNoCarryCap>
+<Hauts_PilfererTooWeak>your burglars are not capable of finding any goods to steal.</Hauts_PilfererTooWeak>
+<Hauts_PilfererTooConspicuous>the target's alert level is too high compared to the stealthiness of your burglars.</Hauts_PilfererTooConspicuous>
 <!--Devmode-->
-<HVT_CharEditFixer>DEV: Fix TraitGrantedStuff</HVT_CharEditFixer>
-<HVT_CharEditFixerDesc>Adds any missing hediffs or abilities to this pawn which should've been granted by its traits. The presence of this button does not necessarily mean that there are any missing hediffs or abilities.\n\nIf you're using Character Editor to add traits to pawns, make sure to press this on the pawn immediately afterward.</HVT_CharEditFixerDesc>
+<Hauts_CharEditFixer>DEV: Fix TraitGrantedStuff</Hauts_CharEditFixer>
+<Hauts_CharEditFixerDesc>Adds any missing hediffs or abilities to this pawn which should've been granted by its traits. The presence of this button does not necessarily mean that there are any missing hediffs or abilities.\n\nIf you're using Character Editor to add traits to pawns, make sure to press this on the pawn immediately afterward.</Hauts_CharEditFixerDesc>
 </LanguageData>

@@ -4,9 +4,10 @@
     <defName>Hauts_Demolisher</defName>
     <label>Demolition</label>
     <skill>Construction</skill>
-    <description>An expertise in taking apart buildings.</description>
+    <description>An expertise in taking apart buildings and avoiding setting off traps.</description>
     <statOffsets>
       <Hauts_BreachDamageFactor>0.05</Hauts_BreachDamageFactor>
+	  <PawnTrapSpringChance>-0.02</PawnTrapSpringChance>
     </statOffsets>
   </VSE.Expertise.ExpertiseDef>
   <VSE.Expertise.ExpertiseDef>
@@ -25,6 +26,24 @@
     <description>An expertise in supporting dryads from tended Gauranlen trees.</description>
     <statOffsets>
       <Hauts_MaxDryadFactor>0.05</Hauts_MaxDryadFactor>
+    </statOffsets>
+  </VSE.Expertise.ExpertiseDef>
+  <VSE.Expertise.ExpertiseDef>
+    <defName>Hauts_Skulduggery</defName>
+    <label>Skulduggery</label>
+    <skill>Social</skill>
+    <description>An expertise in burglarizing other settlements without being caught.</description>
+    <statOffsets>
+      <Hauts_PilferingStealth>0.05</Hauts_PilferingStealth>
+    </statOffsets>
+  </VSE.Expertise.ExpertiseDef>
+  <VSE.Expertise.ExpertiseDef>
+    <defName>Hauts_Larceny</defName>
+    <label>Larceny</label>
+    <skill>Intellectual</skill>
+    <description>An expertise in finding more valuable items when burglarizing other settlements.</description>
+    <statOffsets>
+      <Hauts_MaxPilferingValue>20</Hauts_MaxPilferingValue>
     </statOffsets>
   </VSE.Expertise.ExpertiseDef>
   <VSE.Expertise.ExpertiseDef MayRequire="Ludeon.RimWorld.Ideology">

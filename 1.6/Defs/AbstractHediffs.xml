@@ -50,4 +50,30 @@
 	  </li>
 	</comps>
   </HediffDef>
+  
+  <!--handles increased alert after being pickpocketed-->
+  <HediffDef ParentName="HVT_TraitHediffBase">
+    <defName>Hauts_RaisedAlertLevel</defName>
+    <hediffClass>HediffWithComps</hediffClass>
+    <label>increased alertness</label>
+    <description>Due to a recent pickpocketing attempt, this trader is on alert.</description>
+    <initialSeverity>5</initialSeverity>
+	<maxSeverity>1000</maxSeverity>
+    <stages>
+      <li>
+		<becomeVisible>false</becomeVisible>
+        <statOffsets>
+		  <Hauts_PawnAlertLevel>1</Hauts_PawnAlertLevel>
+        </statOffsets>
+		<multiplyStatChangesBySeverity>true</multiplyStatChangesBySeverity>
+      </li>
+    </stages>
+	<comps>
+	  <li Class="HediffCompProperties_DisappearsOnDeath"/>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-1</severityPerDay>
+        <showDaysToRecover>true</showDaysToRecover>
+      </li>
+	</comps>
+  </HediffDef>
 </Defs>

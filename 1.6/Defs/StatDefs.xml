@@ -178,13 +178,128 @@
 		</parts>
 	</StatDef>
 	<StatDef>
+		<defName>Hauts_PilferingStealth</defName>
+		<label>pilfering stealth</label>
+		<description>The chance to avoid being caught when attempting a pilfering activity. For pickpocketing, success chance equals the trader's alert level minus the thief's pilfering stealth; for burglary, success chance equals the settlement's alert level minus the average pilfering stealth of all free pilfering-capable colonists in the caravan. A difference of 1 or higher guarantees success, while a difference of 0 or lower guarantees failure.\n\nA pawn must have a pilfering stealth higher than 0 in order to be capable of pilfering.\n\nA target's alert level is shown in parentheses on the option to pilfer from it. Alert level gains a high but gradually decaying boost after being pilfered from, which can be more severe if the total market value of pilfered items is very high. The base alert level of more technologically advanced settlements is higher; the base alert level of traders is based on a number of factors, including their senses, social skill, and pilfering stealth.</description>
+		<category>BasicsPawn</category>
+		<hideAtValue>0</hideAtValue>
+		<defaultBaseValue>0</defaultBaseValue>
+		<displayPriorityInCategory>8790</displayPriorityInCategory>
+		<toStringStyle>FloatTwo</toStringStyle>
+		<statFactors>
+		  <li>MoveSpeed</li>
+		</statFactors>
+		<capacityFactors>
+		  <li>
+			<capacity>Sight</capacity>
+			<weight>0.4</weight>
+		  </li>
+		  <li>
+			<capacity>Hearing</capacity>
+			<weight>0.2</weight>
+		  </li>
+		  <li>
+			<capacity>Breathing</capacity>
+			<weight>0.1</weight>
+		  </li>
+		</capacityFactors>
+		<skillNeedFactors>
+		  <li Class="HautsFramework.SkillNeed_BaseBonusPS">
+			<skill>Social</skill>
+			<baseValue>1</baseValue>
+			<bonusPerLevel>0.01</bonusPerLevel>
+			<required>false</required>
+		  </li>
+		</skillNeedFactors>
+		<parts>
+		  <li Class="HautsFramework.StatPart_PilferingStealth">
+			<multiplyByLackOf>
+				<li>Hauts_TrackSize</li>
+				<li>PawnTrapSpringChance</li>
+			</multiplyByLackOf><!--each of these stats applies a separate (1 - stat) multiplier to the final value-->
+			<minimumLackOf>0.46625</minimumLackOf><!--that multiplier cannot go below this value. At the default value for both stats, which is 1, this should work out to almost 4.6 exactly, which nearly cancels out the move speed of a healthy adult humanlike-->
+			<invisibilityMinimum>1</invisibilityMinimum><!--when invisible, can't be lower than 100%-->
+		  </li>
+		</parts>
+	</StatDef>
+	<StatDef>
+		<defName>Hauts_MaxPilferingValue</defName>
+		<label>max pilfering value</label>
+		<description>The maximum net market value of items that can be stolen during a single pilfering attempt. The total weight of items that can be pilfered is still ultimately limited by the mass capacity of the caravan (for burglary) or the carry capacity of the thief (for pickpocketing).</description>
+		<category>BasicsPawn</category>
+        <minValue>25</minValue>
+		<defaultBaseValue>200</defaultBaseValue>
+		<displayPriorityInCategory>8791</displayPriorityInCategory>
+		<toStringStyle>Integer</toStringStyle>
+		<showOnPawns>false</showOnPawns><!--however, the unique statpart will force it to be displayed if PStealth exceeds 0-->
+		<statFactors>
+		  <li>MoveSpeed</li>
+		  <li>MeleeDamageFactor</li>
+		  <li>VEF_MeleeAttackDamageFactor</li>
+		</statFactors>
+		<capacityFactors>
+		  <li>
+			<capacity>Manipulation</capacity>
+			<weight>0.4</weight>
+		  </li>
+		  <li>
+			<capacity>Sight</capacity>
+			<weight>0.2</weight>
+		  </li>
+		  <li>
+			<capacity>Hearing</capacity>
+			<weight>0.1</weight>
+		  </li>
+		</capacityFactors>
+		<parts>
+		  <li Class="HautsFramework.StatPart_PilferingYield">
+			<divideBy>4.6</divideBy><!--cancels out the move speed of a healthy adult humanlike-->
+		  </li>
+		</parts>
+	</StatDef>
+	<StatDef>
+		<defName>Hauts_PawnAlertLevel</defName>
+		<label>alert level</label>
+		<description>The ability to detect and thwart pickpocketing attempts.</description>
+		<category>BasicsPawn</category>
+        <minValue>0</minValue>
+		<defaultBaseValue>0.5</defaultBaseValue>
+		<toStringStyle>FloatTwo</toStringStyle>
+		<showOnPawns>false</showOnPawns>
+		<skillNeedOffsets>
+		  <li Class="SkillNeed_BaseBonus">
+			<skill>Social</skill>
+			<baseValue>0</baseValue>
+			<bonusPerLevel>0.05</bonusPerLevel>
+			<required>false</required>
+		  </li>
+		</skillNeedOffsets>
+		<capacityFactors>
+		  <li>
+			<capacity>Consciousness</capacity>
+			<weight>0.4</weight>
+		  </li>
+		  <li>
+			<capacity>Sight</capacity>
+			<weight>0.4</weight>
+		  </li>
+		  <li>
+			<capacity>Hearing</capacity>
+			<weight>0.2</weight>
+		  </li>
+		</capacityFactors>
+		<parts>
+		  <li Class="HautsFramework.StatPart_PawnAlertLevel" /><!--multiply by (1+pilfering stealth)-->
+		</parts>
+	</StatDef>
+	<StatDef>
 		<defName>Hauts_SkillGainFromRecreation</defName>
 		<label>skill gain from recreation</label>
 		<description>A multiplier to the skill xp gained while engaging in a joy activity.</description>
 		<category>BasicsPawn</category>
 		<hideAtValue>1</hideAtValue>
 		<defaultBaseValue>1</defaultBaseValue>
-		<displayPriorityInCategory>8791</displayPriorityInCategory>
+		<displayPriorityInCategory>8792</displayPriorityInCategory>
         <toStringStyle>PercentZero</toStringStyle>
 	</StatDef>
 	<StatDef>
@@ -236,6 +351,7 @@
 		<label>track size</label>
 		<description>Affects the amount of loose terrain (such as sand or dirt) this character tracks onto other surfaces.</description>
 		<category>BasicsPawn</category>
+		<minValue>0</minValue>
 		<hideAtValue>1</hideAtValue>
 		<defaultBaseValue>1</defaultBaseValue>
 		<displayPriorityInCategory>8797</displayPriorityInCategory>

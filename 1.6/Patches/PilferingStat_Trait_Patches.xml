@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<!--although these traits don't provide any instincts or urges to avoid detection, Greedy and Jealous are naturally better at FINDING things to steal-->
+	<Operation Class="PatchOperationConditional">
+		<xpath>/Defs/TraitDef[defName="Greedy"]/degreeDatas/li/statOffsets</xpath>
+		<nomatch Class="PatchOperationAdd">
+			<xpath>/Defs/TraitDef[defName="Greedy"]/degreeDatas/li</xpath>
+			<value>
+				<statOffsets>
+					<Hauts_MaxPilferingValue>35</Hauts_MaxPilferingValue>
+				</statOffsets>
+			</value>
+		</nomatch>
+		<match Class="PatchOperationAdd">
+			<xpath>/Defs/TraitDef[defName="Greedy"]/degreeDatas/li/statOffsets</xpath>
+			<value>
+				<Hauts_MaxPilferingValue>35</Hauts_MaxPilferingValue>
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationConditional">
+		<xpath>/Defs/TraitDef[defName="Jealous"]/degreeDatas/li/statOffsets</xpath>
+		<nomatch Class="PatchOperationAdd">
+			<xpath>/Defs/TraitDef[defName="Jealous"]/degreeDatas/li</xpath>
+			<value>
+				<statOffsets>
+					<Hauts_MaxPilferingValue>35</Hauts_MaxPilferingValue>
+				</statOffsets>
+			</value>
+		</nomatch>
+		<match Class="PatchOperationAdd">
+			<xpath>/Defs/TraitDef[defName="Jealous"]/degreeDatas/li/statOffsets</xpath>
+			<value>
+				<Hauts_MaxPilferingValue>35</Hauts_MaxPilferingValue>
+			</value>
+		</match>
+	</Operation>
+	
+	<!--recluses CAN steal due to their instincts telling them how to avoid others-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Biotech</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationConditional">
+					<xpath>/Defs/TraitDef[defName="Recluse"]/degreeDatas/li/statOffsets</xpath>
+					<nomatch Class="PatchOperationAdd">
+						<xpath>/Defs/TraitDef[defName="Recluse"]/degreeDatas/li</xpath>
+						<value>
+							<statOffsets>
+								<Hauts_PilferingStealth>0.3</Hauts_PilferingStealth>
+							</statOffsets>
+						</value>
+					</nomatch>
+					<match Class="PatchOperationAdd">
+						<xpath>/Defs/TraitDef[defName="Recluse"]/degreeDatas/li/statOffsets</xpath>
+						<value>
+							<Hauts_PilferingStealth>0.3</Hauts_PilferingStealth>
+						</value>
+					</match>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<!--modded traits-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Fallout Traits</li>
+			<li>Fallout Traits Continued</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="FT_Perception"]/degreeDatas/li[label="Perceptive"]/statOffsets</xpath>
+					<value>
+						<Hauts_PilferingStealth>0.25</Hauts_PilferingStealth>
+						<Hauts_MaxPilferingValue>25</Hauts_MaxPilferingValue>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="FT_Perception"]/degreeDatas/li[label="very perceptive"]/statOffsets</xpath>
+					<value>
+						<Hauts_PilferingStealth>0.5</Hauts_PilferingStealth>
+						<Hauts_MaxPilferingValue>50</Hauts_MaxPilferingValue>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="FT_Scrounger"]/degreeDatas/li/statOffsets</xpath>
+					<value>
+						<Hauts_MaxPilferingValue>40</Hauts_MaxPilferingValue>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="FT_Serendipitous"]/degreeDatas/li/statOffsets</xpath>
+					<value>
+						<Hauts_MaxPilferingValue>40</Hauts_MaxPilferingValue>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="FT_FortuneFinder"]/degreeDatas/li/statOffsets</xpath>
+					<value>
+						<Hauts_MaxPilferingValue>60</Hauts_MaxPilferingValue>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Gwen's Gone Mental Traits</li>
+		</mods>
+		<match Class="PatchOperationAdd">
+			<xpath>/Defs/TraitDef[defName="GWT_GloomDweller"]/degreeDatas/li/statOffsets</xpath>
+			<value>
+				<Hauts_PilferingStealth>0.5</Hauts_PilferingStealth>
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>More Traits</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="RT_Unwanted"]/degreeDatas/li/statOffsets</xpath>
+					<value>
+						<Hauts_PilferingStealth>0.25</Hauts_PilferingStealth>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="RT_Cautious"]/degreeDatas/li/statOffsets</xpath>
+					<value>
+						<Hauts_PilferingStealth>0.4</Hauts_PilferingStealth>
+						<Hauts_MaxPilferingValue>50</Hauts_MaxPilferingValue>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="RT_Sloppy"]/degreeDatas/li/statOffsets</xpath>
+					<value>
+						<Hauts_MaxPilferingValue>-25</Hauts_MaxPilferingValue>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="RT_LuckyEfficient"]/degreeDatas/li/statOffsets</xpath>
+					<value>
+						<Hauts_MaxPilferingValue>25</Hauts_MaxPilferingValue>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Traits Expanded</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--kleptos CAN steal and they steal more-->
+				<li Class="PatchOperationConditional">
+					<xpath>/Defs/TraitDef[defName="VTE_Kleptomaniac"]/degreeDatas/li/statOffsets</xpath>
+					<nomatch Class="PatchOperationAdd">
+						<xpath>/Defs/TraitDef[defName="VTE_Kleptomaniac"]/degreeDatas/li</xpath>
+						<value>
+							<statOffsets>
+								<Hauts_PilferingStealth>0.3</Hauts_PilferingStealth>
+								<Hauts_MaxPilferingValue>80</Hauts_MaxPilferingValue>
+							</statOffsets>
+						</value>
+					</nomatch>
+					<match Class="PatchOperationAdd">
+						<xpath>/Defs/TraitDef[defName="VTE_Kleptomaniac"]/degreeDatas/li/statOffsets</xpath>
+						<value>
+							<Hauts_PilferingStealth>0.3</Hauts_PilferingStealth>
+							<Hauts_MaxPilferingValue>80</Hauts_MaxPilferingValue>
+						</value>
+					</match>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>
