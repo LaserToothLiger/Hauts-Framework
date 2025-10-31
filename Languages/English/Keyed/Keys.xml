@@ -118,4 +118,10 @@
 <!--Devmode-->
 <Hauts_CharEditFixer>DEV: Fix TraitGrantedStuff</Hauts_CharEditFixer>
 <Hauts_CharEditFixerDesc>Adds any missing hediffs or abilities to this pawn which should've been granted by its traits. The presence of this button does not necessarily mean that there are any missing hediffs or abilities.\n\nIf you're using Character Editor to add traits to pawns, make sure to press this on the pawn immediately afterward.</Hauts_CharEditFixerDesc>
+<!--HAT or HITLIMIT trait settings-->
+<HVT_BonusGrowthMoment>Bonus growth moment for {0}</HVT_BonusGrowthMoment>
+<HVT_SettingMinTraits>Minimum traits per pawn</HVT_SettingMinTraits>
+<HVT_TooltipMinTraits>The lowest number of traits a pawn can spawn with, barring particularly unusual circumstances.\n\nPawns young enough to still go through growth moments (Biotech DLC) are unaffected.</HVT_TooltipMinTraits>
+<HVT_SettingMaxTraits>Maximum traits per pawn</HVT_SettingMaxTraits>
+<HVT_TooltipMaxTraits>Pawns will be able to spawn with up to this many traits, except in rare circumstances that force additional traits.\n\n\nWith the Biotech DLC, the number and spacing of growth moments for children adjusts as follows:\n\n3 max traits) Growth moments happen on the 7th, 10th, and 13th birthdays; growth points gain at the usual rate (25% slower for the first one, then at 1x speed).\n\n4mt) Growth moments on bdays 6, 9, 11, and 13; growth points gain 50% faster for the last two.\n\n5mt) Growth moments on bdays 5, 7, 9, 11, and 13; growth points gain 50% faster.\n\n6mt) Identical to 3mt, but there are two growth moments for each such birthday.\n\n7mt) One growth moment on bday 6, and two growth moments on bdays 9, 11, and 13; growth points gain 50% faster for the last two.\n\n8mt) Two growth moments each on bdays 6, 9, 11, and 13; growth points gain 50% faster for the last two.\n\n9mt) Identical to 3mt, but there are three growth moments for each such birthday.</HVT_TooltipMaxTraits>
 </LanguageData>

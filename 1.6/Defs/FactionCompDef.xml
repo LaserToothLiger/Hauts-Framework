@@ -14,15 +14,17 @@
 		<advancedDecayThreshold>50</advancedDecayThreshold><!--if a faction's alert level exceeds this value...-->
 		<advancedDecayPerDayPct>0.15</advancedDecayPerDayPct><!--decrease by this percent each day, down to the threshold. Since decay is actually incremented in hours, this is a different curve than "per day" would ordinarily imply-->
 		<alertDecayPerDay>1</alertDecayPerDay><!--otherwise decay by this flat value per day-->
+		<specificFactionMinAlertLevels>
+		</specificFactionMinAlertLevels>
 		<minAlertLevelPerTechLevel>
 		  <li><key>Undefined</key><value>0</value></li>
 		  <li><key>Animal</key><value>0</value></li>
 		  <li><key>Neolithic</key><value>0</value></li>
-		  <li><key>Medieval</key><value>0.2</value></li>
-		  <li><key>Industrial</key><value>0.4</value></li>
-		  <li><key>Spacer</key><value>0.6</value></li>
-		  <li><key>Ultra</key><value>0.8</value></li>
-		  <li><key>Archotech</key><value>1</value></li>
+		  <li><key>Medieval</key><value>0.25</value></li>
+		  <li><key>Industrial</key><value>0.5</value></li>
+		  <li><key>Spacer</key><value>0.75</value></li>
+		  <li><key>Ultra</key><value>0.1</value></li>
+		  <li><key>Archotech</key><value>5</value></li>
 		</minAlertLevelPerTechLevel>
 	  </li>
     </comps>

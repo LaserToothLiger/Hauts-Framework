@@ -7,7 +7,9 @@
 		<li>1.5</li>
 		<li>1.6</li>
     </supportedVersions>
-	<description>Install before any other "Hauts" mods, because it makes them work. Does not directly add content for the player to experience, but adds many many modding tools.
+	<description>Install before any other "Hauts" mods, because it makes them work. For the most part*, does not directly add content for the player to experience; however, it adds many many modding tools.
+	
+*It does add a 'pilfering' mechanic that allows any colonist with a positive "pilfering stealth" stat to steal items from settlements or targeted pawns. However, there are no sources of this stat outside of certain mods or the Recluse trait from Biotech.
 
 See the full description: https://docs.google.com/document/d/1JPPbfiRIpaFdsvDoyR8lXw8NIOJMn06b4gHt5069D2k/edit?usp=sharing
 

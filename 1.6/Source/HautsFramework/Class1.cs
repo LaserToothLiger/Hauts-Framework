@@ -1040,7 +1040,7 @@ namespace HautsFramework
         }
         public static void HautsStatPart_GlowActiveForPostfix(ref bool __result, StatPart_Glow __instance, Thing t)
         {
-            if ((bool)__instance.GetType().GetField("ignoreIfPrefersDarkness", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance))
+            if (__result && (bool)__instance.GetType().GetField("ignoreIfPrefersDarkness", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance))
             {
                 if (t is Pawn p && p.story != null)
                 {
@@ -1997,6 +1997,7 @@ namespace HautsFramework
             this.compClass = typeof(HautsFactionComp_BurglaryResponse);
         }
         public float initialAlertLevel;
+        public Dictionary<FactionDef, float> specificFactionMinAlertLevels;
         public Dictionary<TechLevel,float> minAlertLevelPerTechLevel;
         public float alertDecayPerDay;
         public float advancedDecayThreshold;
@@ -12338,11 +12339,17 @@ namespace HautsFramework
                     if (br != null)
                     {
                         alertLevel = br.currentAlertLevel;
-                        TechLevel tl = f.def.techLevel;
-                        if (br.Props.minAlertLevelPerTechLevel != null && br.Props.minAlertLevelPerTechLevel.ContainsKey(tl))
+                        if (br.Props.specificFactionMinAlertLevels != null && br.Props.specificFactionMinAlertLevels.ContainsKey(f.def))
                         {
-                            br.Props.minAlertLevelPerTechLevel.TryGetValue(tl, out float minAlertLevel);
+                            br.Props.specificFactionMinAlertLevels.TryGetValue(f.def, out float minAlertLevel);
                             alertLevel += minAlertLevel;
+                        } else {
+                            TechLevel tl = f.def.techLevel;
+                            if (br.Props.minAlertLevelPerTechLevel != null && br.Props.minAlertLevelPerTechLevel.ContainsKey(tl))
+                            {
+                                br.Props.minAlertLevelPerTechLevel.TryGetValue(tl, out float minAlertLevel);
+                                alertLevel += minAlertLevel;
+                            }
                         }
                     }
                 }
