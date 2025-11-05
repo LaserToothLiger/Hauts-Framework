@@ -41,5 +41,6 @@
 		<li IfModActive="Neronix17.TweaksGalore">1.6/Mods/TweaksGalore</li>
 		<li IfModActive="doug.conn">1.6/Mods/COaNN</li>
 		<li IfModActive="ferny.ProgressionEducation">1.6/Mods/ProgressionEducation</li>
+		<li IfModActive="CETeam.CombatExtended">1.6/Mods/CombatExtended</li>
 	</v1.6>
 </loadFolders>

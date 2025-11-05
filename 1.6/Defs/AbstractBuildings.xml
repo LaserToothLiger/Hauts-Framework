@@ -32,9 +32,6 @@
 	  <claimable>false</claimable>
 	  <deconstructible>false</deconstructible>
     </building>
-	<modExtensions>
-	  <li Class="HautsTraits.SabotageExplosive"/>
-	</modExtensions>
   </ThingDef>
 
 </Defs>

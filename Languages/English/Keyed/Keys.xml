@@ -30,7 +30,7 @@
 <Hauts_ExtraHitFXPrefixNoCD>(no cooldown):\n</Hauts_ExtraHitFXPrefixNoCD>
 <Hauts_ExtraHitFXPurge>Remove the {0} condition\n</Hauts_ExtraHitFXPurge>
 <Hauts_ExtraHitFXPurgePartial>Remove {0} points of the {1} condition\n</Hauts_ExtraHitFXPurgePartial>
-<Hauts_ExtraHitFXPurgePartialVariable>Remove {0} points of the {1} condition\n</Hauts_ExtraHitFXPurgePartialVariable>
+<Hauts_ExtraHitFXPurgePartialVariable>Remove {0} to {1} points of the {2} condition\n</Hauts_ExtraHitFXPurgePartialVariable>
 <Hauts_ExtraHitFXMoreDmg>{0} {1} damage\n</Hauts_ExtraHitFXMoreDmg>
 <Hauts_ExtraHitFXMoreDmgChance>{0} chance to deal {1} {2} damage\n</Hauts_ExtraHitFXMoreDmgChance>
 <Hauts_ExtraHitFXStun>Stun for a base of {0} ticks\n</Hauts_ExtraHitFXStun>

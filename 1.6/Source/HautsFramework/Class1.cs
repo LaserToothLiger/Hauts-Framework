@@ -268,6 +268,7 @@ namespace HautsFramework
             harmony.Patch(AccessTools.Method(typeof(Faction), nameof(Faction.TryAffectGoodwillWith)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsTryAffectGoodwillWithPrefix)));
             HautsUtility.isHighFantasy = ModsConfig.IsActive("MrSamuelStreamer.RPGAdventureFlavour.DEV");
+            HautsUtility.combatIsExtended = ModsConfig.IsActive("CETeam.CombatExtended");
             Log.Message("Hauts_Initialize".Translate().CapitalizeFirst());
         }
         internal static object GetInstanceField(Type type, object instance, string fieldName)
@@ -3937,22 +3938,18 @@ namespace HautsFramework
                 {
                     foreach (HediffDef hed in this.Props.hediffsToCure)
                     {
-                        result += "Hauts_ExtraHitFXPurge".Translate(hed.label);
+                        result += "Hauts_ExtraHitFXPurge".Translate(hed.LabelCap);
                     }
-                }
-                else
-                {
+                } else {
                     foreach (HediffDef hed in this.Props.hediffsToCure)
                     {
                         if (this.Props.severityLostOnCure.max > 0)
                         {
                             if (this.Props.severityLostOnCure.min != this.Props.severityLostOnCure.max)
                             {
-                                result += "Hauts_ExtraHitFXPurgePartialVariable".Translate(this.Props.severityLostOnCure.min, this.Props.severityLostOnCure.max);
-                            }
-                            else
-                            {
-                                result += "Hauts_ExtraHitFXPurgePartial".Translate(this.Props.severityLostOnCure.min);
+                                result += "Hauts_ExtraHitFXPurgePartialVariable".Translate(this.Props.severityLostOnCure.min.ToStringByStyle(ToStringStyle.FloatTwo), this.Props.severityLostOnCure.max.ToStringByStyle(ToStringStyle.FloatTwo), hed.LabelCap);
+                            } else {
+                                result += "Hauts_ExtraHitFXPurgePartial".Translate(this.Props.severityLostOnCure.max.ToStringByStyle(ToStringStyle.FloatTwo), hed.LabelCap);
                             }
                         }
                     }
@@ -4033,7 +4030,7 @@ namespace HautsFramework
                 {
                     if (Rand.Chance(extraDamage.chance))
                     {
-                        DamageInfo dinfo2 = new DamageInfo(extraDamage.def, this.ScaledValue(victim, extraDamage.amount, valueToScale), extraDamage.AdjustedArmorPenetration(), -1f, this.Pawn, hitPart != null ? hitPart : victim.health.hediffSet.GetRandomNotMissingPart(extraDamage.def), null, DamageInfo.SourceCategory.ThingOrUnknown);
+                        DamageInfo dinfo2 = new DamageInfo(extraDamage.def, this.ScaledValue(victim, extraDamage.amount, valueToScale), extraDamage.AdjustedArmorPenetration(), -1f, HautsUtility.CombatIsExtended() ? null : this.Pawn, hitPart != null ? hitPart : victim.health.hediffSet.GetRandomNotMissingPart(extraDamage.def), null, DamageInfo.SourceCategory.ThingOrUnknown);
                         dinfo2.SetWeaponHediff(this.parent.def);
                         victim.TakeDamage(dinfo2);
                     }
@@ -4049,7 +4046,7 @@ namespace HautsFramework
                 {
                     if (Rand.Chance(extraDamage.chance))
                     {
-                        DamageInfo dinfo2 = new DamageInfo(extraDamage.def, this.ScaledValueThing(victim, extraDamage.amount, valueToScale), extraDamage.AdjustedArmorPenetration(), -1f, this.Pawn, null, null, DamageInfo.SourceCategory.ThingOrUnknown);
+                        DamageInfo dinfo2 = new DamageInfo(extraDamage.def, this.ScaledValueThing(victim, extraDamage.amount, valueToScale), extraDamage.AdjustedArmorPenetration(), -1f, HautsUtility.CombatIsExtended()?null:this.Pawn, null, null, DamageInfo.SourceCategory.ThingOrUnknown);
                         dinfo2.SetWeaponHediff(this.parent.def);
                         victim.TakeDamage(dinfo2);
                     }
@@ -12215,6 +12212,25 @@ namespace HautsFramework
             }
             pawn.health.AddHediff(hediff, null, null, null);
         }
+        public static void DoRandomDiseaseOutbreak(Thing thing)
+        {
+            BiomeDef biome = (thing.MapHeld.Tile.Valid ? Find.WorldGrid[thing.MapHeld.Tile].PrimaryBiome : DefDatabase<BiomeDef>.GetRandom());
+            IncidentDef incidentDef = DefDatabase<IncidentDef>.AllDefs.Where((IncidentDef d) => d.category == IncidentCategoryDefOf.DiseaseHuman).RandomElementByWeightWithFallback((IncidentDef d) => biome.CommonalityOfDisease(d), null);
+            Map map = thing.MapHeld;
+            if (map == null)
+            {
+                List<Map> maps = Find.Maps.Where((Map x) => x.IsPlayerHome).ToList();
+                if (maps != null)
+                {
+                    map = maps.RandomElement();
+                }
+            }
+            if (incidentDef != null && map != null)
+            {
+                IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.DiseaseHuman, map);
+                incidentDef.Worker.TryExecute(parms);
+            }
+        }
         //vpe integration
         public static bool IsVPEPsycast(VEF.Abilities.Ability ability)
         {
@@ -12365,26 +12381,6 @@ namespace HautsFramework
                 {
                     csovu.AdjustSeverity();
                 }
-            }
-        }
-        //misc
-        public static void DoRandomDiseaseOutbreak(Thing thing)
-        {
-            BiomeDef biome = (thing.MapHeld.Tile.Valid ? Find.WorldGrid[thing.MapHeld.Tile].PrimaryBiome : DefDatabase<BiomeDef>.GetRandom());
-            IncidentDef incidentDef = DefDatabase<IncidentDef>.AllDefs.Where((IncidentDef d) => d.category == IncidentCategoryDefOf.DiseaseHuman).RandomElementByWeightWithFallback((IncidentDef d) => biome.CommonalityOfDisease(d), null);
-            Map map = thing.MapHeld;
-            if (map == null)
-            {
-                List<Map> maps = Find.Maps.Where((Map x) => x.IsPlayerHome).ToList();
-                if (maps != null)
-                {
-                    map = maps.RandomElement();
-                }
-            }
-            if (incidentDef != null && map != null)
-            {
-                IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.DiseaseHuman, map);
-                incidentDef.Worker.TryExecute(parms);
             }
         }
         //checkers and lists
@@ -12638,6 +12634,10 @@ namespace HautsFramework
         {
             return HautsUtility.isHighFantasy;
         }
+        public static bool CombatIsExtended()
+        {
+            return HautsUtility.combatIsExtended;
+        }
         public static Hediff GetStrongestMechlink(Pawn p)
         {
             float bestCommandRange = 0f;
@@ -12672,6 +12672,7 @@ namespace HautsFramework
         public static readonly List<IncidentDef> goodEventPool = new List<IncidentDef>() { };
         public static readonly List<IncidentDef> badEventPool = new List<IncidentDef>() { };
         public static bool isHighFantasy;
+        public static bool combatIsExtended;
         public static List<HediffDef> mechlinkDefs;
         public struct BookSubjectSymbol
         {
