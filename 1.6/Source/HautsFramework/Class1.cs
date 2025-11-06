@@ -649,7 +649,7 @@ namespace HautsFramework
         public static void HautsJoyTickCheckEndPostfix(Pawn pawn)
         {
             Job curJob = pawn.CurJob;
-            if (curJob.def.joySkill != null)
+            if (curJob != null && curJob.def.joySkill != null && pawn.skills != null)
             {
                 pawn.skills.GetSkill(curJob.def.joySkill).Learn(curJob.def.joyXpPerTick * (pawn.GetStatValue(HautsDefOf.Hauts_SkillGainFromRecreation) - 1), false);
             }
