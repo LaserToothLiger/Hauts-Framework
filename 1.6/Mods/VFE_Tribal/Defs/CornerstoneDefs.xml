@@ -59,9 +59,9 @@
 	<label>Tenets of Power</label>
 	<description>Psycasters regenerate 1% psyfocus each day.</description>
 	<blurb>Secrets gleaned from observing the anima trees are shared among {0}, allowing their psycasters to cultivate a fraction of the mystic energies within themselves.</blurb>
-	<statFactors>
+	<statOffsets>
 		<Hauts_PsyfocusRegenRate>0.01</Hauts_PsyfocusRegenRate>
-	</statFactors>
+	</statOffsets>
   </VFETribals.CornerstoneDef>
   <VFETribals.CornerstoneDef MayRequire="Ludeon.RimWorld.Anomaly">
 	<defName>Hauts_DemonSlayers</defName>
