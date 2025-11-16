@@ -18,6 +18,7 @@
     <explosionColorEdge>(0.7, 0.7, 0.9)</explosionColorEdge>
     <explosionInteriorFleck>ElectricalSpark</explosionInteriorFleck>
 	<soundExplosion>Explosion_Vaporize</soundExplosion> <!--if you have Royalty, it gets subbed out for a much more fitting skip sound-->
+	<defaultArmorPenetration>99999</defaultArmorPenetration><!--doesn't interact with armor ordinarily, but if some other mod causes it to square up against armor, it should penetrate it-->
   </DamageDef>
   <ToolCapacityDef>
     <defName>Hauts_Skipcut</defName>

@@ -10,6 +10,24 @@
 	</statOffsets>
   </VFETribals.CornerstoneDef>
   <VFETribals.CornerstoneDef>
+	<defName>Hauts_MakersOfEndlessMerriment</defName>
+	<label>Makers of Endless Merriment</label>
+	<description>Recreation tolerance drops by +2% per day.</description>
+	<blurb>The people of {0} cherish every opportunity to play, relax, and even enjoy the quiet moments, no matter how repetitious it may get.</blurb>
+	<statOffsets>
+		<Hauts_BoredomDropPerDay>0.02</Hauts_BoredomDropPerDay>
+	</statOffsets>
+  </VFETribals.CornerstoneDef>
+  <VFETribals.CornerstoneDef>
+	<defName>Hauts_ThievesOfOpulence</defName>
+	<label>Thieves of Opulence</label>
+	<description>Pilfering stealth is increased by +0.2, enabling pickpocketing and burglary.</description>
+	<blurb>The people of {0} know that you can't always get what you want for a fair price. Stealing isn't wrong, if you have a good reason for it.</blurb>
+	<statOffsets>
+		<Hauts_PilferingStealth>0.2</Hauts_PilferingStealth>
+	</statOffsets>
+  </VFETribals.CornerstoneDef>
+  <VFETribals.CornerstoneDef>
 	<defName>Hauts_TravelersInSilence</defName>
 	<label>Travelers in Silence</label>
 	<description>Caravan visibility is reduced by 15%.</description>
@@ -36,11 +54,20 @@
 		<Hauts_IdeoThoughtFactor>0.25</Hauts_IdeoThoughtFactor>
 	</statOffsets>
   </VFETribals.CornerstoneDef>
+  <VFETribals.CornerstoneDef MayRequire="Ludeon.RimWorld.Royalty">
+	<defName>Hauts_TenetsOfPower</defName>
+	<label>Tenets of Power</label>
+	<description>Psycasters regenerate 1% psyfocus each day.</description>
+	<blurb>Secrets gleaned from observing the anima trees are shared among the people of {0}, allowing their psycasters to cultivate a fraction of the mystic energies within themselves.</blurb>
+	<statOffsets>
+		<Hauts_PsyfocusRegenRate>0.01</Hauts_PsyfocusRegenRate>
+	</statOffsets>
+  </VFETribals.CornerstoneDef>
   <VFETribals.CornerstoneDef MayRequire="Ludeon.RimWorld.Ideology">
 	<defName>Hauts_ZealotsOfFaith</defName>
 	<label>Zealots of the Faith</label>
 	<description>The effects of ideoligious abilities last 10% longer.</description>
-	<blurb>The inhabitants of {0} are exceptionally vulnerable to psychological manipulation when presented with an ideoligious bent; the effects of ideoligious abilities last longer on them.</blurb>
+	<blurb>The inhabitants of {0} practice their traditions with utmost zeal. The effects of ideoligious abilities last longer on them.</blurb>
 	<statFactors>
 		<Hauts_IdeoAbilityDurationSelf>1.1</Hauts_IdeoAbilityDurationSelf>
 	</statFactors>
@@ -49,25 +76,25 @@
 	<defName>Hauts_CousinsOfDryads</defName>
 	<label>Cousins of the Dryads</label>
 	<description>Gauranlen trees can produce 25% more dryads.</description>
-	<blurb>The {0} revere the symbiosis between human and dryad, tending them with more care and enabling dryad populations to bloom.</blurb>
+	<blurb>In {0}, the symbiosis between human and dryad is revered. They tend the gauranlen trees with great care, enabling dryad populations to bloom.</blurb>
 	<statFactors>
 		<Hauts_MaxDryadFactor>1.25</Hauts_MaxDryadFactor>
 	</statFactors>
   </VFETribals.CornerstoneDef>
-  <VFETribals.CornerstoneDef MayRequire="Ludeon.RimWorld.Royalty">
-	<defName>Hauts_TenetsOfPower</defName>
-	<label>Tenets of Power</label>
-	<description>Psycasters regenerate 1% psyfocus each day.</description>
-	<blurb>Secrets gleaned from observing the anima trees are shared among {0}, allowing their psycasters to cultivate a fraction of the mystic energies within themselves.</blurb>
+  <VFETribals.CornerstoneDef MayRequire="Ludeon.RimWorld.Biotech">
+	<defName>Hauts_ExcellentTeachers</defName>
+	<label>Excellent Teachers</label>
+	<description>Instructive ability is increased by 15%, making teaching more effective.</description>
+	<blurb>The people of {0} know that a proper education is essential for a life well-lived, so they strive to be the most effective teachers they can be.</blurb>
 	<statOffsets>
-		<Hauts_PsyfocusRegenRate>0.01</Hauts_PsyfocusRegenRate>
+		<Hauts_InstructiveAbility>0.15</Hauts_InstructiveAbility>
 	</statOffsets>
   </VFETribals.CornerstoneDef>
   <VFETribals.CornerstoneDef MayRequire="Ludeon.RimWorld.Anomaly">
 	<defName>Hauts_DemonSlayers</defName>
 	<label>Demon Slayers</label>
 	<description>Damage against unnatural entities is increased by 20%.</description>
-	<blurb>{0} know the weaknesses of the horrid monsters from the black ocean, and are therefore more adept at sending them back to the Void.</blurb>
+	<blurb>The hunters of {0} collect lore on the weaknesses of Void entities, and they view the destruction of such monsters as a sacred duty.</blurb>
 	<statFactors>
 		<Hauts_EntityDamageFactor>0.2</Hauts_EntityDamageFactor>
 	</statFactors>

@@ -402,4 +402,67 @@
 			</operations>
 		</match>
 	</Operation>
+	<!--<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Bionic modularity</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityDef[defName="BM_SpacerSmokeSpewerAbilityModule_One"]</xpath>
+					<value>
+						<li Class="HautsFramework.Hauts_SpewAbility" />
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityDef[defName="BM_SpacerSmokeSpewerAbilityModule_Two"]</xpath>
+					<value>
+						<li Class="HautsFramework.Hauts_SpewAbility" />
+					</value>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
+					  <li>Biotech</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/AbilityDef[defName="BM_SpacerToxSpewerAbilityModule_One"]</xpath>
+								<value>
+									<li Class="HautsFramework.Hauts_SpewAbility" />
+								</value>
+							</li>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/AbilityDef[defName="BM_SpacerToxSpewerAbilityModule_Two"]</xpath>
+								<value>
+									<li Class="HautsFramework.Hauts_SpewAbility" />
+								</value>
+							</li>
+						</operations>
+					</match>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
+					  <li>Anomaly</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/AbilityDef[defName="BM_SpacerDeadlifeSpewerAbilityModule_One"]</xpath>
+								<value>
+									<li Class="HautsFramework.Hauts_SpewAbility" />
+								</value>
+							</li>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/AbilityDef[defName="BM_SpacerDeadlifeSpewerAbilityModule_Two"]</xpath>
+								<value>
+									<li Class="HautsFramework.Hauts_SpewAbility" />
+								</value>
+							</li>
+						</operations>
+					</match>
+				</li>
+			</operations>
+		</match>
+	</Operation>-->
 </Patch>

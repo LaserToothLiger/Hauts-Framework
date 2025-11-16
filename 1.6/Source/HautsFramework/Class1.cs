@@ -3464,11 +3464,19 @@ namespace HautsFramework
                         this.ResetShield();
                     }
                     this.parent.Severity = Math.Min((this.EnergyGainPerTick*delta) + this.parent.Severity, this.MaxEnergy);
+                if (this.Energy < 0)
+                {
+                    this.BreakShield();
+                }
                 }
             } else if (this.parent.Severity < this.Props.minSeverityToWork) {
                 this.ticksToReset = this.ResetDelayTicks;
             } else {
                 this.parent.Severity = Math.Min((this.EnergyGainPerTick * delta) + this.parent.Severity, this.MaxEnergy);
+                if (this.Energy < 0)
+                {
+                    this.BreakShield();
+                }
             }
             if (this.Pawn.IsHashIntervalTick(60, delta))
             {
@@ -4918,7 +4926,7 @@ namespace HautsFramework
         }
         public ThingDef mote;
         public float scale;
-        public FloatRange validRange = new FloatRange(0f,999f);
+        public FloatRange validRange = new FloatRange(-1f);
         public bool scaleWithBodySize = true;
     }
     public class HediffComp_MoteConditional : HediffComp
@@ -4944,7 +4952,7 @@ namespace HautsFramework
         public override void CompPostTick(ref float severityAdjustment)
         {
             base.CompPostTick(ref severityAdjustment);
-            if (this.Pawn.Spawned && this.parent.Severity >= this.Props.validRange.min && this.parent.Severity <= this.Props.validRange.max)
+            if (this.Pawn.Spawned && (this.Props.validRange.max < 0f || (this.parent.Severity >= this.Props.validRange.min && this.parent.Severity <= this.Props.validRange.max)))
             {
                 if (!this.DisableMote())
                 {
@@ -8918,9 +8926,9 @@ namespace HautsFramework
                     PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
                     if (pme != null && pme.bookDef != null)
                     {
-                        for (int i = 0; i < pme.phenomenonCount; i++)
+                        for (int i = 0; i < this.ItemStackCount(pme, caller); i++)
                         {
-                            num += pme.bookDef.BaseMass * pme.phenomenonCount;
+                            num += pme.bookDef.BaseMass;
                         }
                         if (num > caravan.MassCapacity)
                         {
@@ -8971,7 +8979,7 @@ namespace HautsFramework
             if (pme != null && pme.bookDef != null)
             {
                 List<Thing> list = new List<Thing>();
-                for (int i = 0; i < pme.phenomenonCount; i++)
+                for (int i = 0; i < this.ItemStackCount(pme, this.caller); i++)
                 {
                     Thing thing = this.MakeBook(pme);
                     list.Add(thing);
@@ -8995,13 +9003,17 @@ namespace HautsFramework
         {
 
         }
+        public virtual int ItemStackCount(PermitMoreEffects pme, Pawn caller)
+        {
+            return pme.phenomenonCount;
+        }
         private void CallResourcesToCaravan(Pawn caller, Faction faction, bool free)
         {
             PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
             if (pme != null && pme.bookDef != null)
             {
                 Caravan caravan = caller.GetCaravan();
-                for (int i = 0; i < pme.phenomenonCount; i++)
+                for (int i = 0; i < this.ItemStackCount(pme,caller); i++)
                 {
                     Thing thing = this.MakeBook(pme);
                     CaravanInventoryUtility.GiveThing(caravan, thing);
@@ -9188,7 +9200,7 @@ namespace HautsFramework
             }
             return stringBuilder.ToString().TrimEndNewlines();
         }
-        private Faction faction;
+        public Faction faction;
         private static readonly Texture2D CommandTex = ContentFinder<Texture2D>.Get("UI/Commands/CallAid", true);
         private static List<HautsUtility.BookSubjectSymbol> subjects = new List<HautsUtility.BookSubjectSymbol>();
         
@@ -9253,7 +9265,7 @@ namespace HautsFramework
                     List<ThingDefCountClass> itemsToDrop = this.def.royalAid.itemsToDrop;
                     for (int i = 0; i < itemsToDrop.Count; i++)
                     {
-                        num += itemsToDrop[i].thingDef.BaseMass * (float)itemsToDrop[i].count;
+                        num += itemsToDrop[i].thingDef.BaseMass * (float)this.ItemStackCount(itemsToDrop[i], null, pawn);
                     }
                     if (num > caravan.MassCapacity)
                     {
@@ -9302,8 +9314,9 @@ namespace HautsFramework
             List<Thing> list = new List<Thing>();
             for (int i = 0; i < this.def.royalAid.itemsToDrop.Count; i++)
             {
+                PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
                 Thing thing = ThingMaker.MakeThing(this.def.royalAid.itemsToDrop[i].thingDef, this.def.royalAid.itemsToDrop[i].stuff);
-                thing.stackCount = this.def.royalAid.itemsToDrop[i].count;
+                thing.stackCount = this.ItemStackCount(this.def.royalAid.itemsToDrop[i], pme, this.caller);
                 if (thing.TryGetComp(out CompQuality compQuality))
                 {
                     compQuality.SetQuality(this.def.royalAid.itemsToDrop[i].quality, new ArtGenerationContext?(ArtGenerationContext.Outsider));
@@ -9316,9 +9329,7 @@ namespace HautsFramework
                 {
                     MinifiedThing minifiedThing = thing.MakeMinified();
                     list.Add(minifiedThing);
-                }
-                else
-                {
+                } else {
                     list.Add(thing);
                 }
             }
@@ -9340,13 +9351,18 @@ namespace HautsFramework
         {
 
         }
+        public virtual int ItemStackCount(ThingDefCountClass tdcc, PermitMoreEffects pme, Pawn caller)
+        {
+            return tdcc.count;
+        }
         private void CallResourcesToCaravan(Pawn caller, Faction faction, bool free)
         {
             Caravan caravan = caller.GetCaravan();
             for (int i = 0; i < this.def.royalAid.itemsToDrop.Count; i++)
             {
+                PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
                 Thing thing = ThingMaker.MakeThing(this.def.royalAid.itemsToDrop[i].thingDef, this.def.royalAid.itemsToDrop[i].stuff);
-                thing.stackCount = this.def.royalAid.itemsToDrop[i].count;
+                thing.stackCount = this.ItemStackCount(this.def.royalAid.itemsToDrop[i], pme, caller);
                 if (thing.TryGetComp(out CompQuality compQuality))
                 {
                     compQuality.SetQuality(this.def.royalAid.itemsToDrop[i].quality, new ArtGenerationContext?(ArtGenerationContext.Outsider));
@@ -9355,9 +9371,7 @@ namespace HautsFramework
                 {
                     MinifiedThing minifiedThing = thing.MakeMinified();
                     CaravanInventoryUtility.GiveThing(caravan, minifiedThing);
-                }
-                else
-                {
+                } else {
                     CaravanInventoryUtility.GiveThing(caravan, thing);
                 }
             }
@@ -9369,7 +9383,7 @@ namespace HautsFramework
             }
             this.DoOtherEffect(caller, faction);
         }
-        private Faction faction;
+        public Faction faction;
         private static readonly Texture2D CommandTex = ContentFinder<Texture2D>.Get("UI/Commands/CallAid", true);
     }
     [StaticConstructorOnStartup]
@@ -9492,7 +9506,7 @@ namespace HautsFramework
                         DefDatabase<ThingDef>.AllDefsListForReading.TryRandomElement((ThingDef x) => this.IsValidItemOption(x, pme), out oneThing);
                     }
                 }
-                for (int i = 0; i < pme.numFromCategory.RandomInRange; i++)
+                for (int i = 0; i < this.ItemStackCount(pme, this.caller); i++)
                 {
                     ThingDef randomThing;
                     if (oneThing != null)
@@ -9542,6 +9556,10 @@ namespace HautsFramework
         {
             return x.techLevel <= pme.maxTechLevelInCategory && x.techLevel >= pme.minTechLevelInCategory && x.BaseMarketValue <= pme.marketValueLimits.max && x.BaseMarketValue >= pme.marketValueLimits.min && (pme.thingCategories.NullOrEmpty() || (!x.thingCategories.NullOrEmpty() && x.thingCategories.ContainsAny((ThingCategoryDef tcd) => pme.thingCategories.Contains(tcd)))) && (pme.forbiddenThingCategories.NullOrEmpty() || x.thingCategories.NullOrEmpty() || !x.thingCategories.ContainsAny((ThingCategoryDef tcd) => pme.forbiddenThingCategories.Contains(tcd))) && (pme.tradeTags.NullOrEmpty() || (!x.tradeTags.NullOrEmpty() && x.tradeTags.ContainsAny((string tt) => pme.tradeTags.Contains(tt)))) && (pme.forbiddenTradeTags.NullOrEmpty() || (x.tradeTags.NullOrEmpty() && !x.tradeTags.ContainsAny((string tt) => pme.tradeTags.Contains(tt))));
         }
+        public virtual int ItemStackCount(PermitMoreEffects pme, Pawn caller)
+        {
+            return pme.numFromCategory.RandomInRange;
+        }
         private void CallResourcesToCaravan(Pawn caller, Faction faction, bool free)
         {
             Caravan caravan = caller.GetCaravan();
@@ -9549,7 +9567,7 @@ namespace HautsFramework
             if (pme != null)
             {
                 List<Thing> list = new List<Thing>();
-                for (int i = 0; i < pme.numFromCategory.RandomInRange; i++)
+                for (int i = 0; i < this.ItemStackCount(pme,caller); i++)
                 {
                     ThingDef randomThing;
                     if (!pme.targetableThings.NullOrEmpty())
@@ -9569,9 +9587,7 @@ namespace HautsFramework
                         {
                             MinifiedThing minifiedThing = thing.MakeMinified();
                             CaravanInventoryUtility.GiveThing(caravan, minifiedThing);
-                        }
-                        else
-                        {
+                        } else {
                             CaravanInventoryUtility.GiveThing(caravan, thing);
                         }
                         Messages.Message("MessagePermitTransportDropCaravan".Translate(faction.Named("FACTION"), caller.Named("PAWN")), caravan, MessageTypeDefOf.NeutralEvent, true);
@@ -9585,7 +9601,7 @@ namespace HautsFramework
                 }
             }
         }
-        private Faction faction;
+        public Faction faction;
         private static readonly Texture2D CommandTex = ContentFinder<Texture2D>.Get("UI/Commands/CallAid", true);
     }
     [StaticConstructorOnStartup]
@@ -9729,13 +9745,17 @@ namespace HautsFramework
             yield return command_Action;
             yield break;
         }
+        public virtual int NumQuestsToGenerate(PermitMoreEffects pme, Pawn caller, Faction faction)
+        {
+            return pme.questCount;
+        }
         protected void GiveQuest(Pawn caller, Faction faction, IncidentParms parms, bool free)
         {
             PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
             if (pme != null && (pme.questScriptDefs != null || pme.incidentDefs != null))
             {
                 bool done = false;
-                for (int i = 0; i < pme.questCount; i++)
+                for (int i = 0; i < this.NumQuestsToGenerate(pme,caller,faction); i++)
                 {
                     int questCount = pme.questScriptDefs != null ? pme.questScriptDefs.Count : 0;
                     int incidentCount = pme.incidentDefs != null ? pme.incidentDefs.Count : 0;
@@ -11385,7 +11405,7 @@ namespace HautsFramework
                                     LookTargets toLook = new LookTargets(actor);
                                     ChoiceLetter tieLetter = LetterMaker.MakeLetter("Hauts_PilferLetter1".Translate(), message, LetterDefOf.NeutralEvent, toLook, null, null, null);
                                     Find.LetterStack.ReceiveLetter(tieLetter, null);
-                                    this.IncreaseAlertLevel(victim,minAlertRaise);
+                                    HautsUtility.IncreaseAlertLevel(victim,minAlertRaise);
                                 } else {
                                     TaggedString message = "Hauts_PickpocketOutcome2".Translate(actor.Name.ToStringShort, victim.Faction.NameColored);
                                     LookTargets toLook = new LookTargets(actor);
@@ -11397,10 +11417,10 @@ namespace HautsFramework
                                     {
                                         foreach (Pawn p in victim.MapHeld.mapPawns.PawnsInFaction(victim.Faction))
                                         {
-                                            this.IncreaseAlertLevel(p, raiseAlertBy);
+                                            HautsUtility.IncreaseAlertLevel(p, raiseAlertBy);
                                         }
                                     } else {
-                                        this.IncreaseAlertLevel(victim,raiseAlertBy);
+                                        HautsUtility.IncreaseAlertLevel(victim,raiseAlertBy);
                                     }
                                 }
                             } else {
@@ -11422,7 +11442,7 @@ namespace HautsFramework
                                     }*/
                                     foreach (Pawn p in victim.MapHeld.mapPawns.PawnsInFaction(victim.Faction))
                                     {
-                                        this.IncreaseAlertLevel(p, raiseAlertBy);
+                                        HautsUtility.IncreaseAlertLevel(p, raiseAlertBy);
                                     }
                                 } else {
                                     TaggedString message = "Hauts_PickpocketOutcome3_Factionless".Translate(actor.Name.ToStringShort, victim.Name.ToStringShort);
@@ -11434,7 +11454,7 @@ namespace HautsFramework
                                         victim.MentalState.RecoverFromState();
                                     }
                                     victim.mindState.mentalStateHandler.TryStartMentalState(MentalStateDefOf.Berserk, null, false, true, false, null, false, false, false);
-                                    this.IncreaseAlertLevel(victim, raiseAlertBy);
+                                    HautsUtility.IncreaseAlertLevel(victim, raiseAlertBy);
                                 }
                             }
                         }
@@ -11443,18 +11463,6 @@ namespace HautsFramework
                 yield return trade;
             }
             yield break;
-        }
-        public void IncreaseAlertLevel(Pawn victim, float value)
-        {
-            Hediff existingHediff = victim.health.hediffSet.GetFirstHediffOfDef(HautsDefOf.Hauts_RaisedAlertLevel);
-            if (existingHediff != null)
-            {
-                existingHediff.Severity += value;
-            } else {
-                Hediff newHediff = HediffMaker.MakeHediff(HautsDefOf.Hauts_RaisedAlertLevel,victim,null);
-                victim.health.AddHediff(newHediff);
-                newHediff.Severity = value;
-            }
         }
         public bool CanPickpocket(Pawn victim, Pawn thief)
         {
@@ -12381,6 +12389,20 @@ namespace HautsFramework
                 {
                     csovu.AdjustSeverity();
                 }
+            }
+        }
+        public static void IncreaseAlertLevel(Pawn victim, float value)
+        {
+            Hediff existingHediff = victim.health.hediffSet.GetFirstHediffOfDef(HautsDefOf.Hauts_RaisedAlertLevel);
+            if (existingHediff != null)
+            {
+                existingHediff.Severity += value;
+            }
+            else
+            {
+                Hediff newHediff = HediffMaker.MakeHediff(HautsDefOf.Hauts_RaisedAlertLevel, victim, null);
+                victim.health.AddHediff(newHediff);
+                newHediff.Severity = value;
             }
         }
         //checkers and lists

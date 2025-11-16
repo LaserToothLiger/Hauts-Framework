@@ -131,7 +131,7 @@
 	<StatDef MayRequire="Ludeon.RimWorld.Biotech">
 		<defName>Hauts_InstructiveAbility</defName>
 		<label>instructive ability</label>
-		<description>A multiplier to the amount of skill experience and learning conveyed to children who take lessons from or watch the work of this character.</description>
+		<description>A multiplier to the amount of skill experience and learning conveyed to those who take lessons from or watch the work of this character.</description>
 		<category>BasicsPawn</category>
 		<hideAtValue>1</hideAtValue>
 		<defaultBaseValue>1</defaultBaseValue>
