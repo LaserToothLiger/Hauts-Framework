@@ -42,8 +42,6 @@ namespace HautsFramework
             //tweaks
             harmony.Patch(AccessTools.Method(typeof(VEF.Abilities.Ability), nameof(VEF.Abilities.Ability.Cast), new[] { typeof(GlobalTargetInfo[]) }),
                            postfix: new HarmonyMethod(patchType, nameof(HautsVFEAbility_CastPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(VerbProperties), nameof(VerbProperties.AdjustedCooldown), new[] { typeof(Tool), typeof(Pawn), typeof(Thing) }),
-                          postfix: new HarmonyMethod(patchType, nameof(HautsAdjustedCooldownPostfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), new[] { typeof(PawnKindDef), typeof(Faction), typeof(PlanetTile) }),
                           postfix: new HarmonyMethod(patchType, nameof(Hauts_GeneratePawnPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_RoyaltyTracker), nameof(Pawn_RoyaltyTracker.OpenPermitWindow)),
@@ -299,13 +297,6 @@ namespace HautsFramework
                 {
                     h.Notify_PawnUsedVerb(__instance.GetVerb, needATarget);
                 }
-            }
-        }
-        public static void HautsAdjustedCooldownPostfix(ref float __result, VerbProperties __instance, Tool tool, Pawn attacker, Thing equipment)
-        {
-            if (__instance.IsMeleeAttack && equipment == attacker)
-            {
-                __result /= Math.Max(0.001f,attacker.GetStatValue(VEFDefOf.VEF_MeleeAttackSpeedFactor, true, -1));
             }
         }
         public static void Hauts_GeneratePawnPostfix(ref Pawn __result)
