@@ -8782,6 +8782,16 @@ namespace HautsFramework
         public PermitMoreEffects() { }
         public float GetIncidentPoints(Pawn caller)
         {
+            if (this.defaultIncidentPointFactor != null)
+            {
+                float factor = this.defaultIncidentPointFactor.RandomInRange;
+                if (caller.Map != null && caller.Map.IsPlayerHome)
+                {
+                    return factor * StorytellerUtility.DefaultThreatPointsNow(caller.Map);
+                } else if (Find.AnyPlayerHomeMap != null) {
+                    return factor * StorytellerUtility.DefaultThreatPointsNow(Find.RandomPlayerHomeMap);
+                }
+            }
             if (this.incidentPoints != null)
             {
                 return this.incidentPoints.RandomInRange;
@@ -8819,6 +8829,7 @@ namespace HautsFramework
         public List<IncidentDef> incidentDefs;
         public int questCount = 1;
         public IntRange incidentPoints;
+        public FloatRange defaultIncidentPointFactor;
         public IntRange incidentDelay;
         public bool incidentUsesPermitFaction = true;
         //causing conditions
@@ -8856,6 +8867,7 @@ namespace HautsFramework
         public bool gambaDropPodSoNotInstant = false;
         public IntRange gambaReturnDelay;
         public string returnMessage;
+        public string extraString;
     }
     [StaticConstructorOnStartup]
     public class RoyalTitlePermitWorker_DropBook : RoyalTitlePermitWorker_Targeted

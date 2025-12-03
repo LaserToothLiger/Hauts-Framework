@@ -178,6 +178,12 @@
 						</value>
 					</match>
 				</li>
+				<!--<li Class="PatchOperationReplace">
+					<xpath>/Defs/JobDef[defName="VTE_StealItems"]/driverClass</xpath>
+					<value>
+						<driverClass>HautsFramework.JobDriver_StealItems_VTEcompat</driverClass>
+					</value>
+				</li>-->
 			</operations>
 		</match>
 	</Operation>
