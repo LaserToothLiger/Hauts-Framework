@@ -1719,9 +1719,9 @@ namespace HautsFramework
                 }
                 this.ThirdTickEffects();
             }
-            foreach (Hauts_FactionCompHolder fch in factions)
+            for (int j = this.factions.Count - 1; j >= 0; j--)
             {
-                fch.PostTick();
+                this.factions[j].PostTick();
             }
         }
         public void ThirdTickEffects()
@@ -12546,11 +12546,11 @@ namespace HautsFramework
         }
         public static void AddExciseTraitExemption(TraitDef def)
         {
-            exciseTraitExemptions.Add(def);
+            HautsUtility.exciseTraitExemptions.Add(def);
         }
         public static bool IsExciseTraitExempt(TraitDef def, bool includeSexualities = false)
         {
-            if (exciseTraitExemptions.Contains(def) || def.HasModExtension<ExciseTraitExemption>())
+            if (HautsUtility.exciseTraitExemptions.Contains(def) || def.HasModExtension<ExciseTraitExemption>())
             {
                 return true;
             }
