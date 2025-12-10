@@ -29,6 +29,8 @@ using static UnityEngine.GraphicsBuffer;
 using VEF.Abilities;
 using System.Linq.Expressions;
 using VEF.AnimalBehaviours;
+using VEF.Weapons;
+using System.Security.Cryptography;
 
 namespace HautsFramework
 {
@@ -8773,6 +8775,73 @@ namespace HautsFramework
             Pawn pawn = this.parent.pawn;
             Building_Door door = target.Cell.GetDoor(pawn.Map);
             return (door == null || door.CanPhysicallyPass(pawn)) && (pawn.Spawned && !target.Cell.Impassable(this.parent.pawn.Map)) && target.Cell.WalkableBy(this.parent.pawn.Map, pawn);
+        }
+    }
+    //ability gizmos
+    public class Command_AbilityCanBuffSelfOnCaravan : RimWorld.Command_Ability
+    {
+        public Command_AbilityCanBuffSelfOnCaravan(RimWorld.Ability ability, Pawn pawn) : base(ability, pawn)
+        {
+        }
+        public override void ProcessInput(Event ev)
+        {
+            if (this.Pawn.IsCaravanMember())
+            {
+                this.Ability.Activate(this.Pawn);
+                foreach (CompAbilityEffect compAbilityEffect in this.Ability.EffectComps)
+                {
+                    if (!(compAbilityEffect is CompAbilityEffect_FleckOnTarget))
+                    {
+                        compAbilityEffect.Apply(this.Pawn, null);
+                    }
+                }
+            }
+            base.ProcessInput(ev);
+        }
+    }
+    public class Psycast_CanBuffSelfOnCaravan : RimWorld.Psycast
+    {
+        public Psycast_CanBuffSelfOnCaravan(Pawn pawn)
+            : base(pawn)
+        {
+        }
+        public Psycast_CanBuffSelfOnCaravan(Pawn pawn, RimWorld.AbilityDef def)
+            : base(pawn, def)
+        {
+        }
+        public override IEnumerable<Command> GetGizmos()
+        {
+            if (!ModLister.RoyaltyInstalled)
+            {
+                yield break;
+            }
+            if (this.gizmo == null)
+            {
+                this.gizmo = new Command_PsycastCanBuffSelfOnCaravan(this, this.pawn);
+            }
+            yield return this.gizmo;
+            yield break;
+        }
+    }
+    public class Command_PsycastCanBuffSelfOnCaravan : Command_Psycast
+    {
+        public Command_PsycastCanBuffSelfOnCaravan(Psycast ability, Pawn pawn) : base(ability, pawn)
+        {
+        }
+        public override void ProcessInput(Event ev)
+        {
+            if (this.Pawn.IsCaravanMember())
+            {
+                this.Ability.Activate(this.Pawn);
+                foreach (CompAbilityEffect compAbilityEffect in this.Ability.EffectComps)
+                {
+                    if (!(compAbilityEffect is CompAbilityEffect_FleckOnTarget))
+                    {
+                        compAbilityEffect.Apply(this.Pawn, null);
+                    }
+                }
+            }
+            base.ProcessInput(ev);
         }
     }
     //permits
