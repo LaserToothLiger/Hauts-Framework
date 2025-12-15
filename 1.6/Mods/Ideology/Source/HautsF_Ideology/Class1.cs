@@ -375,21 +375,6 @@ namespace HautsF_Ideology
                 return null;
             }
             StringBuilder stringBuilder = new StringBuilder();
-            if (this.ConversionPerHour != 0f)
-            {
-                string text = "Hauts_IdeoBookConversion".Translate(this.ConversionPerHour.ToStringDecimalIfSmall());
-                stringBuilder.AppendLine(" - " + text);
-            }
-            if (this.ReassurePerHour != 0f)
-            {
-                string text2 = "Hauts_IdeoBookCertainty".Translate(this.ReassurePerHour.ToStringDecimalIfSmall());
-                stringBuilder.AppendLine(" - " + text2);
-            }
-            if (this.ChanceToUpsetPerHour > 0f)
-            {
-                string text3 = "Hauts_IdeoBookUpsetChance".Translate(this.ChanceToUpsetPerHour.ToStringByStyle(ToStringStyle.PercentTwo));
-                stringBuilder.AppendLine(" - " + text3);
-            }
             string text4 = "Hauts_IdeoBookMemeList".Translate(this.ideo.name.Colorize(this.ideo.Color), this.ideo.StructureMeme.label);
             if (!this.ideo.memes.NullOrEmpty())
             {
@@ -405,7 +390,22 @@ namespace HautsF_Ideology
                     }
                 }
             }
-            stringBuilder.AppendLine(text4);
+            stringBuilder.AppendLine(text4 + "\n");
+            if (this.ConversionPerHour != 0f)
+            {
+                string text = "Hauts_IdeoBookConversion".Translate(this.ConversionPerHour.ToStringDecimalIfSmall());
+                stringBuilder.AppendLine(" - " + text);
+            }
+            if (this.ReassurePerHour != 0f)
+            {
+                string text2 = "Hauts_IdeoBookCertainty".Translate(this.ReassurePerHour.ToStringDecimalIfSmall());
+                stringBuilder.AppendLine(" - " + text2);
+            }
+            if (this.ChanceToUpsetPerHour > 0f)
+            {
+                string text3 = "Hauts_IdeoBookUpsetChance".Translate(this.ChanceToUpsetPerHour.ToStringByStyle(ToStringStyle.PercentTwo));
+                stringBuilder.AppendLine(" - " + text3);
+            }
             this.ExtraEffectsStrings(ref stringBuilder);
             return stringBuilder.ToString();
         }

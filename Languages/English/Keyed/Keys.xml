@@ -77,8 +77,8 @@
 <Hauts_MessagePermitBoostCaravan>{FACTION_name} has provided assistance for {PAWN_nameDef}'s caravan.</Hauts_MessagePermitBoostCaravan>
 <Hauts_IdeoBookConversion>Conversion power: {0}/hour</Hauts_IdeoBookConversion>
 <Hauts_IdeoBookCertainty>Reasurrance power: {0}/hour</Hauts_IdeoBookCertainty>
-<Hauts_IdeoBookUpsetChance>Chance to upset non-believers: {0}</Hauts_IdeoBookUpsetChance>
-<Hauts_IdeoBookMemeList>{0} ({1} structure ideo): </Hauts_IdeoBookMemeList>
+<Hauts_IdeoBookUpsetChance>Chance to upset non-believers: {0}/hour</Hauts_IdeoBookUpsetChance>
+<Hauts_IdeoBookMemeList>Ideoligion: {0} ({1} structure) - </Hauts_IdeoBookMemeList>
 <Hauts_LetterConvertIdeoBook_Success>Reading {0} has caused {1} to turn away from {2} and towards {3}.</Hauts_LetterConvertIdeoBook_Success>
 <Hauts_QuestDiscoveredByPermit>{PERMITUSER_nameDef} was informed of</Hauts_QuestDiscoveredByPermit>
 <Hauts_AttackedAlliedFaction>Attacked a close ally</Hauts_AttackedAlliedFaction>

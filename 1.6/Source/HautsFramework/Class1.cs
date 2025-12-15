@@ -155,6 +155,8 @@ namespace HautsFramework
                           prefix: new HarmonyMethod(patchType, nameof(HautsTakeWearoutDamageForDayPrefix)));
             harmony.Patch(AccessTools.Method(typeof(MedicalRecipesUtility), nameof(MedicalRecipesUtility.SpawnThingsFromHediffs)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsApplyOnPawnPrefix)));
+            harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.Kill)),
+                           prefix: new HarmonyMethod(patchType, nameof(HautsKillPrefix)));
             //hediff comps
             if (ModsConfig.IdeologyActive)
             {
@@ -1032,6 +1034,14 @@ namespace HautsFramework
             }
             return true;
         }
+        public static bool HautsKillPrefix(Pawn __instance)
+        {
+            if (HautsUtility.TryVanishPawn(__instance))
+            {
+                return false;
+            }
+            return true;
+        }
         public static void HautsStatPart_GlowActiveForPostfix(ref bool __result, StatPart_Glow __instance, Thing t)
         {
             if (__result && (bool)__instance.GetType().GetField("ignoreIfPrefersDarkness", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance))
@@ -1647,6 +1657,28 @@ namespace HautsFramework
     public class ExciseTraitExemption : DefModExtension
     {
 
+    }
+    public class VanishOnDeath : DefModExtension
+    {
+        public VanishOnDeath()
+        {
+
+        }
+        public SoundDef sound;
+        public ThingDef thingLeftBehind;
+        public bool triggerOnRemoval;
+        public bool skipgateOut;
+    }
+    public class Hediff_VanishOnDownedToo : HediffWithComps
+    {
+        public override void TickInterval(int delta)
+        {
+            base.TickInterval(delta);
+            if (this.pawn.Downed)
+            {
+                HautsUtility.TryVanishPawn(this.pawn);
+            }
+        }
     }
     public class ConceitedTrait : DefModExtension
     {
@@ -10420,7 +10452,15 @@ namespace HautsFramework
                     PawnKindDef pkd = onePkd??this.ChoosePawnKindToDrop(pme);
                     if (pkd != null)
                     {
-                        list.Add(PawnGenerator.GeneratePawn(pkd, pme.startsTamed ? this.caller.Faction : null));
+                        Pawn p = PawnGenerator.GeneratePawn(pkd, pme.startsTamed ? this.caller.Faction : null);
+                        if (pme.hediffs != null)
+                        {
+                            foreach (HediffDef hd in pme.hediffs)
+                            {
+                                p.health.AddHediff(hd);
+                            }
+                        }
+                        list.Add(p);
                     }
                 }
             }
@@ -10455,7 +10495,15 @@ namespace HautsFramework
                     PawnKindDef pkd = this.ChoosePawnKindToDrop(pme);
                     if (pkd != null)
                     {
-                        list.Add(PawnGenerator.GeneratePawn(pkd, null));
+                        Pawn p = PawnGenerator.GeneratePawn(pkd, pme.startsTamed ? this.caller.Faction : null);
+                        if (pme.hediffs != null)
+                        {
+                            foreach (HediffDef hd in pme.hediffs)
+                            {
+                                p.health.AddHediff(hd);
+                            }
+                        }
+                        list.Add(p);
                     }
                 }
             }
@@ -12026,6 +12074,12 @@ namespace HautsFramework
         }
         public static void RemoveTraitGrantedStuff(Trait t, Pawn pawn)
         {
+            VanishOnDeath vod = t.def.GetModExtension<VanishOnDeath>();
+            if (vod != null && vod.triggerOnRemoval)
+            {
+                HautsUtility.VanishPawnInner(pawn, vod.thingLeftBehind, vod.sound, vod.skipgateOut);
+                return;
+            }
             TraitGrantedStuff tgs = t.def.GetModExtension<TraitGrantedStuff>();
             if (tgs != null)
             {
@@ -12097,6 +12151,54 @@ namespace HautsFramework
                     }
                 }
             }
+        }
+        public static bool TryVanishPawn(Pawn pawn)
+        {
+            if (pawn.story != null)
+            {
+                foreach (Trait t in pawn.story.traits.TraitsSorted)
+                {
+                    VanishOnDeath vod = t.def.GetModExtension<VanishOnDeath>();
+                    if (vod != null)
+                    {
+                        HautsUtility.VanishPawnInner(pawn, vod.thingLeftBehind, vod.sound, vod.skipgateOut);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        public static void VanishPawnInner(Pawn pawn, ThingDef thingLeftBehind, SoundDef sound, bool skipgateOut)
+        {
+            if (pawn.Spawned)
+            {
+                Map map = pawn.Map;
+                if (sound != null)
+                {
+                    sound.PlayOneShot(new TargetInfo(pawn.Position, map, false));
+                } else if (skipgateOut && ModsConfig.RoyaltyActive) {
+                    SoundDefOf.Psycast_Skip_Exit.PlayOneShot(new TargetInfo(pawn.Position, map, false));
+                }
+                if (thingLeftBehind != null)
+                {
+                    Thing thing = ThingMaker.MakeThing(thingLeftBehind);
+                    GenPlace.TryPlaceThing(thing, pawn.Position, map, ThingPlaceMode.Near, null, null, default);
+                }
+                if (skipgateOut)
+                {
+                    FleckCreationData dataStatic = FleckMaker.GetDataStatic(pawn.Position.ToVector3Shifted(), map, FleckDefOf.PsycastSkipInnerExit, 1f);
+                    dataStatic.rotationRate = (float)Rand.Range(-30, 30);
+                    dataStatic.rotation = (float)(90 * Rand.RangeInclusive(0, 3));
+                    map.flecks.CreateFleck(dataStatic);
+                    FleckCreationData dataStatic2 = FleckMaker.GetDataStatic(pawn.Position.ToVector3Shifted(), map, FleckDefOf.PsycastSkipOuterRingExit, 1f);
+                    dataStatic2.rotationRate = (float)Rand.Range(-30, 30);
+                    dataStatic2.rotation = (float)(90 * Rand.RangeInclusive(0, 3));
+                    map.flecks.CreateFleck(dataStatic2);
+                    pawn.teleporting = true;
+                }
+            }
+            pawn.ExitMap(false, Rot4.Invalid);
+            pawn.Destroy(DestroyMode.Vanish);
         }
         //ability range mod tools
         public static bool IsSkipAbility(RimWorld.AbilityDef ability)
