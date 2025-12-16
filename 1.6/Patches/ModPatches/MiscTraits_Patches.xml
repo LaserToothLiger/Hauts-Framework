@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Misc Traits</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--filth rate traits affect track size-->
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="MiscTraits_Filthy"]/degreeDatas/li[degree="1"]/statFactors</xpath>
+					<value>
+						<Hauts_TrackSize>0.7</Hauts_TrackSize>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="MiscTraits_Filthy"]/degreeDatas/li[degree="-1"]/statFactors</xpath>
+					<value>
+						<Hauts_TrackSize>1.6</Hauts_TrackSize>
+					</value>
+				</li>
+				<!--more places to put these stats!!!-->
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="MiscTraits_Potentiality"]/degreeDatas/li/statOffsets</xpath>
+					<value>
+						<Hauts_SkillGainFromRecreation>1</Hauts_SkillGainFromRecreation>
+					</value>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
+						<li>Ideology</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationConditional">
+								<xpath>/Defs/TraitDef[defName="MiscTraits_FriendOfGauranlen"]/degreeDatas/li/statOffsets</xpath>
+								<nomatch Class="PatchOperationAdd">
+									<xpath>/Defs/TraitDef[defName="MiscTraits_FriendOfGauranlen"]/degreeDatas/li</xpath>
+									<value>
+										<statOffsets>
+											<Hauts_MaxDryadFactor>0.25</Hauts_MaxDryadFactor>
+										</statOffsets>
+									</value>
+								</nomatch>
+								<match Class="PatchOperationAdd">
+									<xpath>/Defs/TraitDef[defName="MiscTraits_FriendOfGauranlen"]/degreeDatas/li/statOffsets</xpath>
+									<value>
+										<Hauts_MaxDryadFactor>0.25</Hauts_MaxDryadFactor>
+									</value>
+								</match>
+							</li>
+						</operations>
+					</match>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="MiscTraits_Insulter"]</xpath>
+					<value>
+						<li Class="HautsFramework.ConceitedTrait" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

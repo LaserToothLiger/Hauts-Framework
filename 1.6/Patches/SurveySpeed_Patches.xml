@@ -64,4 +64,19 @@
 			</operations>
 		</match>
 	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Mythical ores</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/ThingDef[defName="Bart_DeepScanner"]/comps/li[@Class="ModdedGroundScanner.CompProperties_ModdedGroundScanner"]/scanSpeedStat</xpath>
+					<value>
+						<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
 </Patch>
