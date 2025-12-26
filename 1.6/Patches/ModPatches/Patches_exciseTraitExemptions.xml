@@ -144,4 +144,15 @@
 			</value>
 		</match>
 	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Quests Expanded - Ancients</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/TraitDef[defName="VQE_IdealPatient"]</xpath>
+			<value>
+				<li Class="HautsFramework.ExciseTraitExemption" />
+			</value>
+		</match>
+	</Operation>
 </Patch>

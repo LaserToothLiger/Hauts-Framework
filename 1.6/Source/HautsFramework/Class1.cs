@@ -1061,7 +1061,7 @@ namespace HautsFramework
         }
         public static void HautsNotify_LifeStageStartedPostfix(Pawn pawn)
         {
-            if (pawn.story != null && pawn.story.bodyType != null && pawn.def == ThingDefOf.Human)
+            if (pawn.story != null && pawn.story.bodyType != null && (pawn.def == ThingDefOf.Human || (ModsConfig.AnomalyActive && pawn.def == ThingDefOf.CreepJoiner)))
             {
                 foreach (Trait t in pawn.story.traits.TraitsSorted)
                 {
@@ -12020,7 +12020,7 @@ namespace HautsFramework
                     pawn.guest.resistance *= tgs.prisonerResolveFactor.TryGetValue(t.Degree);
                     pawn.guest.will *= tgs.prisonerResolveFactor.TryGetValue(t.Degree);
                 }
-                if (pawn.story.bodyType != null && tgs.forcedBodyTypes != null)
+                if ((pawn.def == ThingDefOf.Human || (ModsConfig.AnomalyActive && pawn.def == ThingDefOf.CreepJoiner)) && pawn.story.bodyType != null && tgs.forcedBodyTypes != null)
                 {
                     if (tgs.forcedBodyTypes.Keys.Contains(pawn.story.bodyType))
                     {
