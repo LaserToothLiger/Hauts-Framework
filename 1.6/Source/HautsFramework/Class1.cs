@@ -180,6 +180,8 @@ namespace HautsFramework
             }
             harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.PreApplyDamage)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsFramework_PreApplyDamagePostfix)));
+            harmony.Patch(AccessTools.Method(typeof(AttachableThing), nameof(AttachableThing.AttachTo)),
+                           prefix: new HarmonyMethod(patchType, nameof(Hauts_AddAttachmentPrefix)));
             /* missing a transpiler patch that would hit up VerbTracker.Command_VerbTarget's CreateVerbTargetCommand function, doing something similar to FirstApparelPreventingShooting
              * harmony.Patch(AccessTools.Method(typeof(Verb), nameof(Verb.ApparelPreventsShooting)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsApparelPreventsShootingPostfix)));*/
@@ -1173,6 +1175,24 @@ namespace HautsFramework
                     }
                 }
             }
+        }
+        public static bool Hauts_AddAttachmentPrefix(AttachableThing __instance, Thing newParent)
+        {
+            if (__instance.def.HasModExtension<BadAttachable>() && newParent is Pawn p)
+            {
+                if (p.TryGetComp<CompAttachBase>(out CompAttachBase cab))
+                {
+                    foreach (Hediff h in p.health.hediffSet.hediffs)
+                    {
+                        HediffComp_DamageNegation hcdn = h.TryGetComp<HediffComp_DamageNegation>();
+                        if (hcdn != null && hcdn.Props.removeBadAttachables && hcdn.ShouldPreventAttachment(__instance))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
         }
         /*public static void HautsApparelPreventsShootingPostfix(ref bool __result, Verb __instance)
         {
@@ -3214,11 +3234,15 @@ namespace HautsFramework
         public virtual void DoModificationInner(ref DamageInfo dinfo, ref bool absorbed, float amount)
         {
         }
+        public bool ChanceCapped()
+        {
+            return Rand.Chance(Math.Min(this.Props.maxChance, this.Props.chance * (this.Props.chanceScalar != null ? this.Pawn.GetStatValue(this.Props.chanceScalar) : 1f)));
+        }
         public virtual void TryDoModification(ref DamageInfo dinfo, ref bool absorbed)
         {
             if (this.ShouldDoEffect(dinfo))
             {
-                if (dinfo.Amount >= this.Props.minDmgToTrigger && Rand.Chance(Math.Min(this.Props.maxChance,this.Props.chance*(this.Props.chanceScalar != null ? this.Pawn.GetStatValue(this.Props.chanceScalar):1f))))
+                if (dinfo.Amount >= this.Props.minDmgToTrigger && this.ChanceCapped())
                 {
                     float amount = dinfo.Amount;
                     if (this.ShouldPayCostOfHit(dinfo, absorbed))
@@ -3252,6 +3276,7 @@ namespace HautsFramework
         public bool onlyDoGraphicsOnFullNegation = true;
         public bool throwText;
         public string textToThrow;
+        public bool removeBadAttachables;
     }
     public class HediffComp_DamageNegation : HediffComp_PreDamageModification
     {
@@ -3261,6 +3286,10 @@ namespace HautsFramework
             {
                 return (HediffCompProperties_DamageNegation)this.props;
             }
+        }
+        public virtual bool ShouldPreventAttachment(Thing attachment)
+        {
+                return this.parent.Severity >= this.Props.minSeverityToWork && this.ChanceCapped();
         }
         public override void DoModificationInner(ref DamageInfo dinfo, ref bool absorbed, float amount)
         {
@@ -3335,6 +3364,10 @@ namespace HautsFramework
         public FloatRange visualRange;
         public SoundDef resetSound;
         public bool lightningGlowOnReset = true;
+    }
+    public class BadAttachable : DefModExtension
+    {
+        public BadAttachable(){}
     }
     public class HediffComp_DamageNegationShield : HediffComp_DamageNegation
     {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Conservationist and Polluter - Mort's Ideologies: Memes and Precepts</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/HediffDef[defName="MI_CleanupCommandBuff"]/stages/li/statOffsets</xpath>
+					<value>
+						<Hauts_RecyclingSpeed MayRequire="VanillaExpanded.Recycling">0.5</Hauts_RecyclingSpeed>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/PreceptDef[defName="MI_IdeoRole_CleanupSpecialist"]/roleEffects</xpath>
+					<value>
+						<li Class="RoleEffect_PawnStatOffset" MayRequire="VanillaExpanded.Recycling">
+							<statDef>Hauts_RecyclingSpeed</statDef>
+							<modifier>0.5</modifier>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

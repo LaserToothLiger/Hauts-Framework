@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch><!--Certain damage negation hediffs remove these attachments periodically-->
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/ThingDef[defName="Fire"]</xpath>
+		<value>
+			<li Class="HautsFramework.BadAttachable" />
+		</value>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Gravship Expanded - Chapter 1</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/ThingDef[defName="VGE_Astrofire"]</xpath>
+			<value>
+				<li Class="HautsFramework.BadAttachable" />
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Quests Expanded - Cryptoforge</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/ThingDef[defName="VQE_Cryptofreeze"]</xpath>
+			<value>
+				<li Class="HautsFramework.BadAttachable" />
+			</value>
+		</match>
+	</Operation>
+</Patch>

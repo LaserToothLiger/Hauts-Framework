@@ -32,7 +32,7 @@
     <defName>Hauts_Skulduggery</defName>
     <label>Skulduggery</label>
     <skill>Social</skill>
-    <description>An expertise in burglarizing other settlements without being caught.</description>
+    <description>An expertise in pickpocketing individuals or burglarizing settlements without being caught.</description>
     <statOffsets>
       <Hauts_PilferingStealth>0.05</Hauts_PilferingStealth>
     </statOffsets>
@@ -41,7 +41,7 @@
     <defName>Hauts_Larceny</defName>
     <label>Larceny</label>
     <skill>Intellectual</skill>
-    <description>An expertise in finding more valuable items when burglarizing other settlements.</description>
+    <description>An expertise in finding more valuable items when pickpocketing individuals or burglarizing settlements.</description>
     <statOffsets>
       <Hauts_MaxPilferingValue>20</Hauts_MaxPilferingValue>
     </statOffsets>

@@ -4,18 +4,14 @@
 		<mods>
 		  <li>Obsidia Expansion - Ceratons Xenotype</li>
 		</mods>
-		<match Class="PatchOperationSequence">
-			<operations>
-				<!--social abilities-->
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/AbilityGroupDef[defName="OEAuraBuff"]</xpath>
-					<value>
-						<li Class="HautsFramework.CooldownModifier_WorkTags">
-							<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
-						</li>
-					</value>
+		<!--social abilities-->
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityGroupDef[defName="OEAuraBuff"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
 				</li>
-			</operations>
+			</value>
 		</match>
 	</Operation>
 	<Operation Class="PatchOperationFindMod">
