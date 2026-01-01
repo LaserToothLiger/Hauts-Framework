@@ -43,5 +43,6 @@
 		<li IfModActive="ferny.ProgressionEducation">1.6/Mods/ProgressionEducation</li>
 		<li IfModActive="CETeam.CombatExtended">1.6/Mods/CombatExtended</li>
 		<li IfModActive="VPE.Neurophage.Sentinel">1.6/Mods/VPE_Neurophage</li>
+		<li IfModActive="vanillaexpanded.gravship">1.6/Mods/VGravshipE</li>
 	</v1.6>
 </loadFolders>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <!--a fella gets tired writing out ten thousand different mods' variations on the same damage motif over and over again.-->
+  <HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Acid</defName>
+    <label>acid damage types</label>
+	<damageDefs>
+	  <li>AcidBurn</li>
+	  <li>VEF_SecondaryAcidBurn</li>
+	  <li MayRequire="sarg.alphaanimals">AA_AcidRainDamage</li>
+	  <li MayRequire="sarg.alphaanimals">AA_AcidSpit</li>
+	  <li MayRequire="sarg.alphaanimals">AA_BlackHiveBolt</li>
+	  <li MayRequire="sarg.alphaanimals">AA_OverpoweringSecondaryAcidBurn</li><!--?-->
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_AcidSpit</li><!--??-->
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_Corrosive</li>
+	  <li MayRequire="sarg.alphagenes">AG_AcidSpit</li><!--???-->
+	  <li MayRequire="sarg..alphaimplants">AI_AcidSpit</li><!--????-->
+	  <li MayRequireAnyOf="sarg.alphamechs,Sarg.AlphaMemes">AM_AcidSpit</li><!--he can't keep getting away with thiiiiis (more seriously, don't all these mods require VE Framework? Sarg's been VE for 6 years, why not just make an acid spit damagedef in VEF Core?)-->
+	  <li MayRequire="ObsidiaExpansion.Core">OTCAcid</li>
+	</damageDefs>
+	<applyToHediffs>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFlamingo</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffOrca</hediff><stageIndex>0</stageIndex><factor>0.9</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffPitohui</hediff><stageIndex>0</stageIndex><factor>0.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffToxbuzzard</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_Wither</hediff><stageIndex>0</stageIndex><factor>1.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Biotech,Hautarche.HautsPermits"><hediff>HVMP_StimulatedToxtolerance</hediff><stageIndex>0</stageIndex><factor>0.8</factor></li>
+	</applyToHediffs>
+  </HautsFramework.DamageFactorGroupDef>
+  
+  <HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Cryonic</defName>
+    <label>cold damage types</label>
+	<damageDefs>
+	  <li>Frostbite</li>
+	  <li MayRequire="sarg.alphaanimals">AA_FrostBomb</li>
+	  <li MayRequire="sarg.alphagenes">AG_FreezingBreath</li>
+	  <li MayRequire="sarg.alphamechs">AM_FreezingBurst</li>
+	  <li MayRequire="FrozenSnowFox.MorePsycastPowers">FSFFrostbite</li>
+	  <li MayRequire="ObsidiaExpansion.Core">OTCCryo</li>
+	  <!--<li MayRequire="vanillaquestsexpanded.cryptoforge">VQE_CryptoCut</li>-->
+	</damageDefs>
+	<applyToHediffs>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffDiabolus</hediff><stageIndex>0</stageIndex><factor>0.15</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffEiderduck</hediff><stageIndex>0</stageIndex><factor>0.2</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_Eiderdown</hediff><stageIndex>0</stageIndex><factor>0.4</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFlamingo</hediff><stageIndex>0</stageIndex><factor>0.15</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffNotothen2</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffSeaIce</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffSeaIce</hediff><stageIndex>1</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Hautarche.HautsBionics,vanillaquestsexpanded.cryptoforge"><hediff>HVB_CryptoflashSkin</hediff><stageIndex>0</stageIndex><factor>0.7</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Biotech,Hautarche.HautsPermits"><hediff>HVMP_StimulatedThermotolerance</hediff><stageIndex>0</stageIndex><factor>0.7</factor></li>
+	</applyToHediffs>
+  </HautsFramework.DamageFactorGroupDef>
+  
+  <!--<HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Cryokinetic</defName>
+    <label>cold/physical hybrid damage types</label>
+	<damageDefs>
+	  <li MayRequire="sarg.alphaanimals">AA_FrostClaws</li>
+	  <li MayRequire="sarg.alphaanimals">AA_FrostBite</li>
+	</damageDefs>
+  </HautsFramework.DamageFactorGroupDef>-->
+  
+  <HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Electrical</defName>
+    <label>electric damage types</label>
+	<damageDefs>
+	  <li>EMP</li>
+	  <li MayRequire="Ludeon.RimWorld.Anomaly">ElectricalBurn</li>
+	  <li MayRequire="sarg.alphaanimals">AA_Electric</li>
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_Voltaic</li>
+	  <li MayRequire="sarg.alphagenes">AG_Electric</li><!--?????-->
+	  <li MayRequire="sarg.alphaimplants">AI_Electric</li><!--??????-->
+	  <li MayRequire="CETeam.CombatExtended">Taser</li>
+	  <li MayRequire="CETeam.CombatExtended">Electrical</li>
+	  <li MayRequire="Ghastly.ProtocolAnomaly">Gha_Plasma_Nerve</li>
+	</damageDefs>
+	<applyToHediffs>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffArcturan</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffElectrophorus</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFlamingo</hediff><stageIndex>0</stageIndex><factor>0.15</factor></li>
+	</applyToHediffs>
+  </HautsFramework.DamageFactorGroupDef>
+  
+  <HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Photothermal</defName>
+    <label>photothermal damage types</label>
+	<damageDefs>
+	  <li>Beam</li>
+	  <li MayRequire="Ludeon.RimWorld.Odyssey">BeamBypassShields</li>
+	  <li MayRequire="metalocif.coolerpsycasts">CoolPsycasts_GammaRadiation</li>
+	  <li MayRequire="CETeam.CombatExtended">Flashbang</li>
+	  <li MayRequire="CETeam.CombatExtended">CE_Laser</li>
+	</damageDefs>
+	<applyToHediffs>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffArcturan</hediff><stageIndex>0</stageIndex><factor>0.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffDiabolus</hediff><stageIndex>0</stageIndex><factor>0.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_DiabolusDebuff</hediff><stageIndex>0</stageIndex><factor>1.5</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffEiderduck</hediff><stageIndex>0</stageIndex><factor>0.2</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_Eiderdown</hediff><stageIndex>0</stageIndex><factor>0.4</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffElectrophorus</hediff><stageIndex>0</stageIndex><factor>0.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFPsight2</hediff><stageIndex>0</stageIndex><factor>0.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFPsight2</hediff><stageIndex>1</stageIndex><factor>0.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFirehawk</hediff><stageIndex>0</stageIndex><factor>0.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFirehawk</hediff><stageIndex>1</stageIndex><factor>0.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFlamingo</hediff><stageIndex>0</stageIndex><factor>0.15</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffNotothen2</hediff><stageIndex>0</stageIndex><factor>0.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffOrca</hediff><stageIndex>0</stageIndex><factor>0.9</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffSeaIce</hediff><stageIndex>0</stageIndex><factor>0.25</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffSeaIce</hediff><stageIndex>1</stageIndex><factor>0.25</factor></li>
+	</applyToHediffs>
+  </HautsFramework.DamageFactorGroupDef>
+  
+  <HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Psychic</defName>
+    <label>psychic damage types</label>
+	<damageDefs>
+	  <li MayRequire="Ludeon.RimWorld.Anomaly">Psychic</li>
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_PsychicDamage</li>
+	  <li MayRequire="sarg.alphamechs">AM_SoulDrain</li>
+	  <li MayRequire="Ghastly.ProtocolAnomaly">VoidStun</li>
+	</damageDefs>
+	<applyToHediffs>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_AwakenedDeathTracker</hediff><stageIndex>0</stageIndex><factor>0.9</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffDove</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffEchinoid</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffPtarmigan</hediff><stageIndex>0</stageIndex><factor>0.1</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_PtarmiganBright</hediff><stageIndex>0</stageIndex><factor>0.5</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffStrix</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	</applyToHediffs>
+  </HautsFramework.DamageFactorGroupDef>
+  
+  <HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Skip</defName>
+    <label>skip damage types</label>
+	<damageDefs>
+	  <li>Hauts_SkipFrag</li>
+	  <li MayRequire="metalocif.coolerpsycasts">CoolPsycasts_SkipCut</li>
+	  <li MayRequire="vanillaracesexpanded.archon">VREA_Sear</li>
+	</damageDefs>
+	<applyToHediffs>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_AwakenedDeathTracker</hediff><stageIndex>0</stageIndex><factor>0.75</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFMH2</hediff><stageIndex>0</stageIndex><factor>0.05</factor></li>
+	</applyToHediffs>
+  </HautsFramework.DamageFactorGroupDef>
+  
+  <HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Thermal</defName>
+    <label>heat damage types</label>
+	<damageDefs>
+	  <li>Burn</li>
+	  <li>Flame</li>
+	  <li>VEF_PermanentBurn</li>
+	  <!--<li>Vaporize</li>-->
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_ThermalBlasts</li>
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_Flame_Lesser</li>
+	  <li MayRequire="Sarg.AlphaMemes">AM_HolyBurn</li>
+	  <li MayRequire="CETeam.CombatExtended">Flame_Secondary</li>
+	  <li MayRequire="CETeam.CombatExtended">Flame_Secondary_Incendiary</li>
+	  <li MayRequire="CETeam.CombatExtended">PrometheumFlame</li>
+	  <li MayRequire="CETeam.CombatExtended,Ludeon.RimWorld.Anomaly">BioferriteFlame</li>
+	  <li MayRequire="Ghastly.ProtocolAnomaly">Gha_PlasmaDamage</li>
+	  <li MayRequire="Ghastly.ProtocolAnomaly">Gha_PlasmaBeam</li>
+	  <li MayRequire="Ghastly.ProtocolAnomaly">Gha_PlasmaBeam_Void</li>
+	  <li MayRequire="vanillaexpanded.gravship">VGE_AstrofireDamage</li>
+	</damageDefs>
+	<applyToHediffs>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffArcturan</hediff><stageIndex>0</stageIndex><factor>0.5</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffDiabolus</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_DiabolusDebuff</hediff><stageIndex>0</stageIndex><factor>1.5</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffEiderduck</hediff><stageIndex>0</stageIndex><factor>0.2</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_Eiderdown</hediff><stageIndex>0</stageIndex><factor>0.4</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFirehawk</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFirehawk</hediff><stageIndex>1</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFlamingo</hediff><stageIndex>0</stageIndex><factor>0.15</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffNotothen2</hediff><stageIndex>0</stageIndex><factor>0.15</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffOrca</hediff><stageIndex>0</stageIndex><factor>0.8</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffSeaIce</hediff><stageIndex>0</stageIndex><factor>0.15</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffSeaIce</hediff><stageIndex>1</stageIndex><factor>0.15</factor></li>
+	  <li MayRequire="Hautarche.HautsBionics,vanillaquestsexpanded.cryptoforge"><hediff>HVB_CryptoflashSkin</hediff><stageIndex>0</stageIndex><factor>0.7</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Biotech,Hautarche.HautsPermits"><hediff>HVMP_StimulatedThermotolerance</hediff><stageIndex>0</stageIndex><factor>0.7</factor></li>
+	</applyToHediffs>
+  </HautsFramework.DamageFactorGroupDef>
+  
+  <!--<HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Thermokinetic</defName>
+    <label>heat/physical hybrid damage types</label>
+	<damageDefs>
+	  <li MayRequire="sarg.alphaanimals">AA_BurningBite</li>
+	  <li MayRequire="sarg.alphaanimals">AA_BurningAndFeedingBite</li>
+	  <li MayRequire="CETeam.CombatExtended">ArrowFire</li>
+	  <li MayRequire="CETeam.CombatExtended">Thermobaric</li>
+	</damageDefs>
+  </HautsFramework.DamageFactorGroupDef>-->
+  
+  <HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Toxic</defName>
+    <label>toxic damage types</label>
+	<damageDefs>
+	  <li MayRequire="Ludeon.RimWorld.Biotech">ToxGas</li>
+	  <li MayRequire="sarg.alphaanimals">AA_ToxicSting</li>
+	  <li MayRequire="sarg.alphaanimals">AA_VeryToxicSting</li><!--sure, Sarg-->
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_InsectKiller</li>
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_AnomalyKiller</li>
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_BeeVenom</li>
+	  <li MayRequire="sarg.alphabiomes">AB_ParalysingSting</li>
+	  <li MayRequire="sarg.alphagenes">AG_NoxiousBreath</li>
+	  <li MayRequire="sarg.alphaimplants">AI_ToxicBolt</li>
+	  <li MayRequire="Sarg.AlphaMemes">AM_ToxicBolt</li><!--.-->
+	  <li MayRequire="Sarg.AlphaMemes">AM_ToxicSting</li><!--ok buddy-->
+	  <li MayRequire="ObsidiaExpansion.Core">OMGNecrobane</li>
+	  <li MayRequire="ObsidiaExpansion.Core">OEUnstableToxins</li>
+	</damageDefs>
+	<applyToHediffs>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffFlamingo</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffOrca</hediff><stageIndex>0</stageIndex><factor>0.9</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffPitohui</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffToxbuzzard</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
+	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_Wither</hediff><stageIndex>0</stageIndex><factor>1.25</factor></li>
+	</applyToHediffs>
+  </HautsFramework.DamageFactorGroupDef>
+  
+  <!--<HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Toxokinetic</defName>
+    <label>toxic/physical hybrid damage types</label>
+	<damageDefs>
+	  <li>ToxicBite</li>
+	  <li>ScratchToxic</li>
+	  <li MayRequire="sarg.alphaanimals">AA_ToxicBite</li>
+	  <li MayRequire="OskarPotocki.VFE.Empire">VFEE_CutToxblade</li>
+	  <li MayRequire="OskarPotocki.VFE.Empire">VFEE_Fletcher</li>
+	  <li MayRequire="OskarPotocki.VFE.Empire">VFEE_StabToxblade</li>
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_NeedleProjectiles</li>
+	  <li MayRequire="sarg.alphaarmoury">AArmoury_MeleeTox</li>
+	</damageDefs>
+  </HautsFramework.DamageFactorGroupDef>-->
+  
+</Defs>

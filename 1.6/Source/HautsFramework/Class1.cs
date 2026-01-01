@@ -191,6 +191,9 @@ namespace HautsFramework
                            prefix: new HarmonyMethod(patchType, nameof(HautsPawnPostApplyDamagePrefix)));
             harmony.Patch(AccessTools.Method(typeof(StunHandler), nameof(StunHandler.Notify_DamageApplied)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsStunNotifyDamageAppliedPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(PlayDataLoader), nameof(PlayDataLoader.HotReloadDefs)),
+                           postfix: new HarmonyMethod(patchType, nameof(HautsHotReloadPostfix)));
+            HautsUtility.ApplyAllDamageFactorGroupDefs();
             harmony.Patch(AccessTools.Method(typeof(Gene_Resource), nameof(Gene_Resource.Reset)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsResetMaxPostfix)));
             //abilities
@@ -1256,6 +1259,10 @@ namespace HautsFramework
                     }
                 }
             }
+        }
+        public static void HautsHotReloadPostfix()
+        {
+            HautsUtility.ApplyAllDamageFactorGroupDefs();
         }
         //ability comps and AbilityCooldownModifier
         public static void HautsActivatePostfix(RimWorld.Ability __instance)
@@ -3368,6 +3375,7 @@ namespace HautsFramework
     public class BadAttachable : DefModExtension
     {
         public BadAttachable(){}
+        public DamageDef extinguishingDamageDef;
     }
     public class HediffComp_DamageNegationShield : HediffComp_DamageNegation
     {
@@ -4211,7 +4219,7 @@ namespace HautsFramework
                     {
                         result += ", ";
                     }
-                    result += "Hauts_ExtraHitFXisticle".Translate(id.LabelCap, this.Props.inspirationList.TryGetValue(id).ToStringByStyle(ToStringStyle.FloatMaxOne));
+                    result += "Hauts_ExtraHitFXListicle".Translate(id.LabelCap, this.Props.inspirationList.TryGetValue(id).ToStringByStyle(ToStringStyle.FloatMaxOne));
                     subsequentListing = true;
                 }
             }
@@ -4281,7 +4289,7 @@ namespace HautsFramework
                     {
                         result += ", ";
                     }
-                    result += "Hauts_ExtraHitFXisticle".Translate(mb.LabelCap, this.Props.mbList.TryGetValue(mb).ToStringByStyle(ToStringStyle.FloatMaxOne));
+                    result += "Hauts_ExtraHitFXListicle".Translate(mb.LabelCap, this.Props.mbList.TryGetValue(mb).ToStringByStyle(ToStringStyle.FloatMaxOne));
                     subsequentListing = true;
                 }
             }
@@ -4359,6 +4367,18 @@ namespace HautsFramework
                 victim.stances.stunner.StunFor((int)this.ScaledValue(victim, (float)this.Props.stunTicksRange.RandomInRange, valueToScale), this.parent.pawn, false);
             }
         }
+    }
+    public class DamageFactorGroupDef : Def
+    {
+        public List<DamageDef> damageDefs;
+        public List<DFG_HediffTarget> applyToHediffs;
+    }
+    public class DFG_HediffTarget
+    {
+        public DFG_HediffTarget(){}
+        public HediffDef hediff;
+        public int stageIndex;
+        public float factor;
     }
     public class HediffCompProperties_AbilityCooldownModifier : HediffCompProperties
     {
@@ -12321,6 +12341,43 @@ namespace HautsFramework
                 }
             }
         }
+        //damage factor group defs
+        public static void ApplyAllDamageFactorGroupDefs()
+        {
+            foreach (DamageFactorGroupDef dfg in DefDatabase<DamageFactorGroupDef>.AllDefs)
+            {
+                if (!dfg.applyToHediffs.NullOrEmpty() && !dfg.damageDefs.NullOrEmpty())
+                {
+                    foreach (DFG_HediffTarget ht in dfg.applyToHediffs)
+                    {
+                        HediffDef hd = ht.hediff;
+                        if (hd.stages != null && hd.stages.Count > ht.stageIndex)
+                        {
+                            List<DamageDef> extantDamageFactors = new List<DamageDef>();
+                            if (hd.stages[ht.stageIndex].damageFactors == null)
+                            {
+                                hd.stages[ht.stageIndex].damageFactors = new List<DamageFactor>();
+                            } else {
+                                foreach (DamageFactor dfac in hd.stages[ht.stageIndex].damageFactors)
+                                {
+                                    extantDamageFactors.Add(dfac.damageDef);
+                                }
+                            }
+                            foreach (DamageDef d in dfg.damageDefs)
+                            {
+                                if (!extantDamageFactors.Contains(d))
+                                {
+                                    DamageFactor df = new DamageFactor();
+                                    df.damageDef = d;
+                                    df.factor = ht.factor;
+                                    hd.stages[ht.stageIndex].damageFactors.Add(df);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         //misc
         public static bool AnalogHasActiveGene(Pawn_GeneTracker pgt, GeneDef geneDef)
         {
@@ -12445,6 +12502,11 @@ namespace HautsFramework
                 IncidentParms parms = StorytellerUtility.DefaultParmsNow(IncidentCategoryDefOf.DiseaseHuman, map);
                 incidentDef.Worker.TryExecute(parms);
             }
+        }
+        //vgravshipe integration
+        public static bool AddGravdata(Pawn researcher, float power)
+        {
+            return false;
         }
         //vpe integration
         public static bool IsVPEPsycast(VEF.Abilities.Ability ability)
@@ -12809,6 +12871,51 @@ namespace HautsFramework
         public static void MakeGoodEvent(Pawn p)
         {
             List<IncidentDef> incidents = HautsUtility.goodEventPool;
+            if (incidents.Count > 0)
+            {
+                bool incidentFired = false;
+                int tries = 0;
+                while (!incidentFired && tries <= 50)
+                {
+                    IncidentDef toTryFiring = incidents.RandomElement<IncidentDef>();
+                    IncidentParms parms = null;
+                    if (toTryFiring.TargetAllowed(Find.World))
+                    {
+                        parms = new IncidentParms
+                        {
+                            target = Find.World
+                        };
+                    }
+                    else if (Find.Maps.Count > 0)
+                    {
+                        Map mapToHit = Find.Maps.RandomElement<Map>();
+                        if (Find.AnyPlayerHomeMap != null && Rand.Value <= 0.5f)
+                        {
+                            mapToHit = Find.AnyPlayerHomeMap;
+                        }
+                        parms = new IncidentParms
+                        {
+                            target = mapToHit
+                        };
+                    }
+                    if (parms != null)
+                    {
+                        IncidentParms incidentParms = StorytellerUtility.DefaultParmsNow(toTryFiring.category, parms.target);
+                        incidentParms.forced = true;
+                        if (toTryFiring.Worker.CanFireNow(parms))
+                        {
+                            incidentFired = true;
+                            toTryFiring.Worker.TryExecute(parms);
+                            break;
+                        }
+                    }
+                    tries++;
+                }
+            }
+        }
+        public static void MakeBadEvent(Pawn p)
+        {
+            List<IncidentDef> incidents = HautsUtility.badEventPool;
             if (incidents.Count > 0)
             {
                 bool incidentFired = false;

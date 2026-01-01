@@ -15,7 +15,7 @@ using Verse.AI;
 namespace HautsF_RimLangs
 {
     [StaticConstructorOnStartup]
-    public class HautsF_RimLangs
+    public static class HautsF_RimLangs
     {
         private static readonly Type patchType = typeof(HautsF_RimLangs);
         static HautsF_RimLangs()

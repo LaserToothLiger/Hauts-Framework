@@ -3,7 +3,9 @@
 	<Operation Class="PatchOperationAddModExtension">
 		<xpath>/Defs/ThingDef[defName="Fire"]</xpath>
 		<value>
-			<li Class="HautsFramework.BadAttachable" />
+			<li Class="HautsFramework.BadAttachable">
+				<extinguishingDamageDef>Extinguish</extinguishingDamageDef>
+			</li>
 		</value>
 	</Operation>
 	<Operation Class="PatchOperationFindMod">
@@ -13,7 +15,9 @@
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/ThingDef[defName="VGE_Astrofire"]</xpath>
 			<value>
-				<li Class="HautsFramework.BadAttachable" />
+				<li Class="HautsFramework.BadAttachable">
+					<extinguishingDamageDef>VGE_ExtinguishAstrofire</extinguishingDamageDef>
+				</li>
 			</value>
 		</match>
 	</Operation>
@@ -24,7 +28,9 @@
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/ThingDef[defName="VQE_Cryptofreeze"]</xpath>
 			<value>
-				<li Class="HautsFramework.BadAttachable" />
+				<li Class="HautsFramework.BadAttachable">
+					<extinguishingDamageDef>VQE_ExtinguishCryptofreeze</extinguishingDamageDef>
+				</li>
 			</value>
 		</match>
 	</Operation>
