@@ -104,7 +104,7 @@
 	<StatDef MayRequireAnyOf="Ludeon.RimWorld.Royalty,Ludeon.RimWorld.Biotech">
 		<defName>Hauts_SkipcastRangeFactor</defName>
 		<label>skipcast range factor</label>
-		<description>A multiplier to the range of "skip" psycasts used by this character. Psycasts such as Skip or Chaos Skip are skip psycasts. However, there are also several other psycasts that work off of skipgates, such as Flashstorm.</description>
+		<description>A multiplier to the range of "skip" psycasts used by this character. Psycasts with "Skip" in the name, such as Skip or Chaos Skip, are skip psycasts. However, there are also several other psycasts which are also affected by this stat, such as Flashstorm (these ones mention or imply in their tooltips that skipgates are used to create their effects).</description>
 		<category>BasicsPawn</category>
         <minValue>0</minValue>
 		<hideAtValue>1</hideAtValue>

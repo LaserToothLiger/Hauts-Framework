@@ -16,6 +16,7 @@
 	  <li MayRequire="sarg.alphagenes">AG_AcidSpit</li><!--???-->
 	  <li MayRequire="sarg..alphaimplants">AI_AcidSpit</li><!--????-->
 	  <li MayRequireAnyOf="sarg.alphamechs,Sarg.AlphaMemes">AM_AcidSpit</li><!--he can't keep getting away with thiiiiis (more seriously, don't all these mods require VE Framework? Sarg's been VE for 6 years, why not just make an acid spit damagedef in VEF Core?)-->
+	  <li MayRequire="EL.InvMech">IW_RipperToxin</li>
 	  <li MayRequire="ObsidiaExpansion.Core">OTCAcid</li>
 	</damageDefs>
 	<applyToHediffs>
