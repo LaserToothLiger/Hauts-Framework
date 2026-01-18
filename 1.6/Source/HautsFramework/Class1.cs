@@ -153,6 +153,10 @@ namespace HautsFramework
             MethodInfo methodInfo3 = typeof(Pawn_ApparelTracker).GetMethod("TakeWearoutDamageForDay", BindingFlags.NonPublic | BindingFlags.Instance);
             harmony.Patch(methodInfo3,
                           prefix: new HarmonyMethod(patchType, nameof(HautsTakeWearoutDamageForDayPrefix)));
+            harmony.Patch(AccessTools.Method(typeof(CompDrug), nameof(CompDrug.PostIngested)),
+                           prefix: new HarmonyMethod(patchType, nameof(HautsCompDrug_PostIngestedPrefix)));
+            harmony.Patch(AccessTools.Method(typeof(CompDrug), nameof(CompDrug.PostIngested)),
+                           postfix: new HarmonyMethod(patchType, nameof(HautsCompDrug_PostIngestedPostfix)));
             harmony.Patch(AccessTools.Method(typeof(MedicalRecipesUtility), nameof(MedicalRecipesUtility.SpawnThingsFromHediffs)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsApplyOnPawnPrefix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.Kill)),
@@ -1099,6 +1103,33 @@ namespace HautsFramework
             }
             return false;
         }
+        public static void HautsCompDrug_PostIngestedPrefix(CompDrug __instance, Pawn ingester, ref List<float> __state)
+        {
+            float ods = ingester.GetStatValue(HautsDefOf.Hauts_OverdoseSusceptibility);
+            __state = new List<float>
+            {
+                __instance.Props.largeOverdoseChance,
+                __instance.Props.overdoseSeverityOffset.min,
+                __instance.Props.overdoseSeverityOffset.max
+            };
+            if (ods != 1f)
+            {
+                __instance.Props.largeOverdoseChance *= ods;
+                float newMin = __instance.Props.overdoseSeverityOffset.min * ods;
+                float newMax = __instance.Props.overdoseSeverityOffset.max * ods;
+                __instance.Props.overdoseSeverityOffset = new FloatRange(newMin, newMax);
+            }
+        }
+        public static void HautsCompDrug_PostIngestedPostfix(CompDrug __instance, List<float> __state)
+        {
+            if (!__state.NullOrEmpty())
+            {
+                __instance.Props.largeOverdoseChance = __state[0];
+                float newMin = __state[1];
+                float newMax = __state[2];
+                __instance.Props.overdoseSeverityOffset = new FloatRange(newMin, newMax);
+            }
+        }
         //hediff comp functionalities
         public static void HautsSetIdeoPostfix(Pawn_IdeoTracker __instance)
         {
@@ -1308,50 +1339,6 @@ namespace HautsFramework
                 }
             }
         }
-        /*public static void HautsMelee_CreateCombatLogPostfix(Verb_MeleeAttack __instance)
-        {
-            Pawn pawn = __instance.CasterPawn;
-            if (pawn.abilities != null)
-            {
-                foreach (RimWorld.Ability ab in pawn.abilities.abilities)
-                {
-                    foreach (CompAbilityEffect comp in ab.EffectComps)
-                    {
-                        if (comp is CompAbilityEffect_AttackIncreasesCooldown cAIC)
-                        {
-                            if (ab.CooldownTicksRemaining > 0 || !cAIC.Props.onlyIfAlreadyCoolingDown)
-                            {
-                                int modCD = Math.Min(ab.CooldownTicksRemaining + cAIC.Props.cooldownTicksAdded, cAIC.Props.maxCooldown);
-                                HautsUtility.SetNewCooldown(ab,modCD);
-                            }
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-        public static void HautsWarmupCompletePostfix(Verb __instance)
-        {
-            if (__instance.CasterPawn != null && __instance.CasterPawn.abilities != null)
-            {
-                Pawn pawn = __instance.CasterPawn;
-                foreach (RimWorld.Ability ab in pawn.abilities.abilities)
-                {
-                    foreach (CompAbilityEffect comp in ab.EffectComps)
-                    {
-                        if (comp is CompAbilityEffect_AttackIncreasesCooldown cAIC)
-                        {
-                            if (ab.CooldownTicksRemaining > 0 || !cAIC.Props.onlyIfAlreadyCoolingDown)
-                            {
-                                int modCD = Math.Min(ab.CooldownTicksRemaining + cAIC.Props.cooldownTicksAdded, cAIC.Props.maxCooldown);
-                                HautsUtility.SetNewCooldown(ab, modCD);
-                            }
-                            return;
-                        }
-                    }
-                }
-            }
-        }*/
         public static void HautsRitualBehaviorWorker_TryExecuteOnPostfix(Precept_Ritual ritual, RitualRoleAssignments assignments)
         {
             AbilityGroupDef useCooldownFromAbilityGroupDef = ritual.def.useCooldownFromAbilityGroupDef;
@@ -1613,6 +1600,7 @@ namespace HautsFramework
         public static IncidentDef Hauts_InvestmentReturn;
 
         public static StatDef Hauts_ApparelWearRateFactor;
+        public static StatDef Hauts_OverdoseSusceptibility;
         public static StatDef Hauts_BoredomDropPerDay;
         public static StatDef Hauts_PilferingStealth;
         public static StatDef Hauts_MaxPilferingValue;
@@ -2350,6 +2338,17 @@ namespace HautsFramework
                 return null;
             }
             return "Hauts_StatWorkerExpectationLevel".Translate() + ": " + (ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay).ToStringPercent();
+        }
+    }
+    public class SkillNeed_BaseBonusOS : SkillNeed_BaseBonus
+    {
+        public override float ValueFor(Pawn pawn)
+        {
+            if (Hauts_Mod.settings.overdoseSusceptibilityMedicine)
+            {
+                return base.ValueFor(pawn);
+            }
+            return 0f;
         }
     }
     public class SkillNeed_BaseBonusPS : SkillNeed_BaseBonus
@@ -7783,22 +7782,6 @@ namespace HautsFramework
         }
         private List<Thing> tmpHostiles = new List<Thing>();
     }
-    /*public class CompProperties_AbilityAttackIncreasesCooldown : CompProperties_AbilityEffect
-    {
-        public int cooldownTicksAdded;
-        public int maxCooldown = int.MaxValue;
-        public bool onlyIfAlreadyCoolingDown = false;
-    }
-    public class CompAbilityEffect_AttackIncreasesCooldown : CompAbilityEffect
-    {
-        public new CompProperties_AbilityAttackIncreasesCooldown Props
-        {
-            get
-            {
-                return (CompProperties_AbilityAttackIncreasesCooldown)this.props;
-            }
-        }
-    }*/
     public class CompAbilityEffect_AvoidTargetingStunnedPawns : CompAbilityEffect
     {
         public new CompProperties_AbilityEffect Props
@@ -13021,11 +13004,13 @@ namespace HautsFramework
     {
         public bool apparelWearRateCrafting = false;
         public bool breachDamageConstruction = false;
+        public bool overdoseSusceptibilityMedicine = false;
         public bool pilferingStealthSocial = false;
         public override void ExposeData()
         {
             Scribe_Values.Look(ref apparelWearRateCrafting, "apparelWearRateCrafting", false);
             Scribe_Values.Look(ref breachDamageConstruction, "breachDamageConstruction", false);
+            Scribe_Values.Look(ref overdoseSusceptibilityMedicine, "overdoseSusceptibilityMedicine", false);
             Scribe_Values.Look(ref pilferingStealthSocial, "pilferingStealthSocial", false);
             base.ExposeData();
         }
@@ -13042,6 +13027,7 @@ namespace HautsFramework
             listingStandard.Begin(inRect);
             listingStandard.CheckboxLabeled("Hauts_SettingAWRFC".Translate(), ref settings.apparelWearRateCrafting, "Hauts_TooltipAWRFC".Translate());
             listingStandard.CheckboxLabeled("Hauts_SettingBDFC".Translate(), ref settings.breachDamageConstruction, "Hauts_TooltipBDFC".Translate());
+            listingStandard.CheckboxLabeled("Hauts_SettingOSC".Translate(), ref settings.overdoseSusceptibilityMedicine, "Hauts_TooltipOSC".Translate());
             listingStandard.CheckboxLabeled("Hauts_SettingPSC".Translate(), ref settings.pilferingStealthSocial, "Hauts_TooltipPSC".Translate());
             listingStandard.End();
             base.DoSettingsWindowContents(inRect);

@@ -143,7 +143,7 @@
 	<StatDef>
 		<defName>Hauts_ApparelWearRateFactor</defName>
 		<label>apparel wear rate factor</label>
-		<description>A multiplier to the rate at which worn apparel deteriorates.</description>
+		<description>A multiplier to the rate at which worn apparel deteriorates.\n\nThis only affects hit point loss from gradual deterioration, not hit point loss from damaging hits.</description>
 		<category>BasicsPawn</category>
         <minValue>0</minValue>
 		<hideAtValue>1</hideAtValue>
@@ -178,13 +178,97 @@
 		</parts>
 	</StatDef>
 	<StatDef>
+		<defName>Hauts_OverdoseSusceptibility</defName>
+		<label>overdose susceptibility</label>
+		<description>Multiplies the random chance that ingesting drugs causes a severe overdose, as well as the amount of guaranteed overdose severity from ingesting hard drugs.</description>
+		<category>BasicsPawn</category>
+        <minValue>0.001</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<displayPriorityInCategory>8790</displayPriorityInCategory>
+        <toStringStyle>PercentZero</toStringStyle>
+		<skillNeedOffsets>
+		  <li Class="HautsFramework.SkillNeed_BaseBonusOS">
+			<skill>Medicine</skill>
+			<baseValue>0</baseValue>
+			<bonusPerLevel>-0.01</bonusPerLevel>
+			<required>false</required>
+		  </li>
+		</skillNeedOffsets>
+	</StatDef>
+	<StatDef>
+		<defName>Hauts_SkillGainFromRecreation</defName>
+		<label>skill gain from recreation</label>
+		<description>A multiplier to the skill xp gained while engaging in a joy activity.</description>
+		<category>BasicsPawn</category>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<displayPriorityInCategory>8791</displayPriorityInCategory>
+        <toStringStyle>PercentZero</toStringStyle>
+	</StatDef>
+	<StatDef>
+		<defName>Hauts_CaravanVisibilityOffset</defName>
+		<label>caravan visibility offset</label>
+		<description>When this pawn is added to a caravan, it adds this value to the total body size of the caravaneers for the purposes of determining caravan visibility. Negative values will reduce caravan visibility; positive values will increase it.</description>
+		<category>BasicsPawn</category>
+		<hideAtValue>0</hideAtValue>
+		<defaultBaseValue>0</defaultBaseValue>
+		<displayPriorityInCategory>8792</displayPriorityInCategory>
+		<toStringStyle>FloatTwo</toStringStyle>
+		<formatString>{0} body sizes</formatString>
+	</StatDef>
+	<StatDef>
+		<defName>Hauts_PersonalCaravanVisibilityFactor</defName>
+		<label>caravan visibility factor</label>
+		<description>A multiplier to this pawn's body size for the purposes of determining caravan visibility.</description>
+		<category>BasicsPawn</category>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<displayPriorityInCategory>8793</displayPriorityInCategory>
+        <toStringStyle>PercentZero</toStringStyle>
+		<formatString>{0} of own body size</formatString>
+	</StatDef>
+	<StatDef>
+		<defName>Hauts_JumpRangeFactor</defName>
+		<label>jump range factor</label>
+		<description>A multiplier to the range of jump abilities used by this character.</description>
+		<category>BasicsPawn</category>
+        <minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<displayPriorityInCategory>8794</displayPriorityInCategory>
+        <toStringStyle>PercentZero</toStringStyle>
+	</StatDef>
+	<StatDef>
+		<defName>Hauts_SpewRangeFactor</defName>
+		<label>spew range factor</label>
+		<description>A multiplier to the range of spray or spew abilities used by this character.</description>
+		<category>BasicsPawn</category>
+        <minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<displayPriorityInCategory>8795</displayPriorityInCategory>
+        <toStringStyle>PercentZero</toStringStyle>
+	</StatDef>
+	<StatDef>
+		<defName>Hauts_TrackSize</defName>
+		<label>track size</label>
+		<description>Affects the amount of loose terrain (such as sand or dirt) this character tracks onto other surfaces.</description>
+		<category>BasicsPawn</category>
+		<minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<displayPriorityInCategory>8796</displayPriorityInCategory>
+        <toStringStyle>PercentZero</toStringStyle>
+	</StatDef>
+	<StatDef>
 		<defName>Hauts_PilferingStealth</defName>
 		<label>pilfering stealth</label>
 		<description>The chance to avoid being caught when attempting a pilfering activity. For pickpocketing, success chance equals the trader's alert level minus the thief's pilfering stealth; for burglary, success chance equals the settlement's alert level minus the average pilfering stealth of all free pilfering-capable colonists in the caravan. A difference of 1 or higher guarantees success, while a difference of 0 or lower guarantees failure.\n\nA pawn must have a pilfering stealth higher than 0 in order to be capable of pilfering.\n\nA target's alert level is shown in parentheses on the option to pilfer from it. Alert level gains a high but gradually decaying boost after being pilfered from, which can be more severe if the total market value of pilfered items is very high. The base alert level of more technologically advanced settlements is higher; the base alert level of traders is based on a number of factors, including their senses, social skill, and pilfering stealth.</description>
 		<category>BasicsPawn</category>
 		<hideAtValue>0</hideAtValue>
 		<defaultBaseValue>0</defaultBaseValue>
-		<displayPriorityInCategory>8790</displayPriorityInCategory>
+		<displayPriorityInCategory>8901</displayPriorityInCategory>
 		<toStringStyle>FloatTwo</toStringStyle>
 		<statFactors>
 		  <li>MoveSpeed</li>
@@ -229,7 +313,7 @@
 		<category>BasicsPawn</category>
         <minValue>25</minValue>
 		<defaultBaseValue>200</defaultBaseValue>
-		<displayPriorityInCategory>8791</displayPriorityInCategory>
+		<displayPriorityInCategory>8902</displayPriorityInCategory>
 		<toStringStyle>Integer</toStringStyle>
 		<showOnPawns>false</showOnPawns><!--however, the unique statpart will force it to be displayed if PStealth exceeds 0-->
 		<statFactors>
@@ -291,71 +375,6 @@
 		<parts>
 		  <li Class="HautsFramework.StatPart_PawnAlertLevel" /><!--multiply by (1+pilfering stealth)-->
 		</parts>
-	</StatDef>
-	<StatDef>
-		<defName>Hauts_SkillGainFromRecreation</defName>
-		<label>skill gain from recreation</label>
-		<description>A multiplier to the skill xp gained while engaging in a joy activity.</description>
-		<category>BasicsPawn</category>
-		<hideAtValue>1</hideAtValue>
-		<defaultBaseValue>1</defaultBaseValue>
-		<displayPriorityInCategory>8792</displayPriorityInCategory>
-        <toStringStyle>PercentZero</toStringStyle>
-	</StatDef>
-	<StatDef>
-		<defName>Hauts_CaravanVisibilityOffset</defName>
-		<label>caravan visibility offset</label>
-		<description>When this pawn is added to a caravan, it adds this value to the total body size of the caravaneers for the purposes of determining caravan visibility. Negative values will reduce caravan visibility; positive values will increase it.</description>
-		<category>BasicsPawn</category>
-		<hideAtValue>0</hideAtValue>
-		<defaultBaseValue>0</defaultBaseValue>
-		<displayPriorityInCategory>8793</displayPriorityInCategory>
-		<toStringStyle>FloatTwo</toStringStyle>
-		<formatString>{0} body sizes</formatString>
-	</StatDef>
-	<StatDef>
-		<defName>Hauts_PersonalCaravanVisibilityFactor</defName>
-		<label>caravan visibility factor</label>
-		<description>A multiplier to this pawn's body size for the purposes of determining caravan visibility.</description>
-		<category>BasicsPawn</category>
-		<hideAtValue>1</hideAtValue>
-		<defaultBaseValue>1</defaultBaseValue>
-		<displayPriorityInCategory>8794</displayPriorityInCategory>
-        <toStringStyle>PercentZero</toStringStyle>
-		<formatString>{0} of own body size</formatString>
-	</StatDef>
-	<StatDef>
-		<defName>Hauts_JumpRangeFactor</defName>
-		<label>jump range factor</label>
-		<description>A multiplier to the range of jump abilities used by this character.</description>
-		<category>BasicsPawn</category>
-        <minValue>0</minValue>
-		<hideAtValue>1</hideAtValue>
-		<defaultBaseValue>1</defaultBaseValue>
-		<displayPriorityInCategory>8795</displayPriorityInCategory>
-        <toStringStyle>PercentZero</toStringStyle>
-	</StatDef>
-	<StatDef>
-		<defName>Hauts_SpewRangeFactor</defName>
-		<label>spew range factor</label>
-		<description>A multiplier to the range of spray or spew abilities used by this character.</description>
-		<category>BasicsPawn</category>
-        <minValue>0</minValue>
-		<hideAtValue>1</hideAtValue>
-		<defaultBaseValue>1</defaultBaseValue>
-		<displayPriorityInCategory>8796</displayPriorityInCategory>
-        <toStringStyle>PercentZero</toStringStyle>
-	</StatDef>
-	<StatDef>
-		<defName>Hauts_TrackSize</defName>
-		<label>track size</label>
-		<description>Affects the amount of loose terrain (such as sand or dirt) this character tracks onto other surfaces.</description>
-		<category>BasicsPawn</category>
-		<minValue>0</minValue>
-		<hideAtValue>1</hideAtValue>
-		<defaultBaseValue>1</defaultBaseValue>
-		<displayPriorityInCategory>8797</displayPriorityInCategory>
-        <toStringStyle>PercentZero</toStringStyle>
 	</StatDef>
 	<StatDef MayRequire="Ludeon.RimWorld.Biotech">
 		<defName>Hauts_HemogenContentFactor</defName>

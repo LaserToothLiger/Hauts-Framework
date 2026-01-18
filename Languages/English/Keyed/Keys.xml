@@ -3,10 +3,12 @@
 <!--Initialization-->
 <Hauts_Initialize>[Hauts' Framework] active.</Hauts_Initialize>
 <!--Mod options-->
-<Hauts_SettingAWRFC>Crafting skill affects apparel wear rate factor</Hauts_SettingAWRFC>
+<Hauts_SettingAWRFC>Crafting skill affects rate at which worn apparel decays</Hauts_SettingAWRFC>
 <Hauts_TooltipAWRFC>If enabled, grants -1% apparel wear rate factor per level of crafting skill.</Hauts_TooltipAWRFC>
 <Hauts_SettingBDFC>Construction skill affects damage vs buildings</Hauts_SettingBDFC>
 <Hauts_TooltipBDFC>If enabled, grants +1.5% breach damage factor per level of construction skill.</Hauts_TooltipBDFC>
+<Hauts_SettingOSC>Medical skill affects risk and severity of drug overdoses</Hauts_SettingOSC>
+<Hauts_TooltipOSC>If enabled, grants -1% overdose susceptibility per level of medical skill.</Hauts_TooltipOSC>
 <Hauts_SettingPSC>Social skill affects pilfering stealth</Hauts_SettingPSC>
 <Hauts_TooltipPSC>If enabled, grants +0.01x pilfering stealth per level of social skill. Note, however, that the base value for pilfering stealth is 0, and only the Biotech DLC or certain other mods (such as Hauts' Added Traits or Vanilla Skills Expanded) provide sources of flat pilfering stealth.</Hauts_TooltipPSC>
 <!--UI-->
