@@ -144,7 +144,7 @@
 			</value>
 		</match>
 	</Operation>
-	<Operation Class="PatchOperationFindMod">
+	<!--<Operation Class="PatchOperationFindMod">
 		<mods>
 			<li>Vanilla Quests Expanded - Ancients</li>
 		</mods>
@@ -154,5 +154,5 @@
 				<li Class="HautsFramework.ExciseTraitExemption" />
 			</value>
 		</match>
-	</Operation>
+	</Operation>-->
 </Patch>
