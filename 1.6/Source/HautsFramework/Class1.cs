@@ -3736,6 +3736,7 @@ namespace HautsFramework
         public StatDef attackerChanceScalar;
         public StatDef victimChanceScalar;
         public float chanceCap = 1f;
+        public bool triggersPyroThought;
     }
     public class HediffComp_ExtraOnHitEffects : HediffComp
     {
@@ -12315,6 +12316,14 @@ namespace HautsFramework
                             if (hoH.CanAffectTarget(p))
                             {
                                 hoH.DoExtraEffects(p, hoH.Props.damageScaling ? result.totalDamageDealt : 1f, dinfo.HitPart);
+                                if (hoH.Props.triggersPyroThought && attacker.story != null && attacker.story.traits.HasTrait(TraitDefOf.Pyromaniac) && !p.Downed && !p.IsPsychologicallyInvisible() && !p.Fogged() && (attacker.Faction == null || p.HostileTo(attacker.Faction)))
+                                {
+                                    Pawn_NeedsTracker pnt = attacker.needs;
+                                    if (pnt != null && pnt.mood != null && pnt.mood.thoughts != null && pnt.mood.thoughts.memories != null)
+                                    {
+                                        pnt.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.PyroUsed, null, null);
+                                    }
+                                }
                             }
                         } else if (hoH.CanAffectTargetThing(thing)) {
                             hoH.DoExtraEffectsThing(thing, hoH.Props.damageScaling ? result.totalDamageDealt : 1f);
