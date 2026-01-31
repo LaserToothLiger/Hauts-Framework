@@ -76,6 +76,8 @@
 	  <li MayRequire="CETeam.CombatExtended">Taser</li>
 	  <li MayRequire="CETeam.CombatExtended">Electrical</li>
 	  <li MayRequire="Ghastly.ProtocolAnomaly">Gha_Plasma_Nerve</li>
+	  <li MayRequire="REDACTED.Segmentum.ChildrenOfTheOmnissiah">Seg_COTO_MeleeElectricBurn</li>
+	  <li MayRequire="REDACTED.Segmentum.ChildrenOfTheOmnissiah">Seg_COTO_ArcDamage</li>
 	</damageDefs>
 	<applyToHediffs>
 	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffArcturan</hediff><stageIndex>0</stageIndex><factor>0</factor></li>
@@ -93,6 +95,8 @@
 	  <li MayRequire="metalocif.coolerpsycasts">CoolPsycasts_GammaRadiation</li>
 	  <li MayRequire="CETeam.CombatExtended">Flashbang</li>
 	  <li MayRequire="CETeam.CombatExtended">CE_Laser</li>
+	  <li MayRequire="REDACTED.Segmentum.ChildrenOfTheOmnissiah">Seg_COTO_GammaDamage</li>
+	  <li MayRequire="REDACTED.Segmentum.ChildrenOfTheOmnissiah">SEG_COTO_RadDamage</li>
 	</damageDefs>
 	<applyToHediffs>
 	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_THediffArcturan</hediff><stageIndex>0</stageIndex><factor>0.25</factor></li>
@@ -121,6 +125,8 @@
 	  <li MayRequire="sarg.alphaarmoury">AArmoury_PsychicDamage</li>
 	  <li MayRequire="sarg.alphamechs">AM_SoulDrain</li>
 	  <li MayRequire="Ghastly.ProtocolAnomaly">VoidStun</li>
+	  <li MayRequire="Phonicmas.RimDark.MankindsFinest">BEWH_WarpEnergy</li>
+	  <li MayRequire="Phonicmas.RimDark.MankindsFinest">BEWH_WarpFlame</li>
 	</damageDefs>
 	<applyToHediffs>
 	  <li MayRequire="Ludeon.RimWorld.Royalty,Hautarche.HautsTraits"><hediff>HVT_AwakenedDeathTracker</hediff><stageIndex>0</stageIndex><factor>0.9</factor></li>
@@ -164,6 +170,8 @@
 	  <li MayRequire="Ghastly.ProtocolAnomaly">Gha_PlasmaDamage</li>
 	  <li MayRequire="Ghastly.ProtocolAnomaly">Gha_PlasmaBeam</li>
 	  <li MayRequire="Ghastly.ProtocolAnomaly">Gha_PlasmaBeam_Void</li>
+	  <li MayRequire="Phonicmas.RimDark.MankindsFinest">BEWH_BoltInferno</li>
+	  <li MayRequire="REDACTED.Segmentum.ChildrenOfTheOmnissiah">Seg_COTO_PlasDamage</li>
 	  <li MayRequire="vanillaexpanded.gravship">VGE_AstrofireDamage</li>
 	</damageDefs>
 	<applyToHediffs>

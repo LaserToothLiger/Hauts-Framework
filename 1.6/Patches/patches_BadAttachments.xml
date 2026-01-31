@@ -10,6 +10,19 @@
 	</Operation>
 	<Operation Class="PatchOperationFindMod">
 		<mods>
+		  <li>Segmentum - Children of the Omnissiah</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/ThingDef[defName="Seg_COTO_PhosphorFire"]</xpath>
+			<value>
+				<li Class="HautsFramework.BadAttachable">
+					<extinguishingDamageDef>Extinguish</extinguishingDamageDef>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
 		  <li>Vanilla Gravship Expanded - Chapter 1</li>
 		</mods>
 		<match Class="PatchOperationAddModExtension">
