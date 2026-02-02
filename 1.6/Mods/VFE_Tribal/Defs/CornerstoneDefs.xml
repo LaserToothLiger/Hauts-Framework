@@ -95,8 +95,8 @@
 	<label>Demon Slayers</label>
 	<description>Damage against unnatural entities is increased by 20%.</description>
 	<blurb>The hunters of {0} collect lore on the weaknesses of Void entities, and they view the destruction of such monsters as a sacred duty.</blurb>
-	<statFactors>
+	<statOffsets>
 		<Hauts_EntityDamageFactor>0.2</Hauts_EntityDamageFactor>
-	</statFactors>
+	</statOffsets>
   </VFETribals.CornerstoneDef>
 </Defs>
