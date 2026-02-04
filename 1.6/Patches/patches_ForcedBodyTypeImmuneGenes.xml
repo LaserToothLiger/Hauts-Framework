@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch><!--TraitGrantedStuff forced body types already don't work on non-humanlikes, but just in case a Biotech gene doesn't play nice with the system either, we can give that gene a special DME that also makes it disable the forced body types system-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Goji's Fantasy Race: Merren</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/GeneDef[defName="Stagz_Gene_Tail_Fish_Random"]</xpath>
+					<value>
+						<li Class="HautsFramework.DisablesTGSbodyTypeAdjustment" />
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/GeneDef[@ParentName="Stagz_FishTail"]</xpath>
+					<value>
+						<li Class="HautsFramework.DisablesTGSbodyTypeAdjustment" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

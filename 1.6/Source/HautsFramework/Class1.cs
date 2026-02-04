@@ -1070,7 +1070,7 @@ namespace HautsFramework
         }
         public static void HautsNotify_LifeStageStartedPostfix(Pawn pawn)
         {
-            if (pawn.story != null && pawn.story.bodyType != null && (pawn.def == ThingDefOf.Human || (ModsConfig.AnomalyActive && pawn.def == ThingDefOf.CreepJoiner)))
+            if (pawn.story != null && HautsUtility.CanApplyForcedBodyTypes(pawn))
             {
                 foreach (Trait t in pawn.story.traits.TraitsSorted)
                 {
@@ -1702,6 +1702,10 @@ namespace HautsFramework
     public class UnaffectedByDarkness : DefModExtension
     {
 
+    }
+    public class DisablesTGSbodyTypeAdjustment : DefModExtension
+    {
+        public DisablesTGSbodyTypeAdjustment() { }
     }
     //faction 'comps'
     public class WorldComponent_HautsFactionComps : WorldComponent
@@ -12157,7 +12161,7 @@ namespace HautsFramework
                     pawn.guest.resistance *= tgs.prisonerResolveFactor.TryGetValue(t.Degree);
                     pawn.guest.will *= tgs.prisonerResolveFactor.TryGetValue(t.Degree);
                 }
-                if ((pawn.def == ThingDefOf.Human || (ModsConfig.AnomalyActive && pawn.def == ThingDefOf.CreepJoiner)) && pawn.story.bodyType != null && tgs.forcedBodyTypes != null)
+                if (tgs.forcedBodyTypes != null && HautsUtility.CanApplyForcedBodyTypes(pawn))
                 {
                     if (tgs.forcedBodyTypes.Keys.Contains(pawn.story.bodyType))
                     {
@@ -12166,6 +12170,18 @@ namespace HautsFramework
                     }
                 }
             }
+        }
+        public static bool CanApplyForcedBodyTypes(Pawn pawn)
+        {
+            if ((pawn.def == ThingDefOf.Human || (ModsConfig.AnomalyActive && pawn.def == ThingDefOf.CreepJoiner)) && pawn.story.bodyType != null)
+            {
+                if (ModsConfig.BiotechActive && pawn.genes != null && pawn.genes.GenesListForReading.Any((Gene g) => g.Active && g.def.HasModExtension<DisablesTGSbodyTypeAdjustment>()))
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
         public static void AddHediffsFromTrait(Trait t, TraitGrantedStuff tgs, Pawn pawn)
         {
