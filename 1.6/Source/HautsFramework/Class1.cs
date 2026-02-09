@@ -445,7 +445,7 @@ namespace HautsFramework
         }
         public static void HautsDamageWorker_ApplyPrefix(ref DamageInfo dinfo, Thing victim)
         {
-            if (dinfo.Instigator != null && dinfo.Instigator is Pawn p && victim.def.category == ThingCategory.Building && victim.def.useHitPoints)
+            if (dinfo.Instigator != null && dinfo.Instigator is Pawn p && victim.def.category == ThingCategory.Building && victim.def.useHitPoints && dinfo.Def != DamageDefOf.Mining)
             {
                 DamageInfo dinfo2 = new DamageInfo(dinfo.Def, dinfo.Amount * p.GetStatValue(HautsDefOf.Hauts_BreachDamageFactor), dinfo.ArmorPenetrationInt, -dinfo.Angle, dinfo.Instigator, dinfo.HitPart, dinfo.Weapon, dinfo.Category, dinfo.IntendedTarget, dinfo.InstigatorGuilty, dinfo.SpawnFilth);
                 dinfo = dinfo2;
@@ -1438,7 +1438,7 @@ namespace HautsFramework
                 {
                     yield return (new Command_Action
                     {
-                        icon = ContentFinder<Texture2D>.Get("UI/Commands/Trade", true),
+                        icon = ContentFinder<Texture2D>.Get("UI/Hauts_Burglarize", true),
                         defaultLabel = "Hauts_BurgleIcon".Translate() + " (" + HautsDefOf.Hauts_PawnAlertLevel.LabelForFullStatList + " " + HautsUtility.SettlementAlertLevel(settlement).ToStringByStyle(ToStringStyle.FloatOne) + ")",
                         defaultDesc = "Hauts_BurgleTooltip".Translate(),
                         action = delegate ()
@@ -7489,8 +7489,54 @@ namespace HautsFramework
                     this.parent.Severity = this.Props.defaultSeverityAmbientHorror;
                     return;
                 }
-                this.parent.Severity = this.Props.severityAtEachLevel.TryGetValue(Find.Anomaly.Level, this.Props.defaultSeverity);
+                int level = Find.Anomaly.Level;
+                CustomAnomalyPlaystyleActivityLevels capal = Find.Storyteller.difficulty.AnomalyPlaystyleDef.GetModExtension<CustomAnomalyPlaystyleActivityLevels>();
+                if (capal != null)
+                {
+                    level = capal.Worker.CurrentLevel(capal);
+                }
+                this.parent.Severity = this.Props.severityAtEachLevel.TryGetValue(level, this.Props.defaultSeverity);
             }
+        }
+    }
+    public class CustomAnomalyPlaystyleActivityLevels : DefModExtension
+    {
+        public CustomAnomalyPlaystyleActivityLevels() { }
+        public AnomalyPlaystyleActivityLevelWorker Worker
+        {
+            get
+            {
+                if (this.workerInt == null && this.activityLevelWorker != null)
+                {
+                    this.workerInt = (AnomalyPlaystyleActivityLevelWorker)Activator.CreateInstance(this.activityLevelWorker);
+                }
+                return this.workerInt;
+            }
+        }
+        public Type activityLevelWorker;
+        public int defaultLevel;
+        public float daysToNextLevel;
+        public int maxLevel = 4;
+        [Unsaved(false)]
+        private AnomalyPlaystyleActivityLevelWorker workerInt;
+    }
+    public class AnomalyPlaystyleActivityLevelWorker
+    {
+        public virtual int CurrentLevel(CustomAnomalyPlaystyleActivityLevels capal)
+        {
+            return capal.defaultLevel;
+        }
+    }
+    public class ActivityLevelWorker_GrayPallMod : AnomalyPlaystyleActivityLevelWorker
+    {
+        public override int CurrentLevel(CustomAnomalyPlaystyleActivityLevels capal)
+        {
+            GameCondition gc = Find.World.GameConditionManager.GetActiveCondition(GameConditionDefOf.GrayPall);
+            if (gc != null)
+            {
+                return Math.Min((int)Math.Floor(gc.TicksPassed/(60000*capal.daysToNextLevel)),capal.maxLevel);
+            }
+            return capal.defaultLevel;
         }
     }
     public class HediffCompProperties_SeverityPerDayPerAnomalousActivity : HediffCompProperties
@@ -7780,11 +7826,11 @@ namespace HautsFramework
         public override void CompTick()
         {
             base.CompTick();
-            if (this.parent.pawn.IsHashIntervalTick(this.Props.periodicity) && this.parent.pawn.Spawned && !this.parent.pawn.IsColonistPlayerControlled && !this.parent.GizmoDisabled(out string text) && this.parent.def.aiCanUse && this.parent.CanCast && (this.Props.usableInMentalStates || !this.parent.pawn.InMentalState) && (this.parent.pawn.CurJob == null || (this.parent.pawn.CurJob.ability == null && (this.parent.pawn.CurJob.verbToUse == null || !(this.parent.pawn.CurJob.verbToUse is VEF.Abilities.Verb_CastAbility)))))
+            if (this.parent.pawn.IsHashIntervalTick(this.Props.periodicity) && this.parent.pawn.Spawned && !this.parent.pawn.IsColonistPlayerControlled && !this.parent.GizmoDisabled(out string text) && this.parent.CanCast && this.CanScan() && (this.parent.pawn.CurJob == null || (this.parent.pawn.CurJob.ability == null && (this.parent.pawn.CurJob.verbToUse == null || !(this.parent.pawn.CurJob.verbToUse is VEF.Abilities.Verb_CastAbility)))))
             {
                 if (this.Props.scanForPawnsOnly)
                 {
-                    foreach (Pawn p in (List<Pawn>)this.parent.pawn.Map.mapPawns.AllPawnsSpawned)
+                    foreach (Pawn p in this.parent.pawn.Map.mapPawns.AllPawnsSpawned.InRandomOrder())
                     {
                         if (p.Position.DistanceTo(this.parent.pawn.Position) <= this.Range)
                         {
@@ -7804,6 +7850,10 @@ namespace HautsFramework
                     }
                 }
             }
+        }
+        public virtual bool CanScan()
+        {
+            return this.parent.def.aiCanUse && (this.Props.usableInMentalStates || !this.parent.pawn.InMentalState);
         }
         public override bool AICanTargetNow(LocalTargetInfo target)
         {
