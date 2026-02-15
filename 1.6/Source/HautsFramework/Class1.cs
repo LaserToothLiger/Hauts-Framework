@@ -279,6 +279,10 @@ namespace HautsFramework
             harmony.Patch(AccessTools.Method(typeof(Faction), nameof(Faction.TryAffectGoodwillWith)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsTryAffectGoodwillWithPrefix)));
             HautsUtility.isHighFantasy = ModsConfig.IsActive("MrSamuelStreamer.RPGAdventureFlavour.DEV");
+            if (!HautsUtility.isHighFantasy)
+            {
+                HautsUtility.isHighFantasy = ModsConfig.IsActive("Joe.RPGAdventureFlavour.Fork");
+            }
             HautsUtility.combatIsExtended = ModsConfig.IsActive("CETeam.CombatExtended");
             Log.Message("Hauts_Initialize".Translate().CapitalizeFirst());
         }
@@ -4398,6 +4402,7 @@ namespace HautsFramework
         public bool multiplyBySeverity = false;
         public StatDef multiplyByStat = null;
         public bool affectsAllBionicAbilities = false;
+        public bool affectsAllIdeoRoleAbilities = false;
         public bool affectsAllGeneticAbilities = false;
         public bool affectsAllAbilities = false;
     }
@@ -7549,7 +7554,18 @@ namespace HautsFramework
         {
             if (ModsConfig.AnomalyActive)
             {
-                float num = (Find.Storyteller.difficulty.AnomalyPlaystyleDef == DefDatabase<AnomalyPlaystyleDef>.GetNamedSilentFail("AmbientHorror") ? this.defaultSeverityPerDayAmbientHorror : this.severityPerDayAtEachLevel.TryGetValue(Find.Anomaly.Level, this.defaultSeverityPerDay)) + this.severityPerDayRange.RandomInRange;
+                float num = this.defaultSeverityPerDayAmbientHorror;
+                if (Find.Storyteller.difficulty.AnomalyPlaystyleDef != DefDatabase<AnomalyPlaystyleDef>.GetNamedSilentFail("AmbientHorror"))
+                {
+                    int level = Find.Anomaly.Level;
+                    CustomAnomalyPlaystyleActivityLevels capal = Find.Storyteller.difficulty.AnomalyPlaystyleDef.GetModExtension<CustomAnomalyPlaystyleActivityLevels>();
+                    if (capal != null)
+                    {
+                        level = capal.Worker.CurrentLevel(capal);
+                    }
+                    num = this.severityPerDayAtEachLevel.TryGetValue(level, this.defaultSeverityPerDay);
+                }
+                num += this.severityPerDayRange.RandomInRange;
                 if (Rand.Chance(this.reverseSeverityChangeChance))
                 {
                     num *= -1f;
@@ -8641,6 +8657,24 @@ namespace HautsFramework
                     HautsUtility.SetNewCooldown(this.parent, this.parent.CooldownTicksRemaining - this.Props.bonusTicksWhileMeditating);
                 }
             }
+        }
+    }
+    public class CompProperties_AbilityNeverTargetHostile : CompProperties_AbilityEffect
+    {
+        public CompProperties_AbilityNeverTargetHostile()
+        {
+            this.compClass = typeof(CompAbilityEffect_NeverTargetHostile);
+        }
+    }
+    public class CompAbilityEffect_NeverTargetHostile : CompAbilityEffect
+    {
+        public override bool CanApplyOn(LocalTargetInfo target, LocalTargetInfo dest)
+        {
+            if (target.Pawn != null && (target.Pawn.HostileTo(this.parent.pawn) || this.parent.pawn.HostileTo(target.Pawn)))
+            {
+                return false;
+            }
+            return true;
         }
     }
     public class CompProperties_AbilityNova : CompProperties_AbilityAiAppliesToSelf
@@ -11986,6 +12020,21 @@ namespace HautsFramework
                                     }
                                 }
                             }
+                            if (!shouldLowerCooldown && acm.Props.affectsAllIdeoRoleAbilities && ModsConfig.IdeologyActive && ability.pawn.Ideo != null)
+                            {
+                                Precept_Role precept_Role = ability.pawn.Ideo.GetRole(ability.pawn);
+                                if (precept_Role != null && precept_Role.Active && !precept_Role.AbilitiesFor(ability.pawn).NullOrEmpty<RimWorld.Ability>())
+                                {
+                                    foreach (RimWorld.Ability iab in precept_Role.AbilitiesFor(ability.pawn))
+                                    {
+                                        if (ability == iab)
+                                        {
+                                            shouldLowerCooldown = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                             if (!shouldLowerCooldown && acm.Props.affectsAllGeneticAbilities && ModsConfig.BiotechActive && ability.pawn.genes != null)
                             {
                                 foreach (Gene g in ability.pawn.genes.GenesListForReading)
@@ -12708,6 +12757,56 @@ namespace HautsFramework
                 return false;
             }
             return (pme.allowAnyFlesh && p.RaceProps.IsFlesh) || (pme.allowAnyNonflesh && !p.RaceProps.IsFlesh) || ((pme.allowDryads || !p.RaceProps.Dryad) && (pme.allowEntities || !p.RaceProps.IsAnomalyEntity) && (pme.allowInsectoids || !p.RaceProps.Insect) && (pme.allowMechs || !p.RaceProps.IsMechanoid) && (pme.allowDrones || !p.RaceProps.IsDrone) && (pme.allowAnimals || !p.RaceProps.Animal) && (pme.allowHumanlikes || !p.RaceProps.Humanlike));
+        }
+        //quest stuff
+        public static Map Quest_TryGetMap()
+        {
+            List<Map> mapCandidates = new List<Map>();
+            foreach (Map map in Find.Maps)
+            {
+                if (map.IsPlayerHome && !map.generatorDef.isUnderground && map.Tile.Layer.IsRootSurface)
+                {
+                    mapCandidates.Add(map);
+                }
+            }
+            if (mapCandidates.Count > 0)
+            {
+                return mapCandidates.RandomElementWithFallback(null);
+            }
+            mapCandidates.Clear();
+            foreach (Map map in Find.Maps)
+            {
+                if (map.IsPlayerHome && !map.generatorDef.isUnderground)
+                {
+                    mapCandidates.Add(map);
+                }
+            }
+            if (mapCandidates.Count > 0)
+            {
+                return mapCandidates.RandomElementWithFallback(null);
+            }
+            mapCandidates.Clear();
+            foreach (Map map in Find.Maps)
+            {
+                if (!map.generatorDef.isUnderground && map.mapPawns.FreeColonists.Count > 0)
+                {
+                    mapCandidates.Add(map);
+                }
+            }
+            if (mapCandidates.Count > 0)
+            {
+                return mapCandidates.RandomElementWithFallback(null);
+            }
+            return null;
+        }
+        public static PlanetTile Quest_TryGetPlanetTile()
+        {
+            Map m = HautsUtility.Quest_TryGetMap();
+            if (m != null)
+            {
+                return m.Tile;
+            }
+            return TileFinder.RandomStartingTile();
         }
         //burgle
         public static bool HasAnyBurglars(Caravan caravan)

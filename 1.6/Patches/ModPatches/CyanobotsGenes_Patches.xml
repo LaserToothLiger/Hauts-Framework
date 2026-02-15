@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Cyanobot's Genes</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--stealthy stealth!-->
+				<li  Class="PatchOperationAdd">
+					<xpath>/Defs/GeneDef[defName="CYB_Stealthy"]/statOffsets</xpath>
+					<value>
+						<Hauts_CaravanVisibilityOffset>-0.5</Hauts_CaravanVisibilityOffset>
+						<Hauts_PilferingStealth>0.25</Hauts_PilferingStealth>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

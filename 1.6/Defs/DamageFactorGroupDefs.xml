@@ -30,6 +30,21 @@
   </HautsFramework.DamageFactorGroupDef>
   
   <HautsFramework.DamageFactorGroupDef>
+    <defName>Hauts_DFs_Concussive</defName>
+    <label>concussive damage types</label>
+	<damageDefs>
+	  <li>Bomb</li>
+	  <li>BombSuper</li>
+	  <li>Thump</li>
+	  <li MayRequire="Ludeon.RimWorld.Odyssey">MiningBomb</li>
+	  <li MayRequire="sarg.alphaanimals">AA_SiegeBlunt</li>
+	  <li MayRequire="CETeam.CombatExtended">Bomb_Secondary</li>
+	  <li MayRequire="Shirohane.Gene.Expand">SHGE_MeteorFallDamage</li>
+	</damageDefs>
+	<applyToHediffs />
+  </HautsFramework.DamageFactorGroupDef>
+  
+  <HautsFramework.DamageFactorGroupDef>
     <defName>Hauts_DFs_Cryonic</defName>
     <label>cold damage types</label>
 	<damageDefs>
