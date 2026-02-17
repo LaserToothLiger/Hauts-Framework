@@ -264,7 +264,7 @@
 	<StatDef>
 		<defName>Hauts_PilferingStealth</defName>
 		<label>pilfering stealth</label>
-		<description>The chance to avoid being caught when attempting a pilfering activity. For pickpocketing, success chance equals the trader's alert level minus the thief's pilfering stealth; for burglary, success chance equals the settlement's alert level minus the average pilfering stealth of all free pilfering-capable colonists in the caravan. A difference of 1 or higher guarantees success, while a difference of 0 or lower guarantees failure.\n\nA pawn must have a pilfering stealth higher than 0 in order to be capable of pilfering.\n\nA target's alert level is shown in parentheses on the option to pilfer from it. Alert level gains a high but gradually decaying boost after being pilfered from, which can be more severe if the total market value of pilfered items is very high. The base alert level of more technologically advanced settlements is higher; the base alert level of traders is based on a number of factors, including their senses, social skill, and pilfering stealth.</description>
+		<description>The chance to avoid being caught when attempting a pilfering activity. Pilfering activities include pickpocketing (right-click on a non-hostile pawn with an inventory to try stealing random items from it) and burglary (visit another settlement and press the Burgle button to try stealing items of a desired category from it).\n\nFor pickpocketing, success chance equals the target's alert level minus the thief's pilfering stealth; for burglary, success chance equals the settlement's alert level minus the average pilfering stealth of all free pilfering-capable colonists in the caravan. A difference of 1 or higher guarantees success, while a difference of 0 or lower guarantees failure.\n\nA pawn must have a pilfering stealth higher than 0 in order to be capable of pilfering.\n\nA target's alert level is shown in parentheses on the option to pilfer from it. Alert level gains a high but gradually decaying boost after being pilfered from, which can be more severe if the total market value of pilfered items is very high. The base alert level of more technologically advanced settlements is higher; the base alert level of traders is based on a number of factors, including their senses, social skill, and pilfering stealth.</description>
 		<category>BasicsPawn</category>
 		<hideAtValue>0</hideAtValue>
 		<defaultBaseValue>0</defaultBaseValue>
@@ -309,7 +309,7 @@
 	<StatDef>
 		<defName>Hauts_MaxPilferingValue</defName>
 		<label>max pilfering value</label>
-		<description>The maximum net market value of items that can be stolen during a single pilfering attempt. The total weight of items that can be pilfered is still ultimately limited by the mass capacity of the caravan (for burglary) or the carry capacity of the thief (for pickpocketing).</description>
+		<description>The maximum net market value of items that can be stolen during a single pilfering attempt. Pilfering activities include pickpocketing (right-click on a non-hostile pawn with an inventory to try stealing random items from it) and burglary (visit another settlement and press the Burgle button to try stealing items of a desired category from it).\n\nThe total weight of items that can be pilfered is still ultimately limited by the mass capacity of the caravan (for burglary) or the carry capacity of the thief (for pickpocketing).</description>
 		<category>BasicsPawn</category>
         <minValue>25</minValue>
 		<defaultBaseValue>200</defaultBaseValue>
