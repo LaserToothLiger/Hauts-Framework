@@ -5541,15 +5541,24 @@ namespace HautsFramework
                 }
                 if (base.Pawn.SpawnedOrAnyParentSpawned)
                 {
-                    if (this.Pawn.MapHeld.gameConditionManager.ConditionIsActive(this.Props.gameCondition))
+                    GameCondition gc = this.Pawn.MapHeld.gameConditionManager.GetActiveCondition(this.Props.gameCondition);
+                    if (this.MeetsGameConditionQualifiers(gc))
                     {
                         return false;
                     }
                 } else {
-                    return !Find.World.GameConditionManager.ConditionIsActive(this.Props.gameCondition);
+                    GameCondition gc = Find.World.gameConditionManager.GetActiveCondition(this.Props.gameCondition);
+                    if (this.MeetsGameConditionQualifiers(gc))
+                    {
+                        return false;
+                    }
                 }
                 return true;
             }
+        }
+        public virtual bool MeetsGameConditionQualifiers(GameCondition gc)
+        {
+            return gc != null;
         }
     }
     public class GameCondition_InflictHediff : GameCondition
