@@ -2336,7 +2336,11 @@ namespace HautsFramework
             {
                 return;
             }
-            val += ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay;
+            ExpectationDef edef = ExpectationsUtility.CurrentExpectationFor(pawn);
+            if (edef != null)
+            {
+                val += edef.joyToleranceDropPerDay;
+            }
         }
         public override string ExplanationPart(StatRequest req)
         {
@@ -2345,7 +2349,12 @@ namespace HautsFramework
             {
                 return null;
             }
-            return "Hauts_StatWorkerExpectationLevel".Translate() + ": " + (ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay).ToStringPercent();
+            ExpectationDef edef = ExpectationsUtility.CurrentExpectationFor(pawn);
+            if (edef != null)
+            {
+                return "Hauts_StatWorkerExpectationLevel".Translate() + ": " + (ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay).ToStringPercent();
+            }
+            return "Hauts_StatWorkerExpectationLevel".Translate() + ": 0.00";
         }
     }
     public class SkillNeed_BaseBonusOS : SkillNeed_BaseBonus
