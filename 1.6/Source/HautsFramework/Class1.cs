@@ -8420,6 +8420,7 @@ namespace HautsFramework
         public bool ignoreSelf;
         public bool autoSelectIfAI = true;
         public string menuString;
+        public bool requiresStory = true;
     }
     public class CompAbilityEffect_GiveHediffFromMenu : CompAbilityEffect_WithDuration
     {
@@ -8464,7 +8465,7 @@ namespace HautsFramework
             {
                 if (this.parent.pawn != null && this.parent.pawn.Faction == Faction.OfPlayer)
                 {
-                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, target, other, this.parent.pawn, this.Props.hediffs, this.Props.menuString));
+                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, target, other, this.parent.pawn, this.Props.hediffs, this.Props.menuString,this.Props.requiresStory));
                 } else {
                     Hediff hediff = HediffMaker.MakeHediff(this.Props.hediffs.RandomElement<HediffDef>(), target, null);
                     target.health.AddHediff(hediff, this.Props.onlyBrain ? target.health.hediffSet.GetBrain() : null, null, null);
@@ -8484,7 +8485,7 @@ namespace HautsFramework
     }
     public class Dialog_GiveHediffFromMenu : Window
     {
-        public Dialog_GiveHediffFromMenu(CompAbilityEffect_GiveHediffFromMenu ability, Pawn pawn, Pawn other, Pawn caster, List<HediffDef> hediffs, string menuLabel)
+        public Dialog_GiveHediffFromMenu(CompAbilityEffect_GiveHediffFromMenu ability, Pawn pawn, Pawn other, Pawn caster, List<HediffDef> hediffs, string menuLabel, bool requiresStory = true)
         {
             this.pawn = pawn;
             this.other = other;
@@ -8498,6 +8499,7 @@ namespace HautsFramework
             this.closeOnCancel = true;
             this.optionalTitle = menuLabel.Translate(this.pawn.Name.ToStringShort);
             this.possibleHediffs = hediffs;
+            this.requiresStory = requiresStory;
         }
         private float Height
         {
@@ -8524,13 +8526,13 @@ namespace HautsFramework
             Listing_Standard listing_Standard = new Listing_Standard();
             Rect rect = new Rect(0f, num, inRect.width - 30f, 99999f);
             listing_Standard.Begin(rect);
-            if (pawn.story != null)
+            if (!this.requiresStory || pawn.story != null)
             {
                 foreach (HediffDef h in this.possibleHediffs)
                 {
                     bool flag = this.chosenHediff == h;
                     bool flag2 = flag;
-                    listing_Standard.CheckboxLabeled(h.LabelCap, ref flag, 15f);
+                    listing_Standard.CheckboxLabeled(h.LabelCap, ref flag, h.description);
                     if (flag != flag2)
                     {
                         if (flag)
@@ -8588,6 +8590,7 @@ namespace HautsFramework
         private Pawn other;
         private Pawn caster;
         private Vector2 scrollPosition;
+        private bool requiresStory;
     }
     public class CompProperties_AbilityGivesThought : CompProperties_AbilityEffect
     {
