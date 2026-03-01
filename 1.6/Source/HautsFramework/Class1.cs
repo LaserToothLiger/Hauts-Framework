@@ -10182,7 +10182,7 @@ namespace HautsFramework
         }
         private static readonly Texture2D CommandTex = ContentFinder<Texture2D>.Get("UI/Commands/CallAid", true);
     }
-    public class RoyalTitlePermitWorker_MultiplyItemStack : RoyalTitlePermitWorker_Targeted
+    public class RoyalTitlePermitWorker_MultiplyItemStack : RoyalTitlePermitWorker_Targeted, ITargetingSource
     {
         public AcceptanceReport IsValidThing(LocalTargetInfo lti)
         {
@@ -10196,12 +10196,9 @@ namespace HautsFramework
                 } else {
                     if (pme.targetableThings != null)
                     {
-                        foreach (Thing t in lti.Cell.GetThingList(this.caller.Map))
+                        if (lti.Thing != null && pme.targetableThings.Contains(lti.Thing.def))
                         {
-                            if (pme.targetableThings.Contains(t.def))
-                            {
-                                return AcceptanceReport.WasAccepted;
-                            }
+                            return AcceptanceReport.WasAccepted;
                         }
                     }
                 }
@@ -10229,16 +10226,9 @@ namespace HautsFramework
         public override void OrderForceTarget(LocalTargetInfo target)
         {
             PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
-            if (pme != null && pme.targetableThings != null)
+            if (pme != null && target.Thing != null && pme.targetableThings.Contains(target.Thing.def))
             {
-                foreach (Thing t in target.Cell.GetThingList(this.caller.Map))
-                {
-                    if (pme.targetableThings.Contains(t.def))
-                    {
-                        this.Invest(t, this.calledFaction);
-                        break;
-                    }
-                }
+                this.Invest(target.Thing, this.calledFaction);
             }
         }
         public override IEnumerable<FloatMenuOption> GetRoyalAidOptions(Map map, Pawn pawn, Faction faction)
@@ -10276,12 +10266,13 @@ namespace HautsFramework
                 return;
             }
             this.targetingParameters = new TargetingParameters();
-            this.targetingParameters.canTargetLocations = true;
+            this.targetingParameters.canTargetLocations = false;
             this.targetingParameters.canTargetSelf = false;
             this.targetingParameters.canTargetPawns = false;
             this.targetingParameters.canTargetFires = false;
             this.targetingParameters.canTargetBuildings = false;
             this.targetingParameters.canTargetItems = true;
+            this.targetingParameters.mapObjectTargetsMustBeAutoAttackable = false;
             this.targetingParameters.validator = (TargetInfo target) => this.def.royalAid.targetingRange <= 0f || target.Cell.DistanceTo(this.caller.Position) <= this.def.royalAid.targetingRange;
             this.caller = pawn;
             this.map = map;
@@ -10390,7 +10381,7 @@ namespace HautsFramework
         }
     }
     [StaticConstructorOnStartup]
-    public class RoyalTitlePermitWorker_TargetPawn : RoyalTitlePermitWorker_Targeted
+    public class RoyalTitlePermitWorker_TargetPawn : RoyalTitlePermitWorker_Targeted, ITargetingSource
     {
         public AcceptanceReport IsValidThing(LocalTargetInfo lti)
         {
@@ -10402,12 +10393,9 @@ namespace HautsFramework
                 {
                     return new AcceptanceReport(error);
                 } else {
-                    foreach (Thing t in lti.Cell.GetThingList(this.caller.Map))
+                    if (lti.Pawn != null && this.IsGoodPawn(lti.Pawn))
                     {
-                        if (t is Pawn p && this.IsGoodPawn(p))
-                        {
-                            return AcceptanceReport.WasAccepted;
-                        }
+                        return AcceptanceReport.WasAccepted;
                     }
                 }
                 return new AcceptanceReport(error);
@@ -10440,13 +10428,9 @@ namespace HautsFramework
             PermitMoreEffects pme = this.def.GetModExtension<PermitMoreEffects>();
             if (pme != null)
             {
-                foreach (Thing t in target.Cell.GetThingList(this.caller.Map))
+                if (target.Pawn != null && this.IsGoodPawn(target.Pawn))
                 {
-                    if (t is Pawn p && this.IsGoodPawn(p))
-                    {
-                        this.AffectPawn(p,this.calledFaction);
-                        break;
-                    }
+                    this.AffectPawn(target.Pawn, this.calledFaction);
                 }
             }
         }
@@ -10532,12 +10516,12 @@ namespace HautsFramework
                 return;
             }
             this.targetingParameters = new TargetingParameters();
-            this.targetingParameters.canTargetLocations = true;
-            this.targetingParameters.canTargetSelf = false;
-            this.targetingParameters.canTargetPawns = false;
+            this.targetingParameters.canTargetLocations = false;
+            this.targetingParameters.canTargetSelf = true;
+            this.targetingParameters.canTargetPawns = true;
             this.targetingParameters.canTargetFires = false;
             this.targetingParameters.canTargetBuildings = false;
-            this.targetingParameters.canTargetItems = true;
+            this.targetingParameters.canTargetItems = false;
             this.targetingParameters.validator = (TargetInfo target) => this.def.royalAid.targetingRange <= 0f || target.Cell.DistanceTo(this.caller.Position) <= this.def.royalAid.targetingRange;
             this.caller = pawn;
             this.map = map;
@@ -12841,6 +12825,24 @@ namespace HautsFramework
             }
             return false;
         }
+        public static float CaravanStealthRating(Caravan caravan)
+        {
+            float stealthRating = 0f;
+            List<Pawn> skulkersInCaravan = new List<Pawn>();
+            foreach (Pawn p in caravan.PawnsListForReading)
+            {
+                if (p.GetStatValue(HautsDefOf.Hauts_PilferingStealth) > 0f)
+                {
+                    skulkersInCaravan.Add(p);
+                }
+            }
+            foreach (Pawn p in skulkersInCaravan)
+            {
+                stealthRating += p.GetStatValue(HautsDefOf.Hauts_PilferingStealth);
+            }
+            stealthRating /= (float)skulkersInCaravan.Count;
+            return stealthRating;
+        }
         public static void Burgle(Caravan caravan, Settlement settlement)
         {
             if (settlement.trader == null)
@@ -12851,7 +12853,7 @@ namespace HautsFramework
             } else {
                 float burglaryMaxWeight = caravan.MassCapacity;
                 float burglaryMaxValue = 0f;
-                float successChance = 0f;
+                float successChance = HautsUtility.CaravanStealthRating(caravan);
                 List<Pawn> skulkersInCaravan = new List<Pawn>();
                 foreach (Pawn p in caravan.PawnsListForReading)
                 {
@@ -12864,9 +12866,7 @@ namespace HautsFramework
                 foreach (Pawn p in skulkersInCaravan)
                 {
                     burglaryMaxValue += p.GetStatValue(HautsDefOf.Hauts_MaxPilferingValue);
-                    successChance += p.GetStatValue(HautsDefOf.Hauts_PilferingStealth);
                 }
-                successChance /= skulkersInCaravan.Count;
                 successChance -= alertLevel;
                 if (skulkersInCaravan.Count == 0)
                 {

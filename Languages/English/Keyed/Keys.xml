@@ -102,6 +102,7 @@
 <Hauts_BurgleOutcome3>Relations with {0} have changed by {1}, and you did not manage to steal any items.\n\nThe alert level of the settlement's faction has been raised slightly, making future attempts more difficult for the next 5 days.</Hauts_BurgleOutcome3>
 <Hauts_PickpocketOutcome3>{0} did not manage to steal any items.\n\nThe alert level of everyone nearby from {1} has been increased, and your goodwill with them has decreased moderately.</Hauts_PickpocketOutcome3>
 <Hauts_PickpocketOutcome3_Factionless>{0} did not manage to steal any items from {1}, who has become enraged by the attempt!</Hauts_PickpocketOutcome3_Factionless>
+<Hauts_MiscSiteTheftTooltip>Attempt to steal from this site. The site's current alert level is {0}, and the caravan's stealth rating (based on the pilfering stealth stat) is {1}. Failure may increase alert level and lead to other unpleasant consequences.\n\nSuccess is guaranteed if the caravan's stealth rating exceeds the site's alert level by 1 or more; failure is guaranteed if the difference is 0 or lower.</Hauts_MiscSiteTheftTooltip>
 <!--Error messages-->
 <Hauts_CantSpawnUnminified>Cannot add {0} to inventory of {1} because it is not haulable.</Hauts_CantSpawnUnminified>
 <Hauts_CannotRemoveBionicsFrom>Body parts cannot be removed from {0} due to the {1} trait.</Hauts_CannotRemoveBionicsFrom>

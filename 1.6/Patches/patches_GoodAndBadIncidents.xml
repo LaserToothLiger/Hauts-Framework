@@ -690,6 +690,21 @@
 		</match>
 	</Operation>
 	
+	<!--insect lair incident-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Insect Lair Incident</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/IncidentDef[defName="InsectLairEmergence"]</xpath>
+			<value>
+				<li Class="HautsFramework.BelongsToEventPool">
+					<bad>true</bad>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	
 	<!--kenshi fauna-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>
