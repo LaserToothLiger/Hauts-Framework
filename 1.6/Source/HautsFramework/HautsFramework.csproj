@@ -73,8 +73,39 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="AbilityComp_Miscellaneous.cs" />
+    <Compile Include="AbilityComp_Targeting.cs" />
+    <Compile Include="AbilityCooldownModification.cs" />
+    <Compile Include="CaravanAbilityGizmos.cs" />
+    <Compile Include="CustomAnomalyPlaystyleLevels.cs" />
+    <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="DamageFactorGroupDefs.cs" />
+    <Compile Include="DamageWorkers.cs" />
+    <Compile Include="DefOfs.cs" />
+    <Compile Include="DelayedResurrection.cs" />
+    <Compile Include="FactionComps.cs" />
+    <Compile Include="GameCondition_InflictHediff.cs" />
+    <Compile Include="GoodAndBadIncidents.cs" />
+    <Compile Include="HediffComps_Aura.cs" />
+    <Compile Include="HediffComps_Miscellaneous.cs" />
+    <Compile Include="HediffComps_PreDamageModification.cs" />
+    <Compile Include="HediffComps_SeverityChangers.cs" />
+    <Compile Include="HediffComps_ExtraOnHitEffects.cs" />
+    <Compile Include="HediffComps_EffectsBasedOnSeverity.cs" />
+    <Compile Include="HediffComp_MoteConditionals.cs" />
+    <Compile Include="MiscUtilityAndDMEs.cs" />
+    <Compile Include="ModCompatibilityUtilities.cs" />
+    <Compile Include="ModSettings.cs" />
+    <Compile Include="PermitWorkers.cs" />
+    <Compile Include="PilferingSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuestTools.cs" />
+    <Compile Include="Stats_AbilityRanges.cs" />
+    <Compile Include="Stats_Miscellaneous.cs" />
+    <Compile Include="ThingComps.cs" />
+    <Compile Include="ThoughtMechanics.cs" />
+    <Compile Include="TraitModExtensions.cs" />
+    <Compile Include="Verbs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

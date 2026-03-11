@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Patch><!--the other Integrated Implants patches all require Biotech so you can find them in Biotech_Patches-->
+<Patch>
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 		  <li>Integrated Implants</li>
 		</mods>
 		<match Class="PatchOperationSequence">
 			<operations>
-				<!--besides it being strange that bionic modules are not considered added parts/implants, this enables AbilityCooldownModifiers that affect all bionic abilities to affect abilities granted by these modules-->
+				<!--enables AbilityCooldownModifiers that affect all bionic abilities to affect abilities granted by these modules-->
 				<li Class="PatchOperationConditional">
 					<xpath>/Defs/HediffDef[@ParentName="LTS_BaseModuleHediff"]/countsAsAddedPartOrImplant</xpath>
 					<nomatch Class="PatchOperationAdd">

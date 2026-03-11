@@ -30,9 +30,6 @@ Patch notes for all mods, including unreleased (I'm tired of maintaining separat
 			<downloadUrl>https://github.com/Vanilla-Expanded/VanillaExpandedFramework</downloadUrl>
 		</li>
 	</modDependencies>
-	<loadBefore>
-		<li>Veltaris.Framework</li>
-	</loadBefore>
 	<loadAfter>
 		<li>OskarPotocki.VanillaFactionsExpanded.Core</li>
 		<li>VanillaExpanded.VPsycastsE</li>
@@ -40,8 +37,6 @@ Patch notes for all mods, including unreleased (I'm tired of maintaining separat
 		<li>VPE.Neurophage.Sentinel</li>
 		<li>OskarPotocki.VFE.Pirates</li>
 		<li>kikohi.cybernetic</li>
-		<li>MrKociak.BiotechMoreMechStuffMechUpgradePod</li>
-		<li>notfood.Infused</li>
 		<li>kikohi.BetterGroundPenetratingScanner</li>
 		<li>Mlie.SRRealisticOreGeneration</li>
 		<li>ObsidiaExpansion.Xenos.Axotl</li>

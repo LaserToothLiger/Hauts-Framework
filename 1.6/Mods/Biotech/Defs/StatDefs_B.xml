@@ -2,16 +2,10 @@
 <Defs>
 	<StatDef MayRequire="Ludeon.RimWorld.Biotech" ParentName="MechanitorStatBase">
 		<defName>Hauts_MechCommandRange</defName>
-		<label>mech command range</label>
-		<description>The radius in which a mechanitor can issue specific orders to controlled mechanoids.</description>
+		<label>mech command range (Deprecated!)</label>
+		<description>Currently only exists for hypothetical backend compatibility purposes.</description><!--and will be removed come 1.7 update-->
 		<defaultBaseValue>0</defaultBaseValue>
-		<showIfModsLoaded><li>ludeon.rimworld.biotech</li></showIfModsLoaded>
-		<parts>
-		  <li MayRequire="Neronix17.TweaksGalore" Class="HautsF_TG.StatPart_MaxOutCommandRange">
-			<setBaseTo>500</setBaseTo>
-			<label>Tweaks Galore setting</label>
-		  </li>
-		</parts>
+		<alwaysHide>true</alwaysHide>
 	</StatDef>
 	<StatDef ParentName="MechanitorStatBase" MayRequire="Ludeon.RimWorld.Biotech">
 		<defName>Hauts_MechEnergyUsage</defName>

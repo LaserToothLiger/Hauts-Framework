@@ -7,7 +7,7 @@
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/TraitDef[defName="AM_Ahimsa"]</xpath>
 			<value>
-				<li Class="HautsFramework.ExciseTraitExemption" />
+				<li Class="HautsFramework.ExciseTraitExempt" />
 			</value>
 		</match>
 	</Operation>
@@ -20,7 +20,7 @@
 				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/TraitDef[defName="TechBackground"]</xpath>
 					<value>
-						<li Class="HautsFramework.ExciseTraitExemption" />
+						<li Class="HautsFramework.ExciseTraitExempt" />
 					</value>
 				</li>
 			</operations>
@@ -33,7 +33,7 @@
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/TraitDef[defName="Attunement"]</xpath>
 			<value>
-				<li Class="HautsFramework.ExciseTraitExemption" />
+				<li Class="HautsFramework.ExciseTraitExempt" />
 			</value>
 		</match>
 	</Operation>
@@ -46,7 +46,7 @@
 				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/TraitDef[defName="Isekai_Rank_F" or defName="Isekai_Rank_E" or defName="Isekai_Rank_D" or defName="Isekai_Rank_C" or defName="Isekai_Rank_B" or defName="Isekai_Rank_A" or defName="Isekai_Rank_S" or defName="Isekai_Rank_SS" or defName="Isekai_Rank_SSS"]</xpath>
 					<value>
-						<li Class="HautsFramework.ExciseTraitExemption" />
+						<li Class="HautsFramework.ExciseTraitExempt" />
 					</value>
 				</li>
 			</operations>
@@ -61,19 +61,19 @@
 				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/TraitDef[defName="PE_LowTechProficiency"]</xpath>
 					<value>
-						<li Class="HautsFramework.ExciseTraitExemption" />
+						<li Class="HautsFramework.ExciseTraitExempt" />
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/TraitDef[defName="PE_FirearmProficiency"]</xpath>
 					<value>
-						<li Class="HautsFramework.ExciseTraitExemption" />
+						<li Class="HautsFramework.ExciseTraitExempt" />
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/TraitDef[defName="PE_HighTechProficiency"]</xpath>
 					<value>
-						<li Class="HautsFramework.ExciseTraitExemption" />
+						<li Class="HautsFramework.ExciseTraitExempt" />
 					</value>
 				</li>
 			</operations>
@@ -86,7 +86,7 @@
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/TraitDef[defName="ReunionCharacter"]</xpath>
 			<value>
-				<li Class="HautsFramework.ExciseTraitExemption" />
+				<li Class="HautsFramework.ExciseTraitExempt" />
 			</value>
 		</match>
 	</Operation>
@@ -97,7 +97,7 @@
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/TraitDef[defName="RBM_Herculean_Trait"]</xpath>
 			<value>
-				<li Class="HautsFramework.ExciseTraitExemption" />
+				<li Class="HautsFramework.ExciseTraitExempt" />
 			</value>
 		</match>
 	</Operation>
@@ -110,13 +110,13 @@
 				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/TraitDef[defName="VFEP_WarcasketTrait"]</xpath>
 					<value>
-						<li Class="HautsFramework.ExciseTraitExemption" />
+						<li Class="HautsFramework.ExciseTraitExempt" />
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/TraitDef[defName="VFEP_Shellcasket"]</xpath>
 					<value>
-						<li Class="HautsFramework.ExciseTraitExemption" />
+						<li Class="HautsFramework.ExciseTraitExempt" />
 					</value>
 				</li>
 			</operations>
@@ -129,7 +129,7 @@
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/TraitDef[defName="VME_Elder"]</xpath>
 			<value>
-				<li Class="HautsFramework.ExciseTraitExemption" />
+				<li Class="HautsFramework.ExciseTraitExempt" />
 			</value>
 		</match>
 	</Operation>
@@ -140,7 +140,7 @@
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/TraitDef[defName="VPE_Thrall"]</xpath>
 			<value>
-				<li Class="HautsFramework.ExciseTraitExemption" />
+				<li Class="HautsFramework.ExciseTraitExempt" />
 			</value>
 		</match>
 	</Operation>
@@ -151,7 +151,7 @@
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/TraitDef[defName="VQE_IdealPatient"]</xpath>
 			<value>
-				<li Class="HautsFramework.ExciseTraitExemption" />
+				<li Class="HautsFramework.ExciseTraitExempt" />
 			</value>
 		</match>
 	</Operation>-->

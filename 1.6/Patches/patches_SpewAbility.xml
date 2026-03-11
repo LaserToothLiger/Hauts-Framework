@@ -125,6 +125,27 @@
 				</li>
 				<li Class="PatchOperationFindMod">
 					<mods>
+					  <li>Big and Small - Genes &amp; More</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/AbilityDef[defName="BS_FoamSpray"]</xpath>
+								<value>
+									<li Class="HautsFramework.Hauts_SpewAbility" />
+								</value>
+							</li>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/AbilityDef[defName="BS_StickyAcidSpray"]</xpath>
+								<value>
+									<li Class="HautsFramework.Hauts_SpewAbility" />
+								</value>
+							</li>
+						</operations>
+					</match>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
 					  <li>Expanded Biotech Style Abilities</li>
 					</mods>
 					<match Class="PatchOperationSequence">

@@ -1,0 +1,181 @@
+﻿using HarmonyLib;
+using HautsFramework;
+using RimWorld;
+using RimWorld.Planet;
+using System;
+using VanillaPsycastsExpanded;
+using Verse;
+
+namespace HautsFrameworkVPE
+{
+    [StaticConstructorOnStartup]
+    public class HautsFrameworkVPE
+    {
+        private static readonly Type patchType = typeof(HautsFrameworkVPE);
+        static HautsFrameworkVPE()
+        {
+            Harmony harmony = new Harmony(id: "rimworld.hautarche.hautsframeworkvpe.main");
+            harmony.Patch(AccessTools.Method(typeof(AbilityExtension_Psycast), nameof(AbilityExtension_Psycast.GetPsyfocusUsedByPawn)),
+                            postfix: new HarmonyMethod(patchType, nameof(HautsVPEGetPsyfocusUsedByPawnPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(AbilityExtension_Psycast), nameof(AbilityExtension_Psycast.Cast), new[] { typeof(GlobalTargetInfo[]), typeof(VEF.Abilities.Ability) }),
+                            postfix: new HarmonyMethod(patchType, nameof(HautsVPECastPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(ModCompatibilityUtility), nameof(ModCompatibilityUtility.IsVPEPsycast)),
+                            postfix: new HarmonyMethod(patchType, nameof(HautsIsVPEPSycastPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(ModCompatibilityUtility), nameof(ModCompatibilityUtility.GetVPEPsycastLevel)),
+                            postfix: new HarmonyMethod(patchType, nameof(HautsGetPsycastLevel_Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(ModCompatibilityUtility), nameof(ModCompatibilityUtility.GetVPEEntropyCost)),
+                            postfix: new HarmonyMethod(patchType, nameof(HautsGetEntropyCost_Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(ModCompatibilityUtility), nameof(ModCompatibilityUtility.GetVPEPsyfocusCost)),
+                            postfix: new HarmonyMethod(patchType, nameof(HautsGetPsyfocusCost_Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(ModCompatibilityUtility), nameof(ModCompatibilityUtility.VPEUnlockAbility)),
+                            postfix: new HarmonyMethod(patchType, nameof(HautsVPEUnlockAbilityPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(ModCompatibilityUtility), nameof(ModCompatibilityUtility.VPESetSkillPointsAndExperienceTo)),
+                            postfix: new HarmonyMethod(patchType, nameof(HautsVPESetSkillPointsAndExperiencePostfix)));
+        }
+        //applies the effect of T1 psycast cost offset to VPE casts: here, it IS actually an offset since VPE lets us do that, rather than a refund exclusive to 1st-level casts
+        public static void HautsVPEGetPsyfocusUsedByPawnPostfix(ref float __result, AbilityExtension_Psycast __instance, Pawn pawn)
+        {
+            if (__instance.level <= 1)
+            {
+                __result += pawn.GetStatValue(HautsDefOf.Hauts_TierOnePsycastCostOffset);
+                if (__result < 0)
+                {
+                    __result = 0f;
+                }
+            }
+        }
+        //makes PsyfocusSpentTracker hediff comps work with VPE casts, and also applies the effect of psyfocus cost refund
+        public static void HautsVPECastPostfix(AbilityExtension_Psycast __instance, VEF.Abilities.Ability ability)
+        {
+            Pawn pawn = ability.pawn;
+            if (pawn != null && pawn.psychicEntropy != null)
+            {
+                if (StatExtension.GetStatValue(pawn, VPE_DefOf.VPE_PsyfocusCostFactor, true) < 1f)
+                {
+                    foreach (Hediff h in pawn.health.hediffSet.hediffs)
+                    {
+                        if (h is HediffWithComps hwc)
+                        {
+                            HediffComp_PsyfocusSpentTracker pst = hwc.TryGetComp<HediffComp_PsyfocusSpentTracker>();
+                            if (pst != null)
+                            {
+                                pst.UpdatePsyfocusExpenditure(-__instance.psyfocusCost * (1 - StatExtension.GetStatValue(pawn, VPE_DefOf.VPE_PsyfocusCostFactor, true)));
+                                if (__instance.level <= 1)
+                                {
+                                    pst.UpdatePsyfocusExpenditure(Math.Min(-__instance.psyfocusCost * StatExtension.GetStatValue(pawn, VPE_DefOf.VPE_PsyfocusCostFactor, true), pawn.GetStatValue(HautsDefOf.Hauts_TierOnePsycastCostOffset)));
+                                }
+                            }
+                        }
+                    }
+                }
+                float psyfocus = Math.Min(__instance.GetPsyfocusUsedByPawn(pawn), HautsMiscUtility.TotalPsyfocusRefund(pawn, __instance.GetPsyfocusUsedByPawn(pawn), ability.def.abilityClass == typeof(Ability_WordOf), Stats_AbilityRangesUtility.IsSkipAbility(ability.def)));
+                pawn.psychicEntropy.OffsetPsyfocusDirectly(psyfocus);
+                /*Hediff_PsycastAbilities psylink = pawn.Psycasts();
+                if (psyfocus > 0f && psylink != null)
+                {
+                    psylink.GainExperience(-psyfocus * 100f * PsycastsMod.Settings.XPPerPercent, true);
+                }*/
+            }
+        }
+        /* whatever. get all the xp you want for free
+        public static void HautsVPECheckMeditationScheduleTeachOpportunityPostfix(Pawn pawn)
+        {
+            float psyfocus = (pawn.GetStatValue(HautsDefOf.Hauts_PsyfocusRegenRate) + Pawn_PsychicEntropyTracker.FallRatePerPsyfocusBand[pawn.psychicEntropy.PsyfocusBand]) / 400f;
+            pawn.psychicEntropy.OffsetPsyfocusDirectly(psyfocus);
+            Hediff_PsycastAbilities psylink = pawn.Psycasts();
+            if (psyfocus > 0f && psylink != null)
+            {
+                psylink.GainExperience(-psyfocus * 100f * PsycastsMod.Settings.XPPerPercent, true);
+            }
+        }
+        public static void HautsVPENotify_PawnKilledPostfix(Pawn killed, Pawn killer)
+        {
+            if (killer.psychicEntropy != null)
+            {
+                Pawn_PsychicEntropyTracker psychicEntropy = killer.psychicEntropy;
+                float psyfocus = killer.GetStatValue(HautsDefOf.Hauts_PsyfocusGainOnKill) * killed.GetStatValue(StatDefOf.PsychicSensitivity);
+                if (killed.RaceProps != null)
+                {
+                    if (killed.RaceProps.intelligence == Intelligence.Animal)
+                    {
+                        psyfocus *= 0.5f;
+                    }
+                    else if (killed.RaceProps.intelligence == Intelligence.ToolUser)
+                    {
+                        psyfocus *= 0.75f;
+                    }
+                }
+                psychicEntropy.OffsetPsyfocusDirectly(psyfocus);
+                Hediff_PsycastAbilities psylink = killer.Psycasts();
+                if (psylink != null)
+                {
+                    psylink.GainExperience(-psyfocus * 100f * PsycastsMod.Settings.XPPerPercent, true);
+                }
+            }
+        }*/
+        public static void HautsIsVPEPSycastPostfix(ref bool __result, VEF.Abilities.Ability ability)
+        {
+            if (ability.pawn != null)
+            {
+                AbilityExtension_Psycast isPsycast = ability.def.GetModExtension<AbilityExtension_Psycast>();
+                if (isPsycast != null)
+                {
+                    __result = true;
+                }
+            }
+        }
+        //the following allow me to consult a VEF ability's psycast level, entropy cost, and psyfocus cost without having to create a bespoke subdirectory each time just to figure that stuff out
+        public static void HautsGetPsycastLevel_Postfix(ref int __result, VEF.Abilities.Ability ability)
+        {
+            AbilityExtension_Psycast isPsycast = ability.def.GetModExtension<AbilityExtension_Psycast>();
+            if (isPsycast != null)
+            {
+                __result = isPsycast.level;
+            }
+        }
+        public static void HautsGetEntropyCost_Postfix(ref float __result, VEF.Abilities.Ability ability)
+        {
+            AbilityExtension_Psycast isPsycast = ability.def.GetModExtension<AbilityExtension_Psycast>();
+            if (isPsycast != null)
+            {
+                __result = isPsycast.GetEntropyUsedByPawn(ability.pawn);
+            }
+        }
+        public static void HautsGetPsyfocusCost_Postfix(ref float __result, VEF.Abilities.Ability ability)
+        {
+            AbilityExtension_Psycast isPsycast = ability.def.GetModExtension<AbilityExtension_Psycast>();
+            if (isPsycast != null)
+            {
+                __result = isPsycast.GetPsyfocusUsedByPawn(ability.pawn);
+                if (StatExtension.GetStatValue(ability.pawn, VPE_DefOf.VPE_PsyfocusCostFactor, true) < 1f)
+                {
+                    __result += isPsycast.psyfocusCost * (1 - StatExtension.GetStatValue(ability.pawn, VPE_DefOf.VPE_PsyfocusCostFactor, true));
+                }
+                if (isPsycast.level <= 1)
+                {
+                    __result -= Math.Min(isPsycast.psyfocusCost * (1 - StatExtension.GetStatValue(ability.pawn, VPE_DefOf.VPE_PsyfocusCostFactor, true)), -ability.pawn.GetStatValue(HautsDefOf.Hauts_TierOnePsycastCostOffset));
+                }
+            }
+        }
+        //for similar reasons, these enable me to unlock specific VPE psycasts or transfer xp and points from one VPEcaster to another in other mods, entirely thru this Framework
+        public static void HautsVPEUnlockAbilityPostfix(Pawn pawn, VEF.Abilities.AbilityDef abilityDef)
+        {
+            Hediff_PsycastAbilities psylink = pawn.Psycasts();
+            if (psylink != null)
+            {
+                AbilityExtension_Psycast modExtension = abilityDef.GetModExtension<AbilityExtension_Psycast>();
+                if (modExtension != null && modExtension.path != null && !psylink.unlockedPaths.Contains(modExtension.path))
+                {
+                    psylink.UnlockPath(modExtension.path);
+                }
+            }
+        }
+        public static void HautsVPESetSkillPointsAndExperiencePostfix(Pawn setFor, Pawn copyFrom)
+        {
+            Hediff_PsycastAbilities psylinkFor = setFor.Psycasts();
+            Hediff_PsycastAbilities psylinkFrom = copyFrom.Psycasts();
+            psylinkFor.points = psylinkFrom.points;
+            psylinkFor.experience = psylinkFrom.experience;
+        }
+    }
+}
