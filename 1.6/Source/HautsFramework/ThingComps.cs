@@ -199,6 +199,13 @@ namespace HautsFramework
                 return this.props as CompProperties_ItemCharged;
             }
         }
+        public virtual float CostFactor
+        {
+            get
+            {
+                return 1f;
+            }
+        }
         public int RemainingCharges
         {
             get
@@ -299,14 +306,18 @@ namespace HautsFramework
             if (thing != null)
             {
                 Comp_ItemCharged cic = thing.TryGetComp<Comp_ItemCharged>();
-                if (cic != null && cic.Props.priceScalesByRemainingCharges)
+                if (cic != null)
                 {
-                    float num3 = ((float)cic.RemainingCharges / (float)cic.MaxCharges);
-                    if (explanation != null)
+                    if (cic.Props.priceScalesByRemainingCharges)
                     {
-                        explanation.AppendLine("StatsReport_ReloadRemainingChargesMultipler".Translate(cic.Props.ChargeNounArgument, cic.LabelRemaining) + ": x" + num3.ToStringPercent());
+                        float num3 = ((float)cic.RemainingCharges / (float)cic.MaxCharges);
+                        if (explanation != null)
+                        {
+                            explanation.AppendLine("StatsReport_ReloadRemainingChargesMultipler".Translate(cic.Props.ChargeNounArgument, cic.LabelRemaining) + ": x" + num3.ToStringPercent());
+                        }
+                        val *= num3;
                     }
-                    val *= num3;
+                    val *= cic.CostFactor;
                 }
             }
             if (val < 0f)

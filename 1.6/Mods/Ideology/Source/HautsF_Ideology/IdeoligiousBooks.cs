@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.Grammar;
@@ -38,6 +37,7 @@ namespace HautsF_Ideology
                 return typeof(BookOutcomeDoerPromoteIdeo);
             }
         }
+        
         public float newIdeoChance = 0f;
         //for making new ideos
         public float notForSpecificFactionType = 1f;
@@ -71,7 +71,7 @@ namespace HautsF_Ideology
                 {new CurvePoint(5f, 0.01f),true},
                 {new CurvePoint(6f, 0.01f),true},
             };
-        public ThoughtDef upsetOnFailedConversionThought = HautsDefOf.Hauts_FailedConversionByBook;
+        public ThoughtDef upsetOnFailedConversionThought;
         public SimpleCurve upsetLikelihood = new SimpleCurve
             {
                 {new CurvePoint(0f, 0f),true},
@@ -240,7 +240,11 @@ namespace HautsF_Ideology
                         {
                             Ideo oldIdeo = reader.Ideo;
                             Precept_Role role = oldIdeo.GetRole(reader);
-                            if (Rand.Chance(this.ChanceToUpsetPerHour * Math.Min(reader.GetStatValue(StatDefOf.ReadingSpeed), 1f) / 10f) && this.Props.upsetOnFailedConversionThought != null && !ThoughtUtility.ThoughtNullified(reader, ThoughtDefOf.FailedConvertIdeoAttemptResentment))
+                            if (this.Props.upsetOnFailedConversionThought == null)
+                            {
+                                this.Props.upsetOnFailedConversionThought = HautsDefOf.Hauts_FailedConversionByBook;
+                            }
+                            if (Rand.Chance(this.ChanceToUpsetPerHour * Math.Min(reader.GetStatValue(StatDefOf.ReadingSpeed), 1f) / 10f) && !ThoughtUtility.ThoughtNullified(reader, ThoughtDefOf.FailedConvertIdeoAttemptResentment))
                             {
                                 reader.needs.mood.thoughts.memories.TryGainMemory(this.Props.upsetOnFailedConversionThought, null, null);
                                 this.ExtraUpsetEffect(reader, curCertainty);

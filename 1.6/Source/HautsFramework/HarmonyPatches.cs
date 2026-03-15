@@ -177,8 +177,8 @@ namespace HautsFramework
                            prefix: new HarmonyMethod(patchType, nameof(HautsPawnPostApplyDamagePrefix)));
             harmony.Patch(AccessTools.Method(typeof(StunHandler), nameof(StunHandler.Notify_DamageApplied)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsStunNotifyDamageAppliedPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(PlayDataLoader), nameof(PlayDataLoader.HotReloadDefs)),
-                           postfix: new HarmonyMethod(patchType, nameof(HautsHotReloadPostfix)));
+            /*harmony.Patch(AccessTools.Method(typeof(PlayDataLoader), nameof(PlayDataLoader.HotReloadDefs)),
+                           postfix: new HarmonyMethod(patchType, nameof(HautsHotReloadPostfix)));*/
             HautsMiscUtility.ApplyAllDamageFactorGroupDefs();
             harmony.Patch(AccessTools.Method(typeof(Gene_Resource), nameof(Gene_Resource.Reset)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsResetMaxPostfix)));
@@ -1177,7 +1177,7 @@ namespace HautsFramework
                 }
             }
         }
-        //DamageFactorGroupDefs - apply on hot reload
+        //DamageFactorGroupDefs - apply on hot reload. Does not currently work - low priority to fix
         public static void HautsHotReloadPostfix()
         {
             HautsMiscUtility.ApplyAllDamageFactorGroupDefs();

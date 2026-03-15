@@ -127,7 +127,7 @@ namespace HautsFramework
             }
             return terrainDefList;
         }
-        //handles stuff for GiveHediffFromMenu
+        //handles stuff for GiveHediffFromMenu ability comp
         public static void AddHediffFromMenu(HediffDef chosenHediff, Pawn pawn, CompAbilityEffect_GiveHediffFromMenu ability, Pawn other, Pawn caster)
         {
             Hediff hediff = HediffMaker.MakeHediff(chosenHediff, pawn, ability.Props.onlyBrain ? pawn.health.hediffSet.GetBrain() : null);
