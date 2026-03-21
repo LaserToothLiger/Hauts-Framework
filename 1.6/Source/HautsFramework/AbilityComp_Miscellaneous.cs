@@ -7,6 +7,54 @@ using Verse;
 
 namespace HautsFramework
 {
+    //this ability expends chargeCost severity from the pawn's requisiteHediff in order to be cast. Therefore, it can't be cast if the pawn lacks that hediff or it doesn't have enough severity.
+    public class CompProperties_AbilityCostsHediffSeverity : CompProperties_AbilityEffect
+    {
+        public CompProperties_AbilityCostsHediffSeverity()
+        {
+            this.compClass = typeof(CompAbilityEffect_CostsHediffSeverity);
+        }
+        public float severityCost;
+        public HediffDef requisiteHediff;
+    }
+    public class CompAbilityEffect_CostsHediffSeverity : CompAbilityEffect
+    {
+        public new CompProperties_AbilityCostsHediffSeverity Props
+        {
+            get
+            {
+                return (CompProperties_AbilityCostsHediffSeverity)this.props;
+            }
+        }
+        public Hediff RequisiteHediff
+        {
+            get
+            {
+                if (this.parent.pawn != null)
+                {
+                    return this.parent.pawn.health.hediffSet.GetFirstHediffOfDef(this.Props.requisiteHediff);
+                }
+                return null;
+            }
+        }
+        public override bool CanCast
+        {
+            get
+            {
+                Hediff h = this.RequisiteHediff;
+                return h != null && h.Severity >= this.Props.severityCost;
+            }
+        }
+        public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
+        {
+            base.Apply(target, dest);
+            Hediff h = this.RequisiteHediff;
+            if (h != null)
+            {
+                h.Severity -= this.Props.severityCost;
+            }
+        }
+    }
     /*the ability can only be removed if the pawn has none of these forcing traits or genes. Otherwise, when it would be removed, it gets re-added instantaneously (resetting it to its initial state)
      * requiresAForcingProperty: causes certain events to remove the ability if the pawn has none of these forcing traits or genes
      * -After the player finishes the Game Creation process and clicks start
@@ -33,8 +81,7 @@ namespace HautsFramework
      *  ReplaceExistingHediff handles the replacement of a prior instantiation of a hediff
      *  RefreshMoreSevereHediff handles the refreshing of a prior instantiation of a hediff
      *  DontReplaceDontRefresh is only run if there was a prior instantiation of the hediff on the target already but it is neither to be replaced nor refreshed
-     *  ModifyCreatedHediff alters the hediff added to the target right before it gets added. This code is not run if Refresh or DontReplaceDontRefresh occurred, as in both cases no hediff is going to be added
-     */
+     *  ModifyCreatedHediff alters the hediff added to the target right before it gets added. This code is not run if Refresh or DontReplaceDontRefresh occurred, as in both cases no hediff is going to be added*/
     public class CompProperties_AbilityGiveHediffCasterStatScalingSeverity : CompProperties_AbilityGiveHediff
     {
         public StatDef casterStatToScaleFrom;

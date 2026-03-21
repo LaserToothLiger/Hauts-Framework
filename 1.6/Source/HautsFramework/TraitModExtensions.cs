@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using VEF.Genes;
 using Verse;
 using Verse.Sound;
 
@@ -13,7 +14,7 @@ namespace HautsFramework
      * prisonerResolveFactor: when this trait is gained or unsuppressed, OR when the pawn who has this trait is imprisoned, multiplies the pawn’s resistance and will by this amount.
      * grantedAbilities: when this trait is gained or unsuppressed, adds all abilities from the degree-matched List
      * grantedVEFAbilities: ditto for VEF abilities.
-     *   who do not have a gene with the DisablesTGSbodyTypeAdjustment DME.*/
+     * forcedBodyTypes: if the pawn is a human, doesn't have a Biotech gene-enforced body type, and its body type is one of the keys in this dictionary, its body type turns into the corresponding value.*/
     public class TraitGrantedStuff : DefModExtension
     {
         public TraitGrantedStuff()
@@ -26,12 +27,7 @@ namespace HautsFramework
         public Dictionary<int, float> prisonerResolveFactor;
         public Dictionary<int, List<RimWorld.AbilityDef>> grantedAbilities;
         public Dictionary<int, List<VEF.Abilities.AbilityDef>> grantedVEFAbilities;
-        //forcedBodyTypes does not do anything - will be removed come RimWorld 1.7 if I cannot think of a decent way to reintroduce it
         public Dictionary<BodyTypeDef, BodyTypeDef> forcedBodyTypes;
-    }
-    public class DisablesTGSbodyTypeAdjustment : DefModExtension
-    {
-        public DisablesTGSbodyTypeAdjustment() { }
     }
     /*prevents body parts from being spawned from anyone with this trait (e.g. via surgical extraction of an organ)
      * Recipes will partially or fully bypass this effect if they are custom classes from other mods, so don't expect this to work on everything. As I said in the relevant Harmony patches' comments, total functionality for this DME is not my interest,
@@ -239,6 +235,14 @@ namespace HautsFramework
                     pawn.guest.resistance *= tgs.prisonerResolveFactor.TryGetValue(t.Degree);
                     pawn.guest.will *= tgs.prisonerResolveFactor.TryGetValue(t.Degree);
                 }
+                if (!tgs.forcedBodyTypes.NullOrEmpty() && pawn.story.bodyType != null && TraitModExtensionUtility.CanApplyForcedBodyTypes(pawn))
+                {
+                    if (tgs.forcedBodyTypes.Keys.Contains(pawn.story.bodyType))
+                    {
+                        pawn.story.bodyType = tgs.forcedBodyTypes.TryGetValue(pawn.story.bodyType);
+                        pawn.Drawer.renderer.SetAllGraphicsDirty();
+                    }
+                }
             }
         }
         public static void AddHediffsFromTrait(Trait t, TraitGrantedStuff tgs, Pawn pawn)
@@ -365,6 +369,34 @@ namespace HautsFramework
                     }
                 }
             }
+        }
+        //prevents the application of forcedBodyTypes to any pawn that has a genetic body type
+        public static bool CanApplyForcedBodyTypes(Pawn pawn)
+        {
+            if (pawn.def == ThingDefOf.Human || (ModsConfig.AnomalyActive && pawn.def == ThingDefOf.CreepJoiner))
+            {
+                if (ModsConfig.BiotechActive && pawn.genes != null && pawn.genes.GenesListForReading.Count > 0)
+                {
+                    foreach (Gene g in pawn.genes.GenesListForReading)
+                    {
+                        if (g.Active)
+                        {
+                            if (g.def.bodyType != null)
+                            {
+                                return false;
+                            } else {
+                                GeneExtension ge = g.def.GetModExtension<GeneExtension>();
+                                if (ge != null && ge.forcedBodyType != null)
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+            return false;
         }
         //Harmony sews this in right before a pawn with VOD dies, causing them to, well, vanish
         public static bool TryVanishPawn(Pawn pawn)

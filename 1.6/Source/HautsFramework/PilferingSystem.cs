@@ -749,6 +749,18 @@ namespace HautsFramework
             stealthRating /= (float)skulkersInCaravan.Count;
             return stealthRating;
         }
+        public static List<Pawn> AllBurglarsInCaravan(Caravan caravan)
+        {
+            List<Pawn> burglarsInCaravan = new List<Pawn>();
+            foreach (Pawn p in caravan.PawnsListForReading)
+            {
+                if (p.GetStatValue(HautsDefOf.Hauts_PilferingStealth) > 0f)
+                {
+                    burglarsInCaravan.Add(p);
+                }
+            }
+            return burglarsInCaravan;
+        }
         //there are multiple methods of initiating burglary, but they ultimately share the same code. this is that code.
         public static void Burgle(Caravan caravan, Settlement settlement)
         {
@@ -761,21 +773,14 @@ namespace HautsFramework
                 float burglaryMaxWeight = caravan.MassCapacity;
                 float burglaryMaxValue = 0f;
                 float successChance = PilferingSystemUtility.CaravanStealthRating(caravan);
-                List<Pawn> skulkersInCaravan = new List<Pawn>();
-                foreach (Pawn p in caravan.PawnsListForReading)
-                {
-                    if (p.GetStatValue(HautsDefOf.Hauts_PilferingStealth) > 0f)
-                    {
-                        skulkersInCaravan.Add(p);
-                    }
-                }
+                List<Pawn> burglars = PilferingSystemUtility.AllBurglarsInCaravan(caravan);
                 float alertLevel = PilferingSystemUtility.SettlementAlertLevel(settlement);
-                foreach (Pawn p in skulkersInCaravan)
+                foreach (Pawn p in burglars)
                 {
                     burglaryMaxValue += p.GetStatValue(HautsDefOf.Hauts_MaxPilferingValue);
                 }
                 successChance -= alertLevel;
-                if (skulkersInCaravan.Count == 0)
+                if (burglars.Count == 0)
                 {
                     TaggedString message = "Hauts_NoPilferers".Translate();
                     Messages.Message(message, settlement, MessageTypeDefOf.RejectInput, true);
@@ -799,11 +804,11 @@ namespace HautsFramework
                     Messages.Message(message, settlement, MessageTypeDefOf.RejectInput, true);
                     return;
                 } else {
-                    for (int i = skulkersInCaravan.Count - 1; i >= 0; i--)
+                    for (int i = burglars.Count - 1; i >= 0; i--)
                     {
-                        PilferingSystemUtility.AdjustPickpocketSensitiveHediffs(skulkersInCaravan[i]);
+                        PilferingSystemUtility.AdjustPickpocketSensitiveHediffs(burglars[i]);
                     }
-                    Find.WindowStack.Add(new BurgleWindow(caravan, skulkersInCaravan, settlement, burglaryMaxValue, burglaryMaxWeight, successChance));
+                    Find.WindowStack.Add(new BurgleWindow(caravan, burglars, settlement, burglaryMaxValue, burglaryMaxWeight, successChance));
                 }
             }
         }

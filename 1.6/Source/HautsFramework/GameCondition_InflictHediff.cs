@@ -35,7 +35,7 @@ namespace HautsFramework
         }
         public override void GameConditionTick()
         {
-            if (Find.TickManager.TicksGame % 25 == 0)
+            if (Find.TickManager.TicksGame % 250 == 0)
             {
                 foreach (Map map in base.AffectedMaps)
                 {

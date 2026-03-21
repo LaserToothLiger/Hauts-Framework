@@ -145,9 +145,8 @@ namespace HautsFramework
             MethodInfo methodInfo2 = typeof(StatPart_Glow).GetMethod("ActiveFor", BindingFlags.NonPublic | BindingFlags.Instance);
             harmony.Patch(methodInfo2,
                           postfix: new HarmonyMethod(patchType, nameof(HautsStatPart_GlowActiveForPostfix)));
-            /*
             harmony.Patch(AccessTools.Method(typeof(LifeStageWorker_HumanlikeAdult), nameof(LifeStageWorker_HumanlikeAdult.Notify_LifeStageStarted)),
-                          postfix: new HarmonyMethod(patchType, nameof(HautsNotify_LifeStageStartedPostfix)));*/
+                          postfix: new HarmonyMethod(patchType, nameof(HautsNotify_LifeStageStartedPostfix)));
             //trait DME that makes you vanish right before you die. This is used for temporary pawns whom I don't want to trigger on-death thoughts, or to leave behind any loot
             harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.Kill)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsKillPrefix)));
@@ -1022,6 +1021,27 @@ namespace HautsFramework
                         {
                             __result = false;
                             break;
+                        }
+                    }
+                }
+            }
+        }
+        public static void HautsNotify_LifeStageStartedPostfix(Pawn pawn)
+        {
+            if (pawn.story != null && TraitModExtensionUtility.CanApplyForcedBodyTypes(pawn))
+            {
+                foreach (Trait t in pawn.story.traits.TraitsSorted)
+                {
+                    TraitGrantedStuff tgs = t.def.GetModExtension<TraitGrantedStuff>();
+                    if (tgs != null)
+                    {
+                        if (tgs.forcedBodyTypes != null)
+                        {
+                            if (tgs.forcedBodyTypes.Keys.Contains(pawn.story.bodyType))
+                            {
+                                pawn.story.bodyType = tgs.forcedBodyTypes.TryGetValue(pawn.story.bodyType);
+                                pawn.Drawer.renderer.SetAllGraphicsDirty();
+                            }
                         }
                     }
                 }

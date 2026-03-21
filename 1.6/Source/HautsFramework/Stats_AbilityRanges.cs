@@ -179,7 +179,7 @@ namespace HautsFramework
         {
             return verb is Verb_CastAbilityJump || verb is Verb_Jump;
         }
-        //AbilityStatEffecters' effect here
+        //AbilityStatEffecters' effect here, for VEF abilities
         public static bool IsLeapAbility(VEF.Abilities.AbilityDef abilityDef)
         {
             if (abilityDef.HasModExtension<AbilityStatEffecters>() && abilityDef.GetModExtension<AbilityStatEffecters>().leap)
