@@ -28,6 +28,7 @@
 		<li IfModActive="Ludeon.RimWorld.Ideology">1.6/Mods/Ideology</li><!--PromoteIdeo books, a permit worker to drop them, and Harmony patches that only affect Ideology-exclusive content-->
 		<li IfModActive="Ludeon.RimWorld.Biotech">1.6/Mods/Biotech</li><!--mech energy usage offset stat-->
 		<li IfModActive="Ludeon.RimWorld.Anomaly">1.6/Mods/Anomaly</li><!--bioferrite destabilizer hediff comp-->
+		<li IfModActive="RedMattis.BetterPrerequisites">1.6/Mods/BigAndSmall</li><!--makes ModCompatibilityUtility.IsAnimalOrSapientAnimal and .Sapienate work, so I don't need subfolders in each distinct mod I use this stuff for-->
 		<li IfModActive="CETeam.CombatExtended">1.6/Mods/CombatExtended</li><!--makes armor pen factor stats work with their system-->
 		<li IfModActive="lts.I" IfModNotActive="MSE2.Core">1.6/Mods/ThisIsGettingALittleIntoTheWeeds</li><!--enables AbilityCooldownModifiers that affect all bionic abilities to affect abilities granted by II modules-->
 		<li IfModActive="ferny.ProgressionEducation">1.6/Mods/ProgressionEducation</li><!--makes the new ways to teach people affected by the Instructive Ability stat-->

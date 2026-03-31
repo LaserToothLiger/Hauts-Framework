@@ -325,45 +325,6 @@ namespace HautsFramework
             public string keyword;
             public List<ValueTuple<string, string>> subSymbols;
         }
-        //does ewisott. Will be used for Hot Reload patch as well, once I make Hot Reload not crap the bed if you have Royalty and HAT running
-        public static void ApplyAllDamageFactorGroupDefs()
-        {
-            foreach (DamageFactorGroupDef dfg in DefDatabase<DamageFactorGroupDef>.AllDefs)
-            {
-                if (!dfg.applyToHediffs.NullOrEmpty() && !dfg.damageDefs.NullOrEmpty())
-                {
-                    foreach (DFG_HediffTarget ht in dfg.applyToHediffs)
-                    {
-                        HediffDef hd = ht.hediff;
-                        if (hd.stages != null && hd.stages.Count > ht.stageIndex)
-                        {
-                            List<DamageDef> extantDamageFactors = new List<DamageDef>();
-                            if (hd.stages[ht.stageIndex].damageFactors == null)
-                            {
-                                hd.stages[ht.stageIndex].damageFactors = new List<DamageFactor>();
-                            }
-                            else
-                            {
-                                foreach (DamageFactor dfac in hd.stages[ht.stageIndex].damageFactors)
-                                {
-                                    extantDamageFactors.Add(dfac.damageDef);
-                                }
-                            }
-                            foreach (DamageDef d in dfg.damageDefs)
-                            {
-                                if (!extantDamageFactors.Contains(d))
-                                {
-                                    DamageFactor df = new DamageFactor();
-                                    df.damageDef = d;
-                                    df.factor = ht.factor;
-                                    hd.stages[ht.stageIndex].damageFactors.Add(df);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
         //this is what you should invoke whenever you do delayed rezzes, as it handles all possible arguments
         public static void StartDelayedResurrection(Pawn pawn, IntRange initialRareTicks, string explanationKey, bool shouldSendMessage = true, bool shouldTranslateMessage = true, bool preventRisingAsShambler = true, HediffDef mutation = null, float mutationSeverity = 0f)
         {

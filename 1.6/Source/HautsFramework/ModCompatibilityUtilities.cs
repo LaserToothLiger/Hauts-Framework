@@ -6,6 +6,21 @@ namespace HautsFramework
 {
     public static class ModCompatibilityUtility
     {
+        /*Big and Small Framework (although these are basically for the content you'd associate with Big and Small - Sapient Animals, the relevant code is actually all in the B&S Framework)
+         * this method ordinarily just returns whether pawn is an animal. The subdirectory for Big and Small - Sapient Animals patches this to also return true if the pawn is a sapient, fleshy pawn*/
+        public static bool IsAnimalOrSapientAnimal(Pawn pawn)
+        {
+            return pawn.IsAnimal;
+        }
+        //determines if the pawn's def has a sapient equivalent
+        public static bool CanSapienateAnimal(Pawn animal)
+        {
+            return false;
+        }
+        //patched to make the animal sapient, and if it had been part of a Lord, to give the resultant sapient pawn back to that Lord right afterward
+        public static void SapienateAnimal(Pawn animal)
+        {
+        }
         //Combat Extended integration: cached bool if CE is running or not
         public static bool CombatIsExtended()
         {

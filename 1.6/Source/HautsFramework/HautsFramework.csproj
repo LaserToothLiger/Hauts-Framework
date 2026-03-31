@@ -79,7 +79,7 @@
     <Compile Include="CaravanAbilityGizmos.cs" />
     <Compile Include="CustomAnomalyPlaystyleLevels.cs" />
     <Compile Include="HarmonyPatches.cs" />
-    <Compile Include="DamageFactorGroupDefs.cs" />
+    <Compile Include="Stats_SpecificDamageFactors.cs" />
     <Compile Include="DamageWorkers.cs" />
     <Compile Include="DefOfs.cs" />
     <Compile Include="DelayedResurrection.cs" />

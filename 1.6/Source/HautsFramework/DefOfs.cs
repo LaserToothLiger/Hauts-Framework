@@ -28,6 +28,7 @@ namespace HautsFramework
         public static StatDef Hauts_PersonalCaravanVisibilityFactor;
         public static StatDef Hauts_TrackSize;
         public static StatDef Hauts_JumpRangeFactor;
+        public static StatDef Hauts_HeatDamageFactor;
         [MayRequireIdeology]
         public static StatDef Hauts_IdeoAbilityDurationSelf;
         [MayRequireIdeology]

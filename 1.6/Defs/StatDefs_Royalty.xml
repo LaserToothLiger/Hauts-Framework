@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<StatDef MayRequireAnyOf="Ludeon.RimWorld.Royalty,Ludeon.RimWorld.Biotech">
+		<defName>Hauts_PsycastFocusRefund</defName>
+		<label>psycast focus refund</label>
+		<description>On psycasting, regain this proportion of the psyfocus spent.</description>
+		<category>PawnPsyfocus</category>
+		<hideAtValue>0</hideAtValue>
+		<defaultBaseValue>0</defaultBaseValue>
+		<maxValue>1</maxValue>
+		<displayPriorityInCategory>14024</displayPriorityInCategory>
+		<toStringStyle>PercentZero</toStringStyle>
+		<formatString>{0} of spent psyfocus</formatString>
+		<formatStringUnfinalized>{0} of spent psyfocus</formatStringUnfinalized>
+		<showOnAnimals>false</showOnAnimals>
+		<showOnMechanoids>false</showOnMechanoids>
+		<showIfModsLoaded><li>ludeon.rimworld.royalty</li></showIfModsLoaded>
+	</StatDef>
+	<StatDef MayRequireAnyOf="Ludeon.RimWorld.Royalty,Ludeon.RimWorld.Biotech">
+		<defName>Hauts_PsyfocusFromFood</defName>
+		<label>psyfocus gain per nutrition</label>
+		<description>The amount of psyfocus gained per nutrition ingested.</description>
+		<category>PawnPsyfocus</category>
+		<hideAtValue>0</hideAtValue>
+		<defaultBaseValue>0</defaultBaseValue>
+		<displayPriorityInCategory>14025</displayPriorityInCategory>
+		<toStringStyle>PercentTwo</toStringStyle>
+		<showOnAnimals>false</showOnAnimals>
+		<showOnMechanoids>false</showOnMechanoids>
+		<showIfModsLoaded><li>ludeon.rimworld.royalty</li></showIfModsLoaded>
+	</StatDef>
+	<StatDef MayRequireAnyOf="Ludeon.RimWorld.Royalty,Ludeon.RimWorld.Biotech">
+		<defName>Hauts_PsyfocusGainOnKill</defName>
+		<label>psyfocus gain on kill</label>
+		<description>The amount of psyfocus gained on killing another being. The amount is multiplied by the victim's psychic sensitivity. Animal slaughter is only half as effective as humanlike slaughter.</description>
+		<category>PawnPsyfocus</category>
+		<hideAtValue>0</hideAtValue>
+		<defaultBaseValue>0</defaultBaseValue>
+		<displayPriorityInCategory>14026</displayPriorityInCategory>
+		<toStringStyle>PercentTwo</toStringStyle>
+		<showOnAnimals>false</showOnAnimals>
+		<showOnMechanoids>false</showOnMechanoids>
+		<showIfModsLoaded><li>ludeon.rimworld.royalty</li></showIfModsLoaded>
+	</StatDef>
+	<!--notes for other modders: .035, .055, and .075 are the amount lost per day while below 25, below 50, and above 50 percent, respectively-->
+	<StatDef MayRequireAnyOf="Ludeon.RimWorld.Royalty,Ludeon.RimWorld.Biotech">
+		<defName>Hauts_PsyfocusRegenRate</defName>
+		<label>psyfocus per day</label>
+		<description>The amount of psyfocus passively gained or lost per day. This includes the psyfocus decay that all psycasters experience over time while not meditating.</description>
+		<category>PawnPsyfocus</category>
+		<hideAtValue>0</hideAtValue>
+		<defaultBaseValue>0</defaultBaseValue>
+		<displayPriorityInCategory>14027</displayPriorityInCategory>
+		<toStringStyle>PercentTwo</toStringStyle>
+		<formatString>{0} / day</formatString>
+		<formatStringUnfinalized>{0} / day</formatStringUnfinalized>
+		<showOnAnimals>false</showOnAnimals>
+		<showOnMechanoids>false</showOnMechanoids>
+		<showIfModsLoaded><li>ludeon.rimworld.royalty</li></showIfModsLoaded>
+		<parts>
+		  <li Class="HautsFramework.StatPart_PsyfocusBand" />
+		</parts>
+	</StatDef>
+	<StatDef MayRequireAnyOf="Ludeon.RimWorld.Royalty,Ludeon.RimWorld.Biotech">
+		<defName>Hauts_SkipcastRangeFactor</defName>
+		<label>skipcast range factor</label>
+		<description>A multiplier to the range of "skip" psycasts used by this character. Psycasts with "Skip" in the name, such as Skip or Chaos Skip, are skip psycasts. However, there are also several other psycasts which are also affected by this stat, such as Flashstorm (these ones mention or imply in their tooltips that skipgates are used to create their effects).</description>
+		<category>BasicsPawn</category>
+        <minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+		<displayPriorityInCategory>14028</displayPriorityInCategory>
+		<toStringStyle>PercentZero</toStringStyle>
+		<showOnAnimals>false</showOnAnimals>
+		<showOnMechanoids>false</showOnMechanoids>
+		<showIfModsLoaded><li>ludeon.rimworld.royalty</li></showIfModsLoaded>
+	</StatDef>
+	<StatDef MayRequire="Ludeon.RimWorld.Royalty">
+		<defName>Hauts_TierOnePsycastCostOffset</defName>
+		<label>first-level psycast cost offset</label>
+		<description>If Vanilla Psycasts Expanded is in the active modlist, provides a flat offset to the amount of psyfocus needed to cast 1st-level psycasts. If not, it is added to the total psyfocus cost refund of any 1st-level psycast.</description>
+		<category>PawnPsyfocus</category>
+		<hideAtValue>0</hideAtValue>
+		<defaultBaseValue>0</defaultBaseValue>
+		<displayPriorityInCategory>14029</displayPriorityInCategory>
+		<toStringStyle>PercentTwo</toStringStyle>
+		<showOnAnimals>false</showOnAnimals>
+		<showOnMechanoids>false</showOnMechanoids>
+		<showIfModsLoaded><li>ludeon.rimworld.royalty</li></showIfModsLoaded>
+	</StatDef>
+</Defs>

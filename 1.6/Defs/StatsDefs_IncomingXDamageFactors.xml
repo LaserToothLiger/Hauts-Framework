@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<!--see patches_SpecificDamageFactorStats.xml for what specific damage types are affected. In the future, I'd like to be able to display what specific damage types are affected when you mouse over the stat in the info tab-->
+	<StatDef Name="Hauts_IncomingXDamageFactorStat" Abstract="True">
+		<category>PawnResistances</category>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+        <toStringStyle>PercentZero</toStringStyle>
+	</StatDef>
+	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_AcidDamageFactor</defName>
+		<label>incoming acid damage factor</label>
+		<description>A multiplier on incoming damage taken of various acid types.</description>
+		<displayPriorityInCategory>3001</displayPriorityInCategory>
+	</StatDef>
+	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_ColdDamageFactor</defName>
+		<label>incoming cold damage factor</label>
+		<description>A multiplier on incoming damage taken of various cold types.</description>
+		<displayPriorityInCategory>3002</displayPriorityInCategory>
+	</StatDef>
+	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_ElectricalDamageFactor</defName>
+		<label>incoming electric damage factor</label>
+		<description>A multiplier on incoming damage taken of various electric types.</description>
+		<displayPriorityInCategory>3003</displayPriorityInCategory>
+	</StatDef>
+	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_ExplosiveDamageFactor</defName>
+		<label>incoming explosive damage factor</label>
+		<description>A multiplier on incoming damage taken of various kinetic explosions.</description>
+		<displayPriorityInCategory>3004</displayPriorityInCategory>
+	</StatDef>
+	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_HeatDamageFactor</defName>
+		<label>incoming heat damage factor</label>
+		<description>A multiplier on incoming damage taken of various heat-related types.</description>
+		<displayPriorityInCategory>3005</displayPriorityInCategory>
+	</StatDef>
+	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_PsychicDamageFactor</defName>
+		<label>incoming psychic damage factor</label>
+		<description>A multiplier on incoming damage taken of various psychic types.</description>
+		<displayPriorityInCategory>3006</displayPriorityInCategory>
+	</StatDef>
+	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_RadiationDamageFactor</defName>
+		<label>incoming radiation damage factor</label>
+		<description>A multiplier on incoming damage taken of various radiation-related types.</description>
+		<displayPriorityInCategory>3007</displayPriorityInCategory>
+	</StatDef>
+	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_SkipDamageFactor</defName>
+		<label>incoming skip damage factor</label>
+		<description>A multiplier on incoming damage taken of various teleportation-related types.</description>
+		<displayPriorityInCategory>3008</displayPriorityInCategory>
+	</StatDef>
+	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_ToxicDamageFactor</defName>
+		<label>incoming toxin damage factor</label>
+		<description>A multiplier on incoming damage taken of various toxin types.\n\nThis does not directly affect one's resistance to toxic buildup, although some of the affected damage types inflict toxic buildup in proportion to the amount of damage inflicted.</description>
+		<displayPriorityInCategory>3009</displayPriorityInCategory>
+	</StatDef>
+</Defs>

@@ -163,9 +163,10 @@ namespace HautsFramework
                 harmony.Patch(AccessTools.Method(typeof(GeneResourceDrainUtility), nameof(GeneResourceDrainUtility.OffsetResource)),
                               prefix: new HarmonyMethod(patchType, nameof(HautsOffsetResourcePrefix)));
             }
-            //this one also does the stat function for PsyfocusFromFood
+            //    -note that this hediff comp handler also does the stat function for PsyfocusFromFood
             harmony.Patch(AccessTools.Method(typeof(Thing), nameof(Thing.Ingested)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsIngestedPostfix)));
+            //    -also note that this one also handles SpecificDamageFactorStats
             harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Pawn.PreApplyDamage)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsFramework_PreApplyDamagePostfix)));
             harmony.Patch(AccessTools.Method(typeof(AttachableThing), nameof(AttachableThing.AttachTo)),
@@ -176,9 +177,6 @@ namespace HautsFramework
                            prefix: new HarmonyMethod(patchType, nameof(HautsPawnPostApplyDamagePrefix)));
             harmony.Patch(AccessTools.Method(typeof(StunHandler), nameof(StunHandler.Notify_DamageApplied)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsStunNotifyDamageAppliedPostfix)));
-            /*harmony.Patch(AccessTools.Method(typeof(PlayDataLoader), nameof(PlayDataLoader.HotReloadDefs)),
-                           postfix: new HarmonyMethod(patchType, nameof(HautsHotReloadPostfix)));*/
-            HautsMiscUtility.ApplyAllDamageFactorGroupDefs();
             harmony.Patch(AccessTools.Method(typeof(Gene_Resource), nameof(Gene_Resource.Reset)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsResetMaxPostfix)));
             //abilities
@@ -247,6 +245,22 @@ namespace HautsFramework
             if (!ModCompatibilityUtility.isHighFantasy)
             {
                 ModCompatibilityUtility.isHighFantasy = ModsConfig.IsActive("Joe.RPGAdventureFlavour.Fork");
+            }
+            //Hauts_HeatDamageFactor is hardcoded to apply to Flame, instead of being handled in an xpath patch, to avoid AcidBurn and ElectricalBurn inheriting its SDFS
+            Dictionary<StatDef, float> flameSDFS = new Dictionary<StatDef, float>
+            {
+                { HautsDefOf.Hauts_HeatDamageFactor, 1f }
+            };
+            if (DamageDefOf.Flame.modExtensions == null)
+            {
+                DamageDefOf.Flame.modExtensions = new List<DefModExtension>();
+            }
+            SpecificDamageFactorStats sdfs = DamageDefOf.Flame.GetModExtension<SpecificDamageFactorStats>();
+            if (sdfs != null)
+            {
+                sdfs.factorStats.Add(HautsDefOf.Hauts_HeatDamageFactor, 1f);
+            } else {
+                DamageDefOf.Flame.modExtensions.Add(new SpecificDamageFactorStats(flameSDFS));
             }
             ModCompatibilityUtility.combatIsExtended = ModsConfig.IsActive("CETeam.CombatExtended");
             Log.Message("Hauts_Initialize".Translate().CapitalizeFirst());
@@ -1098,32 +1112,47 @@ namespace HautsFramework
                 amnt /= Math.Max(0.001f,netGRM);
             }
         }
-        //hediff comps - when a pawn takes damage, get all its PreDamageModifications, put them in order of highest to lowest priority, and run through their effects
+        /*hediff comps - when a pawn takes damage, get all its PreDamageModifications, put them in order of highest to lowest priority, and run through their effects
+         * this also applies all SpecificDamageFactorStats of the damage def, which happens before the PDMs*/
         public static void HautsFramework_PreApplyDamagePostfix(Pawn __instance, ref DamageInfo dinfo, ref bool absorbed)
         {
             if (!absorbed)
             {
-                List<HediffComp_PreDamageModification> hcdns = new List<HediffComp_PreDamageModification>();
-                foreach (Hediff h in __instance.health.hediffSet.hediffs)
+                if (dinfo.Def != null)
                 {
-                    if (h is Hediff_PreDamageModification)
+                    SpecificDamageFactorStats sdfs = dinfo.Def.GetModExtension<SpecificDamageFactorStats>();
+                    if (sdfs != null && !sdfs.factorStats.NullOrEmpty())
                     {
-                        HediffComp_PreDamageModification hcdn = h.TryGetComp<HediffComp_PreDamageModification>();
-                        if (hcdn != null)
+                        foreach (KeyValuePair<StatDef, float> kvp in sdfs.factorStats)
                         {
-                            hcdns.Add(hcdn);
+                            dinfo.SetAmount(dinfo.Amount * Math.Max(0f, ((__instance.GetStatValue(kvp.Key) - 1f) * kvp.Value) + 1f));
                         }
                     }
                 }
-                if (hcdns.Count > 0)
+                if (dinfo.Amount > 0f)
                 {
-                    List<HediffComp_PreDamageModification> hcdns2 = hcdns.OrderBy(x => x.Props.priority).ToList();
-                    for (int i = hcdns2.Count - 1; i >= 0; i--)
+                    List<HediffComp_PreDamageModification> hcdns = new List<HediffComp_PreDamageModification>();
+                    foreach (Hediff h in __instance.health.hediffSet.hediffs)
                     {
-                        hcdns2[i].TryDoModification(ref dinfo, ref absorbed);
-                        if (absorbed)
+                        if (h is Hediff_PreDamageModification)
                         {
-                            return;
+                            HediffComp_PreDamageModification hcdn = h.TryGetComp<HediffComp_PreDamageModification>();
+                            if (hcdn != null)
+                            {
+                                hcdns.Add(hcdn);
+                            }
+                        }
+                    }
+                    if (hcdns.Count > 0)
+                    {
+                        List<HediffComp_PreDamageModification> hcdns2 = hcdns.OrderBy(x => x.Props.priority).ToList();
+                        for (int i = hcdns2.Count - 1; i >= 0; i--)
+                        {
+                            hcdns2[i].TryDoModification(ref dinfo, ref absorbed);
+                            if (absorbed)
+                            {
+                                return;
+                            }
                         }
                     }
                 }
@@ -1196,11 +1225,6 @@ namespace HautsFramework
                     }
                 }
             }
-        }
-        //DamageFactorGroupDefs - apply on hot reload. Does not currently work - low priority to fix
-        public static void HautsHotReloadPostfix()
-        {
-            HautsMiscUtility.ApplyAllDamageFactorGroupDefs();
         }
         //ability comps and AbilityCooldownModifier
         public static void HautsActivatePostfix(RimWorld.Ability __instance)

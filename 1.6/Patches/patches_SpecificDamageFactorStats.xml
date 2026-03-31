@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch><!--Make the following damage types affected by specific "incoming x damage factor" stats
+	starting with vanilla-->
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/DamageDef[defName="AcidBurn" or defName="VEF_SecondaryAcidBurn"]</xpath>
+		<value><li Class="HautsFramework.SpecificDamageFactorStats" Inherit="False"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+	</Operation>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/DamageDef[defName="Frostbite"]</xpath>
+		<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>1</value></li></factorStats></li></value>
+	</Operation>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/DamageDef[defName="EMP"]</xpath>
+		<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>1</value></li></factorStats></li></value>
+	</Operation>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/DamageDef[defName="Bomb" or defName="BombSuper" or defName="Thump"]</xpath>
+		<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li></factorStats></li></value>
+	</Operation>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/DamageDef[defName="Burn" or defName="VEF_PermanentBurn"]</xpath><!--Flame has to be handled via hardcoding; xpath occurs before inheritance, and AcidBurn and ElectricalBurn inherit from Flame, so they'd get any xpath-added SDFS that Flame got.-->
+		<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+	</Operation>
+	<Operation Class="PatchOperationConditional">
+		<xpath>/Defs/DamageDef[defName="AcidBurn"]/modExtensions</xpath>
+		<nomatch Class="PatchOperationAdd">
+			<xpath>/Defs/DamageDef[defName="AcidBurn"]</xpath>
+			<value>
+				<modExtensions>
+					<li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li>
+				</modExtensions>
+			</value>
+		</nomatch>
+		<match Class="PatchOperationAdd">
+			<xpath>/Defs/DamageDef[defName="AcidBurn"]/modExtensions</xpath>
+			<value>
+				<li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li>
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/DamageDef[defName="Vaporize"]</xpath>
+		<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>0.25</value></li></factorStats></li></value>
+	</Operation>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/DamageDef[defName="Beam"]</xpath>
+		<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>1</value></li></factorStats></li></value>
+	</Operation>
+	
+	<!--DLCs-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Anomaly</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="ElectricalBurn"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>0.75</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="Psychic"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
+					  <li>Combat Extended</li>
+					</mods>
+					<match Class="PatchOperationAddModExtension">
+						<xpath>/Defs/DamageDef[defName="BioferriteFlame"]</xpath>
+						<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+					</match>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Odyssey</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="MiningBomb"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="BeamBypassShields"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<!--now on to mods, in alphabetical order. You will notice a lot of redundancy in the Alpha series...-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Alpha Animals</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AA_AcidRainDamage" or defName="AA_AcidSpit" or defName="AA_OverpoweringSecondaryAcidBurn"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AA_FrostBomb"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AA_FrostClaws" or defName="AA_FrostBite"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>0.4</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AA_Electric"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AA_SiegeBlunt"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AA_PermanentBurn"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AA_BurningBite" or defName="AA_BurningAndFeedingBite"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>0.4</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AA_ToxicSting" or defName="AA_VeryToxicSting"]</xpath><!--but what about extremely toxic sting? Unimpeachably toxic sting? Ultimate toxic sting...-->
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Alpha Armoury</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AArmoury_AcidSpit" or defName="AArmoury_Corrosive"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AArmoury_Voltaic"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AArmoury_Flame_Lesser"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>0.5</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AArmoury_ThermalBlasts" or defName="AArmoury_Flame_Lesser"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AArmoury_PsychicDamage"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AArmoury_InsectKiller" or defName="AArmoury_AnomalyKiller" or defName="AArmoury_BeeVenom"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Alpha Biomes</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/DamageDef[defName="AB_ParalysingSting"]</xpath>
+			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Alpha Genes</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AG_AcidSpit"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AG_FreezingBreath"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AG_Electric"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AG_NoxiousBreath"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Alpha Implants</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AI_AcidSpit"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AI_Electric"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AI_ToxicBolt"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Alpha Mechs</li>
+		  <li>Alpha Memes</li><!--????????????????????????????????-->
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/DamageDef[defName="AM_AcidSpit"]</xpath>
+			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Alpha Mechs</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AM_FreezingBurst"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AM_SoulDrain"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Alpha Memes</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AM_HolyBurn"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AM_ToxicBolt" or defName="AM_ToxicSting"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>[FSF] More Psycast Powers</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/DamageDef[defName="FSFFrostbite"]</xpath>
+			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>1</value></li></factorStats></li></value>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Combat Extended</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="Taser" or defName="Electrical"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="Bomb_Secondary"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="Flame_Secondary" or defName="Flame_Secondary_Incendiary" or defName="PrometheumFlame"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="Flashbang"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>0.5</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="CE_Laser"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Cooler Psycasts</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="CoolPsycasts_GammaRadiation"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="CoolPsycasts_SkipCut"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_SkipDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Mechanoid Invaders</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/DamageDef[defName="IW_RipperToxin"]</xpath>
+			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Obsidia Expansion</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="OTCAcid"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="OTCCryo"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="OMGNecrobane" or defName="OEUnstableToxins"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Protocol Anomaly: Syndicate</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="Gha_PlasmaDamage" or defName="Gha_PlasmaBeam"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="VoidStun"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="Gha_PlasmaBeam_Void"]</xpath>
+					<value>
+						<li Class="HautsFramework.SpecificDamageFactorStats">
+							<factorStats>
+								<li><key>Hauts_HeatDamageFactor</key><value>0.5</value></li>
+								<li><key>Hauts_PsychicDamageFactor</key><value>0.5</value></li>
+							</factorStats>
+						</li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>RimDark 40k - Framework</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/DamageDef[defName="BEWH_WarpEnergy" or defName="BEWH_WarpFlame"]</xpath>
+			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>RimDark 40k - Mankinds Finest</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="BEWH_BoltInferno"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Segmentum - Children of the Omnissiah</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="Seg_COTO_MeleeElectricBurn" or defName="Seg_COTO_ArcDamage"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="Seg_COTO_PlasDamage"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="Seg_COTO_GammaDamage" or defName="SEG_COTO_RadDamage"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>[SH]Gene Expand</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="SHGE_MeteorFallDamage"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Gravship Expanded - Chapter 1</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/DamageDef[defName="VGE_AstrofireDamage"]</xpath>
+			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Quests Expanded - Cryptoforge</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/DamageDef[defName="VQE_CryptoCut"]</xpath><!--as part of the damage is cutting in nature, but part of it is extreme cold, incoming cold damage factor is only half as effective on it; e.g. 50% ICDF = 75% crypto-cut damage taken, 150% = 125%-->
+			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>0.5</value></li></factorStats></li></value>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Races Expanded - Archon</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/DamageDef[defName="VREA_Sear"]</xpath>
+			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_SkipDamageFactor</key><value>0.5</value></li></factorStats></li></value>
+		</match>
+	</Operation>
+</Patch>

@@ -1073,9 +1073,7 @@ namespace HautsFramework
                             slate.Set<ThingDef>("targetMineableThing", targetMineable.building.mineableThing, false);
                             Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
                             Find.LetterStack.ReceiveLetter(quest.name, quest.description, LetterDefOf.PositiveEvent, null, null, quest, null, null, 0, true);
-                        }
-                        else
-                        {
+                        } else {
                             Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(questDef, slate);
                             if (!quest.hidden && questDef.sendAvailableLetter)
                             {
@@ -1083,9 +1081,7 @@ namespace HautsFramework
                             }
                         }
                         done = true;
-                    }
-                    else
-                    {
+                    } else {
                         IncidentDef incidentDef = pme.incidentDefs.RandomElement();
                         Faction funcFaction = pme.incidentUsesPermitFaction ? faction : this.CandidateFactions(caller.Map ?? null, false).RandomElement();
                         Faction raidFaction = Find.FactionManager.AllFactionsListForReading.Where((Faction f) => !f.IsPlayer && f.HostileTo(Faction.OfPlayerSilentFail) && !f.defeated && !f.temporary && (caller.Map != null || (f.def.allowedArrivalTemperatureRange.Includes(caller.Map.mapTemperature.OutdoorTemp) && f.def.allowedArrivalTemperatureRange.Includes(caller.Map.mapTemperature.SeasonalTemp)))).RandomElement();
@@ -1101,25 +1097,17 @@ namespace HautsFramework
                         if (caller.Map != null)
                         {
                             incidentParms.target = caller.Map;
-                        }
-                        else if (Find.AnyPlayerHomeMap != null)
-                        {
+                        } else if (Find.AnyPlayerHomeMap != null) {
                             incidentParms.target = Find.AnyPlayerHomeMap;
-                        }
-                        else if (Find.WorldObjects.Caravans.Count > 0)
-                        {
+                        } else if (Find.WorldObjects.Caravans.Count > 0) {
                             incidentParms.target = Find.WorldObjects.Caravans.RandomElement();
-                        }
-                        else
-                        {
+                        } else {
                             incidentParms.target = Find.World;
                         }
                         if (pme.incidentDelay != null)
                         {
                             Find.Storyteller.incidentQueue.Add(incidentDef, Find.TickManager.TicksGame + pme.incidentDelay.RandomInRange, incidentParms, 240000);
-                        }
-                        else if (incidentDef.Worker.CanFireNow(incidentParms))
-                        {
+                        } else if (incidentDef.Worker.CanFireNow(incidentParms)) {
                             incidentDef.Worker.TryExecute(incidentParms);
                         }
                         done = true;
@@ -1554,7 +1542,7 @@ namespace HautsFramework
         private Faction calledFaction;
         private static readonly Texture2D CommandTex = ContentFinder<Texture2D>.Get("UI/Commands/CallAid", true);
     }
-    //IsGoodPawn returns true only if AllowCheckPMEs passes (see MiscUtility.cs). Grants all hediffs in the PME's hediffs field.
+    //IsGoodPawn returns true only if AllowCheckPMEs passes (see MiscUtilityAndDMEs.cs). Grants all hediffs in the PME's hediffs field.
     public class RoyalTitlePermitWorker_GiveHediffs : RoyalTitlePermitWorker_TargetPawn
     {
         public override bool IsGoodPawn(Pawn pawn)
