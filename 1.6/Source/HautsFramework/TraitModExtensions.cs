@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using VEF.Genes;
@@ -14,12 +15,24 @@ namespace HautsFramework
      * prisonerResolveFactor: when this trait is gained or unsuppressed, OR when the pawn who has this trait is imprisoned, multiplies the pawn’s resistance and will by this amount.
      * grantedAbilities: when this trait is gained or unsuppressed, adds all abilities from the degree-matched List
      * grantedVEFAbilities: ditto for VEF abilities.
-     * forcedBodyTypes: if the pawn is a human, doesn't have a Biotech gene-enforced body type, and its body type is one of the keys in this dictionary, its body type turns into the corresponding value.*/
+     * forcedBodyTypes: if the pawn is a human, doesn't have a Biotech gene-enforced body type, and its body type is one of the keys in this dictionary, its body type turns into the corresponding value...
+     * forcedBodyTypeWorker: ...unless this (a ForcedBodyTypeWorker) is specified, and its CanChangeBodyType method returns false*/
     public class TraitGrantedStuff : DefModExtension
     {
         public TraitGrantedStuff()
         {
 
+        }
+        public ForcedBodyTypeWorker PawnGenWorker
+        {
+            get
+            {
+                if (this.workerInt_forcedBodyType == null && this.forcedBodyTypeWorker != null)
+                {
+                    this.workerInt_forcedBodyType = (ForcedBodyTypeWorker)Activator.CreateInstance(this.forcedBodyTypeWorker);
+                }
+                return this.workerInt_forcedBodyType;
+            }
         }
         public Dictionary<int, List<HediffDef>> grantedHediffs;
         public Dictionary<int, List<HediffDef>> otherHediffsToRemoveOnRemoval;
@@ -28,6 +41,16 @@ namespace HautsFramework
         public Dictionary<int, List<RimWorld.AbilityDef>> grantedAbilities;
         public Dictionary<int, List<VEF.Abilities.AbilityDef>> grantedVEFAbilities;
         public Dictionary<BodyTypeDef, BodyTypeDef> forcedBodyTypes;
+        public Type forcedBodyTypeWorker;
+        [Unsaved(false)]
+        private ForcedBodyTypeWorker workerInt_forcedBodyType;
+    }
+    public class ForcedBodyTypeWorker
+    {
+        public virtual bool CanChangeBodyType(Pawn pawn, TraitGrantedStuff tgs)
+        {
+            return true;
+        }
     }
     /*prevents body parts from being spawned from anyone with this trait (e.g. via surgical extraction of an organ)
      * Recipes will partially or fully bypass this effect if they are custom classes from other mods, so don't expect this to work on everything. As I said in the relevant Harmony patches' comments, total functionality for this DME is not my interest,
@@ -239,8 +262,11 @@ namespace HautsFramework
                 {
                     if (tgs.forcedBodyTypes.Keys.Contains(pawn.story.bodyType))
                     {
-                        pawn.story.bodyType = tgs.forcedBodyTypes.TryGetValue(pawn.story.bodyType);
-                        pawn.Drawer.renderer.SetAllGraphicsDirty();
+                        if (tgs.PawnGenWorker == null || tgs.PawnGenWorker.CanChangeBodyType(pawn,tgs))
+                        {
+                            pawn.story.bodyType = tgs.forcedBodyTypes.TryGetValue(pawn.story.bodyType);
+                            pawn.Drawer.renderer.SetAllGraphicsDirty();
+                        }
                     }
                 }
             }
@@ -373,28 +399,31 @@ namespace HautsFramework
         //prevents the application of forcedBodyTypes to any pawn that has a genetic body type
         public static bool CanApplyForcedBodyTypes(Pawn pawn)
         {
-            if (pawn.def == ThingDefOf.Human || (ModsConfig.AnomalyActive && pawn.def == ThingDefOf.CreepJoiner))
+            if (Hauts_Mod.settings.doForcedBodyTypes)
             {
-                if (ModsConfig.BiotechActive && pawn.genes != null && pawn.genes.GenesListForReading.Count > 0)
+                if (pawn.def == ThingDefOf.Human || (ModsConfig.AnomalyActive && pawn.def == ThingDefOf.CreepJoiner))
                 {
-                    foreach (Gene g in pawn.genes.GenesListForReading)
+                    if (ModsConfig.BiotechActive && pawn.genes != null && pawn.genes.GenesListForReading.Count > 0)
                     {
-                        if (g.Active)
+                        foreach (Gene g in pawn.genes.GenesListForReading)
                         {
-                            if (g.def.bodyType != null)
+                            if (g.Active)
                             {
-                                return false;
-                            } else {
-                                GeneExtension ge = g.def.GetModExtension<GeneExtension>();
-                                if (ge != null && ge.forcedBodyType != null)
+                                if (g.def.bodyType != null)
                                 {
                                     return false;
+                                } else {
+                                    GeneExtension ge = g.def.GetModExtension<GeneExtension>();
+                                    if (ge != null && ge.forcedBodyType != null)
+                                    {
+                                        return false;
+                                    }
                                 }
                             }
                         }
                     }
+                    return true;
                 }
-                return true;
             }
             return false;
         }

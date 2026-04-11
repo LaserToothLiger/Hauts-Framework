@@ -270,12 +270,6 @@
 					</mods>
 					<match Class="PatchOperationSequence">
 						<operations>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_FlameSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
 							<li Class="PatchOperationReplace">
 								<xpath>/Defs/AbilityDef[defName="VFEI2_FlameSpew"]/comps/li[@Class="VFEInsectoids.CompProperties_AbilityFireSpew"]</xpath>
 								<value>
@@ -316,61 +310,7 @@
 								</value>
 							</li>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_InsectAcidSpit"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_InsectAcidSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_LargeAcidSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_ChemfuelSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_ChemfuelSpit"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_FlameSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_FlameSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_FlameSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_FlameSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_FlameSpew"]</xpath>
+								<xpath>/Defs/AbilityDef[defName="VFEI2_InsectAcidSpit" or defName="VFEI2_InsectAcidSpew" or defName="VFEI2_LargeAcidSpew" or defName="VFEI2_ChemfuelSpew" or defName="VFEI2_ChemfuelSpit" or defName="VFEI2_FlameSpew"]</xpath>
 								<value>
 									<li Class="HautsFramework.Hauts_SpewAbility" />
 								</value>

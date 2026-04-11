@@ -120,9 +120,7 @@ namespace HautsFramework
                     if (this.Props.chance <= 1f)
                     {
                         result += "Hauts_ExtraHitFXPrefixChance".Translate(this.Props.chance.ToStringPercent(), this.Props.minDmgToTrigger);
-                    }
-                    else
-                    {
+                    } else {
                         result += "Hauts_ExtraHitFXPrefixAlways".Translate(this.Props.minDmgToTrigger.ToStringByStyle(ToStringStyle.FloatMaxTwo));
                     }
                     if (this.Props.cellRange <= 255f)
@@ -134,14 +132,10 @@ namespace HautsFramework
                         if (this.Props.tickCooldown.min != this.Props.tickCooldown.max)
                         {
                             result += "Hauts_ExtraHitFXPrefixCDVariable".Translate(this.Props.tickCooldown.min, this.Props.tickCooldown.max);
-                        }
-                        else
-                        {
+                        } else {
                             result += "Hauts_ExtraHitFXPrefixCD".Translate(this.Props.tickCooldown.min);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         result += "Hauts_ExtraHitFXPrefixNoCD".Translate();
                     }
                     result += this.FXTooltip();
@@ -310,9 +304,7 @@ namespace HautsFramework
                             if (lti.Pawn != null && this.CanAffectTarget(lti.Pawn))
                             {
                                 this.DoExtraEffects(lti.Pawn, (this.Props.psyfocusCostScaling ? 100f * ModCompatibilityUtility.GetVPEPsyfocusCost(vcavfe.ability) : 1f) * (this.Props.entropyCostScaling ? ModCompatibilityUtility.GetVPEEntropyCost(vcavfe.ability) : 1f), null);
-                            }
-                            else if (this.CanAffectTargetThing(lti.Thing))
-                            {
+                            } else if (this.CanAffectTargetThing(lti.Thing)) {
                                 this.DoExtraEffectsThing(lti.Thing, (this.Props.psyfocusCostScaling ? 100f * ModCompatibilityUtility.GetVPEPsyfocusCost(vcavfe.ability) : 1f) * (this.Props.entropyCostScaling ? ModCompatibilityUtility.GetVPEEntropyCost(vcavfe.ability) : 1f));
                             }
                         }

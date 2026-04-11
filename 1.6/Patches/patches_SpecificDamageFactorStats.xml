@@ -40,7 +40,7 @@
 	</Operation>
 	<Operation Class="PatchOperationAddModExtension">
 		<xpath>/Defs/DamageDef[defName="Vaporize"]</xpath>
-		<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>0.25</value></li></factorStats></li></value>
+		<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>0.99</value></li></factorStats></li></value><!--you can be MOSTLY immune to vaporize. but not fully. This isn't diegetically coherent, but since Vaporize is predominantly used by "fu, take ALL the damage" attacks, I felt it important that it still do at least a teensy fraction of its normal amount to folks w 0% incoming heat dmg factor-->
 	</Operation>
 	<Operation Class="PatchOperationAddModExtension">
 		<xpath>/Defs/DamageDef[defName="Beam"]</xpath>
@@ -279,6 +279,22 @@
 	
 	<Operation Class="PatchOperationFindMod">
 		<mods>
+		  <li>Call of Cthulhu - Cosmic Horrors</li>
+		  <li>Call of Cthulhu - Cosmic Horrors (Continued)</li>
+		  <li>Call of Cthulhu - Cosmic Horrors - Unofficial 1.5-1.6</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="ROM_Psychic"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
 		  <li>Combat Extended</li>
 		</mods>
 		<match Class="PatchOperationSequence">
@@ -440,6 +456,46 @@
 				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/DamageDef[defName="SHGE_MeteorFallDamage"]</xpath>
 					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Genetics Expanded</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="GR_Acid"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="GR_PermanentBurn"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="GR_DistortionDamage"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_SkipDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="GR_VeryToxicBite" or defName="GR_LightToxicBite"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>0.4</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="GR_ToxicExplosion" or defName="GR_ToxicGas"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
+					  <li>Call of Cthulhu - Cosmic Horrors</li>
+					  <li>Call of Cthulhu - Cosmic Horrors (Continued)</li>
+					  <li>Call of Cthulhu - Cosmic Horrors - Unofficial 1.5-1.6</li>
+					</mods>
+					<match Class="PatchOperationAddModExtension">
+						<xpath>/Defs/DamageDef[defName="GR_PsionicExplosion"]</xpath>
+						<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
+					</match>
 				</li>
 			</operations>
 		</match>

@@ -114,9 +114,7 @@ namespace HautsFramework
                     {
                         this.DoModificationInner(ref dinfo, ref absorbed, amount);
                     }
-                }
-                else if (this.Props.severityChangesEvenOnFail && this.ShouldPayCostOfHit(dinfo, absorbed))
-                {
+                } else if (this.Props.severityChangesEvenOnFail && this.ShouldPayCostOfHit(dinfo, absorbed)) {
                     this.PayCostOfHit(dinfo.Amount);
                 }
             }

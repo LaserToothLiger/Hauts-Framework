@@ -3,6 +3,7 @@
 	<!--see patches_SpecificDamageFactorStats.xml for what specific damage types are affected. In the future, I'd like to be able to display what specific damage types are affected when you mouse over the stat in the info tab-->
 	<StatDef Name="Hauts_IncomingXDamageFactorStat" Abstract="True">
 		<category>PawnResistances</category>
+		<minValue>0</minValue>
 		<hideAtValue>1</hideAtValue>
 		<defaultBaseValue>1</defaultBaseValue>
         <toStringStyle>PercentZero</toStringStyle>
@@ -40,7 +41,7 @@
 	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">
 		<defName>Hauts_PsychicDamageFactor</defName>
 		<label>incoming psychic damage factor</label>
-		<description>A multiplier on incoming damage taken of various psychic types.</description>
+		<description>A multiplier on incoming damage taken of various psychic types.\n\nNote: this is a very niche set of damage types. The only "psychic" damage type in official RimWorld content is in the Anomaly DLC, and it is only used by certain instant-kill effects which no amount of damage reduction will effect. Therefore, this stat is only important if you are using certain other mods which either use Anomaly's psychic damage in a conventional manner, or add their own psychic damage types (e.g. Alpha Mechs, Protocol: Anomaly Syndicate, or the RimDark series).</description>
 		<displayPriorityInCategory>3006</displayPriorityInCategory>
 	</StatDef>
 	<StatDef ParentName="Hauts_IncomingXDamageFactorStat">

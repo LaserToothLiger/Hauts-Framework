@@ -9,6 +9,7 @@ namespace HautsFramework
 {
     /*Heads-up: I didn't know how to do float? when writing most of these hediffs. While that would certainly look nicer, and it would free up the ability to specifically use -999 as a value for several parameters,
      * this is such a non-issue from a practical perspective that it's all the way at the bottom of my TODO list. It's straight-up not even on the one I have written out.
+     * ANYWAYS
      * if any of the abilities granted by this hediff are on cooldown, the hediff's severity = initialSeverity + sevBonusPerGrantedAbilityOnCD; otherwise, it's initialSeverity*/
     public class HediffCompProperties_AbilityCooldownSeverity : HediffCompProperties
     {

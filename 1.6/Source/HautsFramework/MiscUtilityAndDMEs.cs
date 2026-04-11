@@ -128,8 +128,18 @@ namespace HautsFramework
             return terrainDefList;
         }
         //handles stuff for GiveHediffFromMenu ability comp
-        public static void AddHediffFromMenu(HediffDef chosenHediff, Pawn pawn, CompAbilityEffect_GiveHediffFromMenu ability, Pawn other, Pawn caster)
+        public static void AddHediffFromMenu(HediffDef chosenHediff, Pawn pawn, CompAbilityEffect_GiveHediffFromMenu ability, Pawn other, Pawn caster, List<HediffDef> removeAnyOfTheseHediffsFirst)
         {
+            if (!removeAnyOfTheseHediffsFirst.NullOrEmpty())
+            {
+                for (int i = pawn.health.hediffSet.hediffs.Count - 1; i >= 0; i--)
+                {
+                    if (removeAnyOfTheseHediffsFirst.Contains(pawn.health.hediffSet.hediffs[i].def))
+                    {
+                        pawn.health.RemoveHediff(pawn.health.hediffSet.hediffs[i]);
+                    }
+                }
+            }
             Hediff hediff = HediffMaker.MakeHediff(chosenHediff, pawn, ability.Props.onlyBrain ? pawn.health.hediffSet.GetBrain() : null);
             HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
             if (hediffComp_Disappears != null)
@@ -369,9 +379,7 @@ namespace HautsFramework
                                     }
                                 }
                             }
-                        }
-                        else if (hoH.CanAffectTargetThing(thing))
-                        {
+                        } else if (hoH.CanAffectTargetThing(thing)) {
                             hoH.DoExtraEffectsThing(thing, hoH.Props.damageScaling ? result.totalDamageDealt : 1f);
                         }
                         hoH.cooldown = Find.TickManager.TicksGame + hoH.Props.tickCooldown.RandomInRange;

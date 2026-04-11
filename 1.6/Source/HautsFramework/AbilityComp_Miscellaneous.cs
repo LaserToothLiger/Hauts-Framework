@@ -219,6 +219,7 @@ namespace HautsFramework
         public bool autoSelectIfAI = true;
         public string menuString;
         public bool requiresStory = true;
+        public bool removeExistingOptionsFromPawn;
     }
     public class CompAbilityEffect_GiveHediffFromMenu : CompAbilityEffect_WithDuration
     {
@@ -256,13 +257,11 @@ namespace HautsFramework
             {
                 if (this.parent.pawn != null && this.parent.pawn.Faction == Faction.OfPlayer)
                 {
-                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, target, other, this.parent.pawn, this.Props.hediffs, this.Props.menuString, this.Props.requiresStory));
-                }
-                else
-                {
+                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, target, other, this.parent.pawn, this.Props.hediffs, this.Props.menuString, this.Props.requiresStory,this.Props.removeExistingOptionsFromPawn));
+                } else {
                     Hediff hediff = HediffMaker.MakeHediff(this.Props.hediffs.RandomElement<HediffDef>(), target, null);
                     target.health.AddHediff(hediff, this.Props.onlyBrain ? target.health.hediffSet.GetBrain() : null, null, null);
-                    HautsMiscUtility.AddHediffFromMenu(this.Props.hediffs.RandomElement<HediffDef>(), this.parent.pawn, this, this.parent.pawn, this.parent.pawn);
+                    HautsMiscUtility.AddHediffFromMenu(this.Props.hediffs.RandomElement<HediffDef>(), this.parent.pawn, this, this.parent.pawn, this.parent.pawn,this.Props.removeExistingOptionsFromPawn?this.Props.hediffs:null);
                     CompAbilityEffect_RemoveHediff caerh = this.parent.CompOfType<CompAbilityEffect_RemoveHediff>();
                     if (caerh != null)
                     {
@@ -278,7 +277,7 @@ namespace HautsFramework
     }
     public class Dialog_GiveHediffFromMenu : Window
     {
-        public Dialog_GiveHediffFromMenu(CompAbilityEffect_GiveHediffFromMenu ability, Pawn pawn, Pawn other, Pawn caster, List<HediffDef> hediffs, string menuLabel, bool requiresStory = true)
+        public Dialog_GiveHediffFromMenu(CompAbilityEffect_GiveHediffFromMenu ability, Pawn pawn, Pawn other, Pawn caster, List<HediffDef> hediffs, string menuLabel, bool requiresStory = true, bool removesOtherOptionsFromPawn = false)
         {
             this.pawn = pawn;
             this.other = other;
@@ -293,6 +292,7 @@ namespace HautsFramework
             this.optionalTitle = menuLabel.Translate(this.pawn.Name.ToStringShort);
             this.possibleHediffs = hediffs;
             this.requiresStory = requiresStory;
+            this.removesOtherOptionsFromPawn = removesOtherOptionsFromPawn;
         }
         private float Height
         {
@@ -360,11 +360,9 @@ namespace HautsFramework
             {
                 if (acceptanceReport.Accepted)
                 {
-                    HautsMiscUtility.AddHediffFromMenu(this.chosenHediff, this.pawn, this.ability, this.other, this.caster);
+                    HautsMiscUtility.AddHediffFromMenu(this.chosenHediff, this.pawn, this.ability, this.other, this.caster,this.removesOtherOptionsFromPawn?this.possibleHediffs:null);
                     this.Close(true);
-                }
-                else
-                {
+                } else {
                     Messages.Message(acceptanceReport.Reason, null, MessageTypeDefOf.RejectInput, false);
                 }
             }
@@ -377,7 +375,7 @@ namespace HautsFramework
             }
             return AcceptanceReport.WasAccepted;
         }
-        private readonly List<HediffDef> possibleHediffs;
+        private List<HediffDef> possibleHediffs;
         private CompAbilityEffect_GiveHediffFromMenu ability;
         private HediffDef chosenHediff;
         private float scrollHeight;
@@ -386,6 +384,7 @@ namespace HautsFramework
         private Pawn caster;
         private Vector2 scrollPosition;
         private bool requiresStory;
+        private bool removesOtherOptionsFromPawn;
     }
     /*Gives hediffs to the target and/or destination Pawns (can be different hediffs in each case) and “pairs” them together if they have the PairedHediff comp.
      * If a given hediff has the Link comp, it will also link to the other party.

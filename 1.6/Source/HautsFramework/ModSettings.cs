@@ -12,12 +12,14 @@ namespace HautsFramework
      * These are handled via unique SkillNeeds that only work if the corresponding mod setting is enabled.*/
     public class Hauts_Settings : ModSettings
     {
+        public bool doForcedBodyTypes = true;
         public bool apparelWearRateCrafting = false;
         public bool breachDamageConstruction = false;
         public bool overdoseSusceptibilityMedicine = false;
         public bool pilferingStealthSocial = false;
         public override void ExposeData()
         {
+            Scribe_Values.Look(ref doForcedBodyTypes, "doForcedBodyTypes", true);
             Scribe_Values.Look(ref apparelWearRateCrafting, "apparelWearRateCrafting", false);
             Scribe_Values.Look(ref breachDamageConstruction, "breachDamageConstruction", false);
             Scribe_Values.Look(ref overdoseSusceptibilityMedicine, "overdoseSusceptibilityMedicine", false);
@@ -35,6 +37,7 @@ namespace HautsFramework
         {
             Listing_Standard listingStandard = new Listing_Standard();
             listingStandard.Begin(inRect);
+            listingStandard.CheckboxLabeled("Hauts_SettingForcedBodyTypes".Translate(), ref settings.doForcedBodyTypes, "Hauts_TooltipForcedBodyTypes".Translate());
             listingStandard.CheckboxLabeled("Hauts_SettingAWRFC".Translate(), ref settings.apparelWearRateCrafting, "Hauts_TooltipAWRFC".Translate());
             listingStandard.CheckboxLabeled("Hauts_SettingBDFC".Translate(), ref settings.breachDamageConstruction, "Hauts_TooltipBDFC".Translate());
             listingStandard.CheckboxLabeled("Hauts_SettingOSC".Translate(), ref settings.overdoseSusceptibilityMedicine, "Hauts_TooltipOSC".Translate());

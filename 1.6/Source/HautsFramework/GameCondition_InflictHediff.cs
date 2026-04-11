@@ -102,9 +102,7 @@ namespace HautsFramework
                     {
                         return false;
                     }
-                }
-                else
-                {
+                } else {
                     GameCondition gc = Find.World.gameConditionManager.GetActiveCondition(this.Props.gameCondition);
                     if (this.MeetsGameConditionQualifiers(gc))
                     {
