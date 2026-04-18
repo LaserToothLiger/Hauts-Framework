@@ -79,4 +79,15 @@
 			</operations>
 		</match>
 	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Gravship Expanded - Chapter 1</li>
+		</mods>
+		<match Class="PatchOperationReplace">
+			<xpath>Defs/ThingDef[defName="VGE_GravshipScannerCluster"]/comps/li[@Class="VanillaGravshipExpanded.CompProperties_ScannerCluster"]/scanSpeedStat</xpath>
+			<value>
+				<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
+			</value>
+		</match>
+	</Operation>
 </Patch>

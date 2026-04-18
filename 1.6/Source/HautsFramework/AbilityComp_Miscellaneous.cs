@@ -246,9 +246,9 @@ namespace HautsFramework
         public override void CompTick()
         {
             base.CompTick();
-            if (this.Props.autoSelectIfAI && this.parent.pawn.Faction != Faction.OfPlayer)
+            if (this.Props.autoSelectIfAI && this.parent.CanCast && this.parent.pawn.Faction != Faction.OfPlayer)
             {
-                this.Apply(this.parent.pawn, this.parent.pawn);
+                this.parent.Activate(this.parent.pawn, this.parent.pawn);
             }
         }
         protected void ApplyInner(Pawn target, Pawn other)

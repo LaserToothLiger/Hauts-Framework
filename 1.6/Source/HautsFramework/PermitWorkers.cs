@@ -25,9 +25,7 @@ namespace HautsFramework
                 if (caller.Map != null && caller.Map.IsPlayerHome)
                 {
                     return factor * StorytellerUtility.DefaultThreatPointsNow(caller.Map);
-                }
-                else if (Find.AnyPlayerHomeMap != null)
-                {
+                } else if (Find.AnyPlayerHomeMap != null) {
                     return factor * StorytellerUtility.DefaultThreatPointsNow(Find.RandomPlayerHomeMap);
                 }
             }
@@ -38,9 +36,7 @@ namespace HautsFramework
             if (caller.Map != null && caller.Map.IsPlayerHome)
             {
                 return StorytellerUtility.DefaultThreatPointsNow(caller.Map);
-            }
-            else if (Find.AnyPlayerHomeMap != null)
-            {
+            } else if (Find.AnyPlayerHomeMap != null) {
                 return StorytellerUtility.DefaultThreatPointsNow(Find.RandomPlayerHomeMap);
             }
             return 100f;

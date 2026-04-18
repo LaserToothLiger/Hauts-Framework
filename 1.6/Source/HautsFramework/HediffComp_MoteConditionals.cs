@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System;
 using UnityEngine;
 using Verse;
 
@@ -17,8 +18,10 @@ namespace HautsFramework
         }
         public ThingDef mote;
         public float scale;
+        //public float rotationRate;
         public FloatRange validRange = new FloatRange(-1f);
         public bool scaleWithBodySize = true;
+        public bool useHeadOffsetAboveOneBodySize;
     }
     public class HediffComp_MoteConditional : HediffComp
     {
@@ -37,7 +40,18 @@ namespace HautsFramework
         {
             get
             {
-                return this.Props.scale * (this.Props.scaleWithBodySize ? this.Pawn.BodySize : 1f);
+                return this.Props.scale * (this.Props.scaleWithBodySize ? Math.Max(0.5f,Math.Min(this.Pawn.BodySize,Mathf.Sqrt(this.Pawn.BodySize))) : 1f);
+            }
+        }
+        public Vector3 HeadOffset
+        {
+            get
+            {
+                if (this.Props.useHeadOffsetAboveOneBodySize && this.Pawn.BodySize > 1 && this.Pawn.story != null && this.Pawn.story.bodyType != null)
+                {
+                    return this.Pawn.Drawer.renderer.BaseHeadOffsetAt(this.Pawn.Rotation);
+                }
+                return Vector3.zero;
             }
         }
         public override void CompPostTick(ref float severityAdjustment)
@@ -49,7 +63,8 @@ namespace HautsFramework
                 {
                     if (this.mote == null || this.mote.Destroyed)
                     {
-                        this.mote = MoteMaker.MakeAttachedOverlay(base.Pawn, this.Props.mote, Vector3.zero, this.Scale, -1f);
+                        this.mote = MoteMaker.MakeAttachedOverlay(base.Pawn, this.Props.mote, this.HeadOffset, this.Scale, -1f);
+                        //this.mote.rotationRate = this.Props.rotationRate;
                         if (this.mote is MoteConditionalText mct)
                         {
                             mct.UpdateText();
@@ -58,23 +73,19 @@ namespace HautsFramework
                         {
                             this.mote.link1.UpdateDrawPos();
                         }
-                    }
-                    else
-                    {
+                    } else {
                         this.mote.Maintain();
                     }
                     if (this.Pawn.IsHashIntervalTick(250))
                     {
                         this.mote.Scale = this.Scale;
+                        //this.mote.rotationRate = this.Props.rotationRate;
+                        this.mote.exactPosition = this.Pawn.DrawPos + this.HeadOffset;
                     }
-                }
-                else if (this.mote != null && !this.mote.Destroyed)
-                {
+                } else if (this.mote != null && !this.mote.Destroyed) {
                     this.mote.Destroy();
                 }
-            }
-            else if (this.mote != null && !this.mote.Destroyed)
-            {
+            } else if (this.mote != null && !this.mote.Destroyed) {
                 this.mote.Destroy(DestroyMode.Vanish);
             }
         }

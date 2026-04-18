@@ -81,8 +81,7 @@ namespace HautsFramework
 
         }
         /*vgravshipe - adds gravdata to the currently selected gravship research project. Power is the base amount, multiplied by the researcher's usual factor for gravship research speed or whatever it's called.
-         * Returns false if you don't have a selected project
-         */
+         * Returns false if you don't have a selected project*/
         public static bool AddGravdata(Pawn researcher, float power)
         {
             return false;
