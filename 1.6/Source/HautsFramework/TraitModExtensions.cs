@@ -452,9 +452,7 @@ namespace HautsFramework
                 if (sound != null)
                 {
                     sound.PlayOneShot(new TargetInfo(pawn.Position, map, false));
-                }
-                else if (skipgateOut && ModsConfig.RoyaltyActive)
-                {
+                } else if (skipgateOut && ModsConfig.RoyaltyActive) {
                     SoundDefOf.Psycast_Skip_Exit.PlayOneShot(new TargetInfo(pawn.Position, map, false));
                 }
                 if (thingLeftBehind != null)

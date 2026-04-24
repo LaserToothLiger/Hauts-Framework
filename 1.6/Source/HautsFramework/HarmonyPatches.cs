@@ -110,8 +110,11 @@ namespace HautsFramework
             //stats - psyfocus regen. Since it incorporates the normal decay rate at current psyfocus band for representational purposes, we have to subtract that out from the stat when actually doing calculations
             harmony.Patch(AccessTools.Method(typeof(MeditationUtility), nameof(MeditationUtility.CheckMeditationScheduleTeachOpportunity)),
                            postfix: new HarmonyMethod(patchType, nameof(HautsCheckMeditationScheduleTeachOpportunityPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(RecordsUtility), nameof(RecordsUtility.Notify_PawnKilled)),
-                          postfix: new HarmonyMethod(patchType, nameof(HautsNotify_PawnKilledPostfix)));
+            if (ModsConfig.RoyaltyActive)
+            {
+                harmony.Patch(AccessTools.Method(typeof(RecordsUtility), nameof(RecordsUtility.Notify_PawnKilled)),
+                              postfix: new HarmonyMethod(patchType, nameof(HautsNotify_PawnKilledPostfix)));
+            }
             //apparel wear rate factor works by modifying the decay rate of the apparel right as it is experiencing daily wear, then setting it back to its OG value.
             MethodInfo methodInfo3 = typeof(Pawn_ApparelTracker).GetMethod("TakeWearoutDamageForDay", BindingFlags.NonPublic | BindingFlags.Instance);
             harmony.Patch(methodInfo3,
@@ -517,7 +520,7 @@ namespace HautsFramework
         }
         public static void HautsNotify_PawnKilledPostfix(Pawn killed, Pawn killer)
         {
-            if (ModsConfig.RoyaltyActive && killer.psychicEntropy != null)
+            if (killer.psychicEntropy != null)
             {
                 Pawn_PsychicEntropyTracker psychicEntropy = killer.psychicEntropy;
                 float psyfocus = killer.GetStatValue(HautsDefOf.Hauts_PsyfocusGainOnKill) * killed.GetStatValue(StatDefOf.PsychicSensitivity);
@@ -526,9 +529,7 @@ namespace HautsFramework
                     if (killed.RaceProps.intelligence == Intelligence.Animal)
                     {
                         psyfocus *= 0.5f;
-                    }
-                    else if (killed.RaceProps.intelligence == Intelligence.ToolUser)
-                    {
+                    } else if (killed.RaceProps.intelligence == Intelligence.ToolUser) {
                         psyfocus *= 0.75f;
                     }
                 }

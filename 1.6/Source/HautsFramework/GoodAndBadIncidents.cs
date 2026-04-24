@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace HautsFramework
@@ -19,10 +20,30 @@ namespace HautsFramework
     }
     public class GoodAndBadIncidentsUtility
     {
-        //these instantiate a good or bad event. The pawn arguments don't do anything (yet), although in the future I might make them preferentially target a given Map if the pawn is there.
-        public static void MakeGoodEvent(Pawn p = null)
+        /*these instantiate a good or bad event.
+         * preferentially targets the pawn's current map, if any
+         * tickDelay: if >0, the incident is added to the storyteller queue on this delay
+         * excludedIncidents: cannot roll any incident in this list*/
+        public static void MakeGoodEvent(Pawn p = null, int tickDelay = 0, List<IncidentDef> excludedIncidents = null)
         {
-            List<IncidentDef> incidents = GoodAndBadIncidentsUtility.goodEventPool;
+            IIncidentTarget m = (p != null && p.MapHeld != null) ? p.MapHeld : Find.AnyPlayerHomeMap;
+            if (m == null)
+            {
+                m = Find.World;
+            }
+            IncidentParms incidentParms = new IncidentParms
+            {
+                target = m,
+                forced = true,
+                points = StorytellerUtility.DefaultThreatPointsNow(m),
+            };
+            List<IncidentDef> incidents;
+            if (excludedIncidents.NullOrEmpty())
+            {
+                incidents = GoodAndBadIncidentsUtility.goodEventPool.Where((IncidentDef id) => id.Worker.CanFireNow(incidentParms)).ToList();
+            } else {
+                incidents = GoodAndBadIncidentsUtility.goodEventPool.Where((IncidentDef id) => !excludedIncidents.Contains(id) && id.Worker.CanFireNow(incidentParms)).ToList();
+            }
             if (incidents.Count > 0)
             {
                 bool incidentFired = false;
@@ -30,44 +51,41 @@ namespace HautsFramework
                 while (!incidentFired && tries <= 50)
                 {
                     IncidentDef toTryFiring = incidents.RandomElement<IncidentDef>();
-                    IncidentParms parms = null;
-                    if (toTryFiring.TargetAllowed(Find.World))
+                    if (toTryFiring.Worker.CanFireNow(incidentParms))
                     {
-                        parms = new IncidentParms
+                        incidentFired = true;
+                        if (tickDelay > 0)
                         {
-                            target = Find.World
-                        };
-                    }
-                    else if (Find.Maps.Count > 0)
-                    {
-                        Map mapToHit = Find.Maps.RandomElement<Map>();
-                        if (Find.AnyPlayerHomeMap != null && Rand.Value <= 0.5f)
-                        {
-                            mapToHit = Find.AnyPlayerHomeMap;
+                            Find.Storyteller.incidentQueue.Add(toTryFiring, Find.TickManager.TicksGame + tickDelay, incidentParms, 60000);
+                        } else {
+                            toTryFiring.Worker.TryExecute(incidentParms);
                         }
-                        parms = new IncidentParms
-                        {
-                            target = mapToHit
-                        };
-                    }
-                    if (parms != null)
-                    {
-                        IncidentParms incidentParms = StorytellerUtility.DefaultParmsNow(toTryFiring.category, parms.target);
-                        incidentParms.forced = true;
-                        if (toTryFiring.Worker.CanFireNow(parms))
-                        {
-                            incidentFired = true;
-                            toTryFiring.Worker.TryExecute(parms);
-                            break;
-                        }
+                        break;
                     }
                     tries++;
                 }
             }
         }
-        public static void MakeBadEvent(Pawn p = null)
+        public static void MakeBadEvent(Pawn p = null, int tickDelay = 0, List<IncidentDef> excludedIncidents = null)
         {
-            List<IncidentDef> incidents = GoodAndBadIncidentsUtility.badEventPool;
+            IIncidentTarget m = (p != null && p.MapHeld != null) ? p.MapHeld : Find.AnyPlayerHomeMap;
+            if (m == null)
+            {
+                m = Find.World;
+            }
+            IncidentParms incidentParms = new IncidentParms
+            {
+                target = m,
+                forced = true,
+                points = StorytellerUtility.DefaultThreatPointsNow(m),
+            };
+            List<IncidentDef> incidents;
+            if (excludedIncidents.NullOrEmpty())
+            {
+                incidents = GoodAndBadIncidentsUtility.badEventPool.Where((IncidentDef id) => id.Worker.CanFireNow(incidentParms)).ToList();
+            } else {
+                incidents = GoodAndBadIncidentsUtility.badEventPool.Where((IncidentDef id) => !excludedIncidents.Contains(id) && id.Worker.CanFireNow(incidentParms)).ToList();
+            }
             if (incidents.Count > 0)
             {
                 bool incidentFired = false;
@@ -75,36 +93,18 @@ namespace HautsFramework
                 while (!incidentFired && tries <= 50)
                 {
                     IncidentDef toTryFiring = incidents.RandomElement<IncidentDef>();
-                    IncidentParms parms = null;
-                    if (toTryFiring.TargetAllowed(Find.World))
+                    if (toTryFiring.Worker.CanFireNow(incidentParms))
                     {
-                        parms = new IncidentParms
+                        incidentFired = true;
+                        if (tickDelay > 0)
                         {
-                            target = Find.World
-                        };
-                    }
-                    else if (Find.Maps.Count > 0)
-                    {
-                        Map mapToHit = Find.Maps.RandomElement<Map>();
-                        if (Find.AnyPlayerHomeMap != null && Rand.Value <= 0.5f)
-                        {
-                            mapToHit = Find.AnyPlayerHomeMap;
+                            Find.Storyteller.incidentQueue.Add(toTryFiring, Find.TickManager.TicksGame + tickDelay, incidentParms, 60000);
                         }
-                        parms = new IncidentParms
+                        else
                         {
-                            target = mapToHit
-                        };
-                    }
-                    if (parms != null)
-                    {
-                        IncidentParms incidentParms = StorytellerUtility.DefaultParmsNow(toTryFiring.category, parms.target);
-                        incidentParms.forced = true;
-                        if (toTryFiring.Worker.CanFireNow(parms))
-                        {
-                            incidentFired = true;
-                            toTryFiring.Worker.TryExecute(parms);
-                            break;
+                            toTryFiring.Worker.TryExecute(incidentParms);
                         }
+                        break;
                     }
                     tries++;
                 }

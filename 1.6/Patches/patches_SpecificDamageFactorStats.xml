@@ -333,11 +333,26 @@
 					<xpath>/Defs/DamageDef[defName="CoolPsycasts_GammaRadiation"]</xpath>
 					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>1</value></li></factorStats></li></value>
 				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/DamageDef[defName="CoolPsycasts_SkipCut"]</xpath>
-					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_SkipDamageFactor</key><value>1</value></li></factorStats></li></value>
+				<li Class="PatchOperationFindMod">
+					<mods>
+					  <li>Combat Extended</li>
+					</mods>
+					<nomatch Class="PatchOperationAddModExtension">
+						<xpath>/Defs/DamageDef[defName="CoolPsycasts_SkipCut"]</xpath>
+						<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_SkipDamageFactor</key><value>1</value></li></factorStats></li></value>
+					</nomatch>
 				</li>
 			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Fray of the Fog</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/DamageDef[defName="dvd_BeamPulse"]</xpath>
+			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>1</value></li></factorStats></li></value>
 		</match>
 	</Operation>
 	

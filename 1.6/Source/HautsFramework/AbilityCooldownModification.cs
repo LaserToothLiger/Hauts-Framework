@@ -288,9 +288,7 @@ namespace HautsFramework
                             if (acm.Props.affectedAbilities != null && acm.Props.affectedAbilities.Contains(ability.def))
                             {
                                 shouldLowerCooldown = true;
-                            }
-                            else if (acm.Props.affectedDMEs != null && acm.Props.affectedDMEs.Count > 0 && ability.def.modExtensions != null)
-                            {
+                            } else if (acm.Props.affectedDMEs != null && acm.Props.affectedDMEs.Count > 0 && ability.def.modExtensions != null) {
                                 foreach (DefModExtension dme in acm.Props.affectedDMEs)
                                 {
                                     foreach (DefModExtension dme2 in ability.def.modExtensions)
@@ -322,13 +320,9 @@ namespace HautsFramework
                                                     workTags.Add(wt);
                                                 }
                                             }
-                                        }
-                                        else if (ability.comps[i] is CompAbilityEffect_SocialInteraction || ability.comps[i] is CompAbilityEffect_StartRitual)
-                                        {
+                                        } else if (ability.comps[i] is CompAbilityEffect_SocialInteraction || ability.comps[i] is CompAbilityEffect_StartRitual) {
                                             workTags.Add(WorkTags.Social);
-                                        }
-                                        else if (ability.comps[i] is CompAbilityEffect_StopManhunter)
-                                        {
+                                        } else if (ability.comps[i] is CompAbilityEffect_StopManhunter) {
                                             workTags.Add(WorkTags.Animals);
                                         }
                                     }
@@ -355,9 +349,7 @@ namespace HautsFramework
                                         if (h2.def.abilities != null && h2.def.abilities.Contains(ability.def))
                                         {
                                             shouldLowerCooldown = true;
-                                        }
-                                        else if (h2 is HediffWithComps hwc2 && hwc2.def.comps != null)
-                                        {
+                                        } else if (h2 is HediffWithComps hwc2 && hwc2.def.comps != null) {
                                             foreach (HediffCompProperties hcp in hwc2.def.comps)
                                             {
                                                 if (hcp is HediffCompProperties_GiveAbility ga)
@@ -430,7 +422,7 @@ namespace HautsFramework
             }
             return netACM;
         }
-        public static void SetNewCooldown(RimWorld.Ability ability, int newCooldown, bool cantGoAboveMaxCD = true, bool affectsWholeAbilityGroup = true)
+        public static void SetNewCooldown(RimWorld.Ability ability, int newCooldown, bool cantGoAboveMaxCD = true)
         {
             if (ability.def.groupDef != null)
             {

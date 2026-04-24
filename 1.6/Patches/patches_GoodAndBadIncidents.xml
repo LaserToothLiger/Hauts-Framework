@@ -690,6 +690,83 @@
 		</match>
 	</Operation>
 	
+	<!--dark ages: beasts and monsters-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Dark Ages : Beasts and Monsters</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="DA_GoldiloxPasses"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="DA_TrollOutbreak_Incident"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<!--fray of the fog-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Fray of the Fog</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="dvd_IncidentSalvageFray"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="dvd_FrayhoundPasses"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="dvd_IncidentBlackMoonFragment"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<!--genetics! mushkin-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Genetics! Mushkin</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/IncidentDef[defName="BGM_WandererJoins_Sovereign"]</xpath>
+			<value>
+				<li Class="HautsFramework.BelongsToEventPool">
+					<good>true</good>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	
 	<!--insect lair incident-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>
@@ -713,6 +790,110 @@
 		</mods>
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/IncidentDef[defName="KenshiAnimals_LeviathanPasses"]</xpath>
+			<value>
+				<li Class="HautsFramework.BelongsToEventPool">
+					<good>true</good>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	
+	<!--mashed's ashlands-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Mashed's Ashlands</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="Mashed_Ashlands_SiltStriderPasses"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="Mashed_Ashlands_DaedrothPasses"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="Mashed_Ashlands_OgrimPasses"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="Mashed_Ashlands_CliffRacerSwarm"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="Mashed_Ashlands_BlightedAnimalEnters"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<!--M-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Mythic Ages: Megafauna Bestiary</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="MA_PlastemmothMigration"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="MA_DunbearAwakens"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="MA_SimbakubHunt"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<!--insect lair incident-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Ushankas Hacking Expansion</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/IncidentDef[defName="USH_BlackBoxDrop"]</xpath>
 			<value>
 				<li Class="HautsFramework.BelongsToEventPool">
 					<good>true</good>

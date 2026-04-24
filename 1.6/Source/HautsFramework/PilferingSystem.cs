@@ -791,15 +791,11 @@ namespace HautsFramework
                     TaggedString message = "Hauts_PilfererErrorPrefix".Translate() + ": " + "Hauts_PilfererNoCarryCap".Translate();
                     Messages.Message(message, settlement, MessageTypeDefOf.RejectInput, true);
                     return;
-                }
-                else if (burglaryMaxValue <= 0f)
-                {
+                } else if (burglaryMaxValue <= 0f) {
                     TaggedString message = "Hauts_PilfererErrorPrefix".Translate() + ": " + "Hauts_PilfererTooWeak".Translate();
                     Messages.Message(message, settlement, MessageTypeDefOf.RejectInput, true);
                     return;
-                }
-                else if (successChance <= 0f)
-                {
+                } else if (successChance <= 0f) {
                     TaggedString message = "Hauts_PilfererErrorPrefix".Translate() + ": " + "Hauts_PilfererTooConspicuous".Translate();
                     Messages.Message(message, settlement, MessageTypeDefOf.RejectInput, true);
                     return;
@@ -865,9 +861,7 @@ namespace HautsFramework
             if (existingHediff != null)
             {
                 existingHediff.Severity += value;
-            }
-            else
-            {
+            } else {
                 Hediff newHediff = HediffMaker.MakeHediff(HautsDefOf.Hauts_RaisedAlertLevel, victim, null);
                 victim.health.AddHediff(newHediff);
                 newHediff.Severity = value;

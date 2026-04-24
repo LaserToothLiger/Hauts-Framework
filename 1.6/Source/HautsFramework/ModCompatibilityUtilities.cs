@@ -26,6 +26,7 @@ namespace HautsFramework
         {
             return ModCompatibilityUtility.combatIsExtended;
         }
+        //These COaNN things need to be moved to HAT eventually
         //COaNN integration: these are specifically for the brainwash item. HAT uses the first two to make it awaken pawns if it removes a Latent Psychic trait. IODTs are other reasons for brainwash not to remove a trait (aside from being ETE)
         public static bool COaNN_TraitReset_ShouldDoBonusEffect(TraitDef def)
         {

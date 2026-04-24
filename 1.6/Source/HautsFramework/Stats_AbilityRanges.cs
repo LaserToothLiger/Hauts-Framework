@@ -228,9 +228,7 @@ namespace HautsFramework
                         GenDraw.DrawTargetHighlightWithLayer(target.CenterVector3, AltitudeLayer.MetaOverlays);
                         GenDraw.DrawRadiusRing(target.Cell, ability.ability.def.EffectRadius, RimWorld.Verb_CastAbility.RadiusHighlightColor, null);
                     }
-                }
-                else
-                {
+                } else {
                     GenDraw.DrawTargetHighlightWithLayer(target.CenterVector3, AltitudeLayer.MetaOverlays);
                 }
             }

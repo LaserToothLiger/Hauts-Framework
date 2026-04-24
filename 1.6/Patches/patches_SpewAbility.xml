@@ -266,60 +266,6 @@
 				</li>
 				<li Class="PatchOperationFindMod">
 					<mods>
-					  <li>Vanilla Factions Expanded - Insectoids 2</li>
-					</mods>
-					<match Class="PatchOperationSequence">
-						<operations>
-							<li Class="PatchOperationReplace">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_FlameSpew"]/comps/li[@Class="VFEInsectoids.CompProperties_AbilityFireSpew"]</xpath>
-								<value>
-								  <li Class="HautsFramework.CompProperties_AbilityFireSpewScalable">
-									<range>9.9</range>
-									<filthChance>0.5</filthChance>
-									<lineWidthEnd>3</lineWidthEnd>
-									<filthDef>VFEI2_Filth_FlammableBile</filthDef>
-									<effecterDef>VFEI2_Fire_Spew</effecterDef>
-									<canHitFilledCells>true</canHitFilledCells>
-								  </li>
-								</value>
-							</li>
-							<li Class="PatchOperationReplace">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_LargeAcidSpew"]/comps/li[@Class="VFEInsectoids.CompProperties_AbilityAcidSpew"]</xpath>
-								<value>
-								  <li Class="HautsFramework_VFEInsectoids2.CompProperties_AbilityAcidSpewScalable">
-									<range>16.9</range>
-									<lineWidthEnd>3</lineWidthEnd>
-									<filthDef>Filth_SpentAcid</filthDef>
-									<effecterDef>VFEI2_LargeAcidSpew</effecterDef>
-									<canHitFilledCells>true</canHitFilledCells>
-									<damAmount>10</damAmount>
-								  </li>
-								</value>
-							</li>
-							<li Class="PatchOperationReplace">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_ChemfuelSpew"]/comps/li[@Class="VFEInsectoids.CompProperties_AbilityFuelSpew"]</xpath>
-								<value>
-								  <li Class="HautsFramework_VFEInsectoids2.CompProperties_AbilityFuelSpewScalable">
-									<range>10.9</range>
-									<lineWidthEnd>6</lineWidthEnd>
-									<damAmount>1</damAmount>
-									<effecterDef>VFEI2_ChemfuelSpew</effecterDef>
-									<filthDef>VFEI2_Filth_FlammableBile</filthDef>
-									<canHitFilledCells>true</canHitFilledCells>
-								  </li>
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VFEI2_InsectAcidSpit" or defName="VFEI2_InsectAcidSpew" or defName="VFEI2_LargeAcidSpew" or defName="VFEI2_ChemfuelSpew" or defName="VFEI2_ChemfuelSpit" or defName="VFEI2_FlameSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-						</operations>
-					</match>
-				</li>
-				<li Class="PatchOperationFindMod">
-					<mods>
 					  <li>Vanilla Quests Expanded - Ancients</li>
 					</mods>
 					<match Class="PatchOperationSequence">
@@ -391,67 +337,71 @@
 			</operations>
 		</match>
 	</Operation>
-	<!--<Operation Class="PatchOperationFindMod">
+	
+	<Operation Class="PatchOperationFindMod">
 		<mods>
-		  <li>Bionic modularity</li>
+		  <li>Fray of the Fog</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="dvd_AbilityStunBreath"]</xpath>
+			<value>
+				<li Class="HautsFramework.Hauts_SpewAbility" />
+			</value>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Factions Expanded - Insectoids 2</li>
 		</mods>
 		<match Class="PatchOperationSequence">
 			<operations>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/AbilityDef[defName="BM_SpacerSmokeSpewerAbilityModule_One"]</xpath>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/AbilityDef[defName="VFEI2_FlameSpew"]/comps/li[@Class="VFEInsectoids.CompProperties_AbilityFireSpew"]</xpath>
 					<value>
-						<li Class="HautsFramework.Hauts_SpewAbility" />
+					  <li Class="HautsFramework.CompProperties_AbilityFireSpewScalable">
+						<range>9.9</range>
+						<filthChance>0.5</filthChance>
+						<lineWidthEnd>3</lineWidthEnd>
+						<filthDef>VFEI2_Filth_FlammableBile</filthDef>
+						<effecterDef>VFEI2_Fire_Spew</effecterDef>
+						<canHitFilledCells>true</canHitFilledCells>
+					  </li>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/AbilityDef[defName="VFEI2_LargeAcidSpew"]/comps/li[@Class="VFEInsectoids.CompProperties_AbilityAcidSpew"]</xpath>
+					<value>
+					  <li Class="HautsFramework_VFEInsectoids2.CompProperties_AbilityAcidSpewScalable">
+						<range>16.9</range>
+						<lineWidthEnd>3</lineWidthEnd>
+						<filthDef>Filth_SpentAcid</filthDef>
+						<effecterDef>VFEI2_LargeAcidSpew</effecterDef>
+						<canHitFilledCells>true</canHitFilledCells>
+						<damAmount>10</damAmount>
+					  </li>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/AbilityDef[defName="VFEI2_ChemfuelSpew"]/comps/li[@Class="VFEInsectoids.CompProperties_AbilityFuelSpew"]</xpath>
+					<value>
+					  <li Class="HautsFramework_VFEInsectoids2.CompProperties_AbilityFuelSpewScalable">
+						<range>10.9</range>
+						<lineWidthEnd>6</lineWidthEnd>
+						<damAmount>1</damAmount>
+						<effecterDef>VFEI2_ChemfuelSpew</effecterDef>
+						<filthDef>VFEI2_Filth_FlammableBile</filthDef>
+						<canHitFilledCells>true</canHitFilledCells>
+					  </li>
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/AbilityDef[defName="BM_SpacerSmokeSpewerAbilityModule_Two"]</xpath>
+					<xpath>/Defs/AbilityDef[defName="VFEI2_InsectAcidSpit" or defName="VFEI2_InsectAcidSpew" or defName="VFEI2_LargeAcidSpew" or defName="VFEI2_ChemfuelSpew" or defName="VFEI2_ChemfuelSpit" or defName="VFEI2_FlameSpew"]</xpath>
 					<value>
 						<li Class="HautsFramework.Hauts_SpewAbility" />
 					</value>
-				</li>
-				<li Class="PatchOperationFindMod">
-					<mods>
-					  <li>Biotech</li>
-					</mods>
-					<match Class="PatchOperationSequence">
-						<operations>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="BM_SpacerToxSpewerAbilityModule_One"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="BM_SpacerToxSpewerAbilityModule_Two"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-						</operations>
-					</match>
-				</li>
-				<li Class="PatchOperationFindMod">
-					<mods>
-					  <li>Anomaly</li>
-					</mods>
-					<match Class="PatchOperationSequence">
-						<operations>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="BM_SpacerDeadlifeSpewerAbilityModule_One"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="BM_SpacerDeadlifeSpewerAbilityModule_Two"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-						</operations>
-					</match>
 				</li>
 			</operations>
 		</match>
-	</Operation>-->
+	</Operation>
 </Patch>

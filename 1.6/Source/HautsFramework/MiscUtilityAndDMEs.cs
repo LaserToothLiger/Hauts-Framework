@@ -128,7 +128,7 @@ namespace HautsFramework
             return terrainDefList;
         }
         //handles stuff for GiveHediffFromMenu ability comp
-        public static void AddHediffFromMenu(HediffDef chosenHediff, Pawn pawn, CompAbilityEffect_GiveHediffFromMenu ability, Pawn other, Pawn caster, List<HediffDef> removeAnyOfTheseHediffsFirst)
+        public static void AddHediffFromMenu(HediffDef chosenHediff, Pawn pawn, CompAbilityEffect_GiveHediffFromMenuBase ability, Pawn other, Pawn caster, List<HediffDef> removeAnyOfTheseHediffsFirst)
         {
             if (!removeAnyOfTheseHediffsFirst.NullOrEmpty())
             {
@@ -229,6 +229,14 @@ namespace HautsFramework
             if (t is Pawn p)
             {
                 damageFactor *= p.health.hediffSet.FactorForDamage(dinfo) * ((ModsConfig.BiotechActive && p.genes != null) ? p.genes.FactorForDamage(dinfo) : 1f);
+                SpecificDamageFactorStats sdfs = def.GetModExtension<SpecificDamageFactorStats>();
+                if (sdfs != null && !sdfs.factorStats.NullOrEmpty())
+                {
+                    foreach (KeyValuePair<StatDef, float> kvp in sdfs.factorStats)
+                    {
+                        dinfo.SetAmount(dinfo.Amount * Math.Max(0f, ((t.GetStatValue(kvp.Key) - 1f) * kvp.Value) + 1f));
+                    }
+                }
             }
             if (t.def.damageMultipliers != null)
             {

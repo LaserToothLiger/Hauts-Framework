@@ -39,6 +39,21 @@
 	</Operation>
 	<Operation Class="PatchOperationFindMod">
 		<mods>
+			<li>Cultivator of the Rim</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="CTR_MediocreTalent" or defName="CTR_GoodTalent" or defName="CTR_CultivationProdigy"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExempt" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
 			<li>ISEKAI RPG LEVELING</li>
 		</mods>
 		<match Class="PatchOperationSequence">

@@ -203,13 +203,19 @@ namespace HautsFramework
         }
     }
     /*Opens a menu of hediffs, one of which can be selected to apply to the target
-     * menuString: heads the Dialogue menu
+     * menuString: heads the Dialogue menu. It can have a {0} for the pawn-to-be-affected's name
      * ignoreSelf: makes the ability unable to affect the caster
      * requiresStory: the menu won't have any options if the the target lacks a StoryTracker component
      * hediffs: the menu options. If cast by a pawn not of the player faction, it will pick a random hediff automatically
      * onlyBrain: adds chosen hediff to the pawn’s brain; otherwise it’s added to the whole body
      * autoSelectIfAI: if the pawn with this ability isn’t of the player faction, it will use the ability on itself whenever it can. This will trigger the hediff adding and the ability’s CompAbilityEffect_RemoveHediff (if any), but not any other effects of the ability, as it is not actually getting cast
-     * severity: if >=0, the generated hediff’s severity is set to this value*/
+     * severity: if >=0, the generated hediff’s severity is set to this value
+     * removeCausativeHediff: completing a menu selection removes the first hediff this pawn has that grants this ability, if any. This occurs after all other effects of completing the menu selection
+     * GiveHediffFromMenuMulti is similar, but it can accept multiple targets at once. To affect all of them with a single menu, it stores them all in a pawn list, and then feeds them into the dialog on the next tick.
+     *   If that sounds unusually convoluted, it's cause this is a specific workaround to Group Link from Vanilla Psycasts Expanded (and Psychic Bellbird from HAT), as neither can properly bring up one menu per pawn, and in fact
+     *   they prevent the one menu that DOES pop up from working on anybody who should've been affected.
+     *   For an ability that can affect multiple pawns with one menu, you will need to specify menuStringPlural AS WELL AS menuString. The former is the header for the menu when there are multiple pawns, the latter if there is
+     *   just one pawn (as normal)*/
     public class CompProperties_AbilityGiveHediffFromMenu : CompProperties_AbilityEffectWithDuration
     {
         public List<HediffDef> hediffs;
@@ -218,10 +224,11 @@ namespace HautsFramework
         public bool ignoreSelf;
         public bool autoSelectIfAI = true;
         public string menuString;
-        public bool requiresStory = true;
+        public string menuStringPlural;
         public bool removeExistingOptionsFromPawn;
+        public HediffDef removeThisAfterGrantingOption;
     }
-    public class CompAbilityEffect_GiveHediffFromMenu : CompAbilityEffect_WithDuration
+    public abstract class CompAbilityEffect_GiveHediffFromMenuBase : CompAbilityEffect_WithDuration
     {
         public new CompProperties_AbilityGiveHediffFromMenu Props
         {
@@ -230,6 +237,9 @@ namespace HautsFramework
                 return (CompProperties_AbilityGiveHediffFromMenu)this.props;
             }
         }
+    }
+    public class CompAbilityEffect_GiveHediffFromMenu : CompAbilityEffect_GiveHediffFromMenuBase
+    {
         public override bool AICanTargetNow(LocalTargetInfo target)
         {
             return false;
@@ -246,7 +256,7 @@ namespace HautsFramework
         public override void CompTick()
         {
             base.CompTick();
-            if (this.Props.autoSelectIfAI && this.parent.CanCast && this.parent.pawn.Faction != Faction.OfPlayer)
+            if (this.Props.autoSelectIfAI  && this.parent.pawn.Faction != Faction.OfPlayer && this.parent.CanCast && this.parent.CanApplyOn(new LocalTargetInfo(this.parent.pawn)))
             {
                 this.parent.Activate(this.parent.pawn, this.parent.pawn);
             }
@@ -257,11 +267,21 @@ namespace HautsFramework
             {
                 if (this.parent.pawn != null && this.parent.pawn.Faction == Faction.OfPlayer)
                 {
-                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, target, other, this.parent.pawn, this.Props.hediffs, this.Props.menuString, this.Props.requiresStory,this.Props.removeExistingOptionsFromPawn));
+                    List<Pawn> targets = new List<Pawn>() { target };
+                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, targets, other, this.parent.pawn, this.Props.hediffs, this.Props.menuString, this.Props.menuStringPlural, this.Props.removeExistingOptionsFromPawn,this.Props.removeThisAfterGrantingOption));
                 } else {
-                    Hediff hediff = HediffMaker.MakeHediff(this.Props.hediffs.RandomElement<HediffDef>(), target, null);
-                    target.health.AddHediff(hediff, this.Props.onlyBrain ? target.health.hediffSet.GetBrain() : null, null, null);
-                    HautsMiscUtility.AddHediffFromMenu(this.Props.hediffs.RandomElement<HediffDef>(), this.parent.pawn, this, this.parent.pawn, this.parent.pawn,this.Props.removeExistingOptionsFromPawn?this.Props.hediffs:null);
+                    HautsMiscUtility.AddHediffFromMenu(this.Props.hediffs.RandomElement<HediffDef>(), target, this, other, this.parent.pawn,this.Props.removeExistingOptionsFromPawn?this.Props.hediffs:null);
+                    if (this.Props.removeThisAfterGrantingOption != null)
+                    {
+                        foreach (Hediff h in target.health.hediffSet.hediffs)
+                        {
+                            if (h.def == this.Props.removeThisAfterGrantingOption)
+                            {
+                                target.health.RemoveHediff(h);
+                                break;
+                            }
+                        }
+                    }
                     CompAbilityEffect_RemoveHediff caerh = this.parent.CompOfType<CompAbilityEffect_RemoveHediff>();
                     if (caerh != null)
                     {
@@ -275,11 +295,74 @@ namespace HautsFramework
             }
         }
     }
+    public class CompAbilityEffect_GiveHediffFromMenuMulti : CompAbilityEffect_GiveHediffFromMenuBase
+    {
+        public override bool AICanTargetNow(LocalTargetInfo target)
+        {
+            return false;
+        }
+        public override void CompTick()
+        {
+            base.CompTick();
+            if (!this.pawns.NullOrEmpty())
+            {
+                if (this.parent.pawn.IsPlayerControlled)
+                {
+                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, this.pawns, this.parent.pawn, this.parent.pawn, this.Props.hediffs, this.Props.menuString, this.Props.menuStringPlural, this.Props.removeExistingOptionsFromPawn, this.Props.removeThisAfterGrantingOption));
+                } else {
+                    HediffDef hd = this.Props.hediffs.RandomElement();
+                    foreach (Pawn p in pawns)
+                    {
+                        HautsMiscUtility.AddHediffFromMenu(hd, p, this, this.parent.pawn, this.parent.pawn, this.Props.removeExistingOptionsFromPawn ? this.Props.hediffs : null);
+                        if (this.Props.removeThisAfterGrantingOption != null)
+                        {
+                            foreach (Hediff h in p.health.hediffSet.hediffs)
+                            {
+                                if (h.def == this.Props.removeThisAfterGrantingOption)
+                                {
+                                    p.health.RemoveHediff(h);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    CompAbilityEffect_RemoveHediff caerh = this.parent.CompOfType<CompAbilityEffect_RemoveHediff>();
+                    if (caerh != null)
+                    {
+                        Hediff h = this.parent.pawn.health.hediffSet.GetFirstHediffOfDef(caerh.Props.hediffDef);
+                        if (h != null)
+                        {
+                            this.parent.pawn.health.RemoveHediff(h);
+                        }
+                    }
+                }
+                this.pawns = null;
+            }
+        }
+        public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
+        {
+            base.Apply(target, dest);
+            if (target.Pawn != null)
+            {
+                if (this.pawns == null)
+                {
+                    this.pawns = new List<Pawn>();
+                }
+                this.pawns.Add(target.Pawn);
+            }
+        }
+        public override void PostExposeData()
+        {
+            base.PostExposeData();
+            Scribe_Collections.Look<Pawn>(ref this.pawns, "pawns", LookMode.Reference, Array.Empty<object>());
+        }
+        public List<Pawn> pawns = new List<Pawn>();
+    }
     public class Dialog_GiveHediffFromMenu : Window
     {
-        public Dialog_GiveHediffFromMenu(CompAbilityEffect_GiveHediffFromMenu ability, Pawn pawn, Pawn other, Pawn caster, List<HediffDef> hediffs, string menuLabel, bool requiresStory = true, bool removesOtherOptionsFromPawn = false)
+        public Dialog_GiveHediffFromMenu(CompAbilityEffect_GiveHediffFromMenuBase ability, List<Pawn> pawns, Pawn other, Pawn caster, List<HediffDef> hediffs, string menuLabel, string menuLabelPlural, bool removesOtherOptionsFromPawn = false, HediffDef removeThisAfterGrantingOption = null)
         {
-            this.pawn = pawn;
+            this.pawns = pawns;
             this.other = other;
             this.caster = caster;
             this.ability = ability;
@@ -289,16 +372,21 @@ namespace HautsFramework
             this.closeOnClickedOutside = true;
             this.closeOnAccept = false;
             this.closeOnCancel = true;
-            this.optionalTitle = menuLabel.Translate(this.pawn.Name.ToStringShort);
+            if (pawns != null && pawns.Count == 1)
+            {
+                this.optionalTitle = menuLabel.Translate(this.pawns[0].LabelCap);
+            } else {
+                this.optionalTitle = menuLabelPlural.Translate();
+            }
             this.possibleHediffs = hediffs;
-            this.requiresStory = requiresStory;
             this.removesOtherOptionsFromPawn = removesOtherOptionsFromPawn;
+            this.removeThisAfterGrantingOption = removeThisAfterGrantingOption;
         }
         private float Height
         {
             get
             {
-                return (CharacterCardUtility.PawnCardSize(this.pawn).y + Window.CloseButSize.y + 4f + this.Margin * 2f) / 1.25f;
+                return (CharacterCardUtility.PawnCardSize(this.other).y + Window.CloseButSize.y + 4f + this.Margin * 2f) / 1.25f;
             }
         }
         public override Vector2 InitialSize
@@ -319,19 +407,16 @@ namespace HautsFramework
             Listing_Standard listing_Standard = new Listing_Standard();
             Rect rect = new Rect(0f, num, inRect.width - 30f, 99999f);
             listing_Standard.Begin(rect);
-            if (!this.requiresStory || pawn.story != null)
+            foreach (HediffDef h in this.possibleHediffs)
             {
-                foreach (HediffDef h in this.possibleHediffs)
+                bool flag = this.chosenHediff == h;
+                bool flag2 = flag;
+                listing_Standard.CheckboxLabeled(h.LabelCap, ref flag, h.description);
+                if (flag != flag2)
                 {
-                    bool flag = this.chosenHediff == h;
-                    bool flag2 = flag;
-                    listing_Standard.CheckboxLabeled(h.LabelCap, ref flag, h.description);
-                    if (flag != flag2)
+                    if (flag)
                     {
-                        if (flag)
-                        {
-                            this.chosenHediff = h;
-                        }
+                        this.chosenHediff = h;
                     }
                 }
             }
@@ -360,12 +445,43 @@ namespace HautsFramework
             {
                 if (acceptanceReport.Accepted)
                 {
-                    HautsMiscUtility.AddHediffFromMenu(this.chosenHediff, this.pawn, this.ability, this.other, this.caster,this.removesOtherOptionsFromPawn?this.possibleHediffs:null);
+                    foreach (Pawn p in this.pawns)
+                    {
+                        this.AffectPawn(p);
+                    }
+                    this.closedByPressingOKbutton = true;
                     this.Close(true);
                 } else {
                     Messages.Message(acceptanceReport.Reason, null, MessageTypeDefOf.RejectInput, false);
                 }
             }
+        }
+        public void AffectPawn(Pawn p)
+        {
+            HautsMiscUtility.AddHediffFromMenu(this.chosenHediff, p, this.ability, this.other, this.caster, this.removesOtherOptionsFromPawn ? this.possibleHediffs : null);
+            if (this.removeThisAfterGrantingOption != null)
+            {
+                foreach (Hediff h in p.health.hediffSet.hediffs)
+                {
+                    if (h.def == this.removeThisAfterGrantingOption)
+                    {
+                        p.health.RemoveHediff(h);
+                        break;
+                    }
+                }
+            }
+        }
+        public override void PostClose()
+        {
+            if (!this.closedByPressingOKbutton && this.ability != null)
+            {
+                Ability a = this.ability.parent;
+                if (a != null && a.OnCooldown)
+                {
+                    a.ResetCooldown();
+                }
+            }
+            base.PostClose();
         }
         private AcceptanceReport CanClose()
         {
@@ -375,16 +491,17 @@ namespace HautsFramework
             }
             return AcceptanceReport.WasAccepted;
         }
+        private bool closedByPressingOKbutton;
         private List<HediffDef> possibleHediffs;
-        private CompAbilityEffect_GiveHediffFromMenu ability;
+        private CompAbilityEffect_GiveHediffFromMenuBase ability;
         private HediffDef chosenHediff;
         private float scrollHeight;
-        private Pawn pawn;
+        private List<Pawn> pawns;
         private Pawn other;
         private Pawn caster;
         private Vector2 scrollPosition;
-        private bool requiresStory;
         private bool removesOtherOptionsFromPawn;
+        private HediffDef removeThisAfterGrantingOption;
     }
     /*Gives hediffs to the target and/or destination Pawns (can be different hediffs in each case) and “pairs” them together if they have the PairedHediff comp.
      * If a given hediff has the Link comp, it will also link to the other party.
