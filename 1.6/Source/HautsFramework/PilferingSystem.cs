@@ -585,21 +585,15 @@ namespace HautsFramework
                             TaggedString message = "Hauts_PilfererErrorPrefix".Translate() + ": " + "Hauts_PilfererNoCarryCap".Translate();
                             Messages.Message(message, actor, MessageTypeDefOf.RejectInput, true);
                             return;
-                        }
-                        else if (burglaryMaxValue <= 0f)
-                        {
+                        } else if (burglaryMaxValue <= 0f) {
                             TaggedString message = "Hauts_PilfererErrorPrefix".Translate() + ": " + "Hauts_PilfererTooWeak".Translate();
                             Messages.Message(message, actor, MessageTypeDefOf.RejectInput, true);
                             return;
-                        }
-                        else if (successChance <= 0f)
-                        {
+                        } else if (successChance <= 0f) {
                             TaggedString message = "Hauts_PilfererErrorPrefix".Translate() + ": " + "Hauts_PilfererTooConspicuous".Translate();
                             Messages.Message(message, actor, MessageTypeDefOf.RejectInput, true);
                             return;
-                        }
-                        else
-                        {
+                        } else {
                             float alertRaise = 0f, minAlertRaise = 0f;
                             minAlertRaise += HautsDefOf.Hauts_RaisedAlertLevel.initialSeverity;
                             if (Rand.Value <= successChance)
@@ -645,53 +639,48 @@ namespace HautsFramework
                                     ChoiceLetter tieLetter = LetterMaker.MakeLetter("Hauts_PilferLetter1".Translate(), message, LetterDefOf.NeutralEvent, toLook, null, null, null);
                                     Find.LetterStack.ReceiveLetter(tieLetter, null);
                                     PilferingSystemUtility.IncreaseAlertLevel(victim, minAlertRaise);
-                                }
-                                else
-                                {
+                                } else {
                                     TaggedString message = "Hauts_PickpocketOutcome2".Translate(actor.Name.ToStringShort, victim.Faction.NameColored);
                                     LookTargets toLook = new LookTargets(actor);
                                     ChoiceLetter winLetter = LetterMaker.MakeLetter("Hauts_PilferLetter2".Translate(), message, LetterDefOf.PositiveEvent, toLook, null, null, null);
                                     Find.LetterStack.ReceiveLetter(winLetter, null);
-                                    actor.Faction.TryAffectGoodwillWith(victim.Faction, -5);
                                     float raiseAlertBy = Math.Max(alertRaise, minAlertRaise);
-                                    if (victim.Faction != null)
+                                    if (victim.Faction != null && victim.Faction != this.pawn.Faction)
                                     {
+                                        actor.Faction.TryAffectGoodwillWith(victim.Faction, -5);
+                                        foreach (Pawn p in victim.MapHeld.mapPawns.PawnsInFaction(victim.Faction))
+                                        {
+                                            PilferingSystemUtility.IncreaseAlertLevel(p, raiseAlertBy);
+                                        }
+                                    } else {
+                                        PilferingSystemUtility.IncreaseAlertLevel(victim, raiseAlertBy);
+                                    }
+                                }
+                            } else {
+                                float raiseAlertBy = Math.Max(alertRaise, minAlertRaise);
+                                if (victim.Faction != null)
+                                {
+                                    if (victim.Faction != this.pawn.Faction)
+                                    {
+                                        TaggedString message = "Hauts_PickpocketOutcome3".Translate(actor.Name.ToStringShort, victim.Faction.NameColored);
+                                        LookTargets toLook = new LookTargets(actor);
+                                        ChoiceLetter sadLetter = LetterMaker.MakeLetter("Hauts_PilferLetter3".Translate(), message, LetterDefOf.NegativeEvent, toLook, null, null, null);
+                                        Find.LetterStack.ReceiveLetter(sadLetter, null);
+                                        actor.Faction.TryAffectGoodwillWith(victim.Faction, actor.IsPsychologicallyInvisible() ? -5 : -15);
+                                        /*if (victim.lord != null)
+                                        {
+                                            Pawn trader = TraderCaravanUtility.FindTrader(victim.lord);
+                                            if (trader != null)
+                                            {
+                                                trader.mindState.traderDismissed = true;
+                                            }
+                                        }*/
                                         foreach (Pawn p in victim.MapHeld.mapPawns.PawnsInFaction(victim.Faction))
                                         {
                                             PilferingSystemUtility.IncreaseAlertLevel(p, raiseAlertBy);
                                         }
                                     }
-                                    else
-                                    {
-                                        PilferingSystemUtility.IncreaseAlertLevel(victim, raiseAlertBy);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                float raiseAlertBy = Math.Max(alertRaise, minAlertRaise);
-                                if (victim.Faction != null)
-                                {
-                                    TaggedString message = "Hauts_PickpocketOutcome3".Translate(actor.Name.ToStringShort, victim.Faction.NameColored);
-                                    LookTargets toLook = new LookTargets(actor);
-                                    ChoiceLetter sadLetter = LetterMaker.MakeLetter("Hauts_PilferLetter3".Translate(), message, LetterDefOf.NegativeEvent, toLook, null, null, null);
-                                    Find.LetterStack.ReceiveLetter(sadLetter, null);
-                                    actor.Faction.TryAffectGoodwillWith(victim.Faction, actor.IsPsychologicallyInvisible() ? -5 : -15);
-                                    /*if (victim.lord != null)
-                                    {
-                                        Pawn trader = TraderCaravanUtility.FindTrader(victim.lord);
-                                        if (trader != null)
-                                        {
-                                            trader.mindState.traderDismissed = true;
-                                        }
-                                    }*/
-                                    foreach (Pawn p in victim.MapHeld.mapPawns.PawnsInFaction(victim.Faction))
-                                    {
-                                        PilferingSystemUtility.IncreaseAlertLevel(p, raiseAlertBy);
-                                    }
-                                }
-                                else
-                                {
+                                } else {
                                     TaggedString message = "Hauts_PickpocketOutcome3_Factionless".Translate(actor.Name.ToStringShort, victim.Name.ToStringShort);
                                     LookTargets toLook = new LookTargets(actor);
                                     ChoiceLetter sadLetter = LetterMaker.MakeLetter("Hauts_PilferLetter3".Translate(), message, LetterDefOf.NegativeEvent, toLook, null, null, null);

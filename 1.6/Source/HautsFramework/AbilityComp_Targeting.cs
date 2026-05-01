@@ -115,10 +115,8 @@ namespace HautsFramework
                             }
                         }
                     }
-                }
-                else
-                {
-                    foreach (Thing thing in GenRadial.RadialDistinctThingsAround(this.parent.pawn.Position, this.parent.pawn.Map, this.Range, true))
+                } else {
+                    foreach (Thing thing in GenRadial.RadialDistinctThingsAround(this.parent.pawn.Position, this.parent.pawn.Map, this.Range, true).InRandomOrder())
                     {
                         if ((!this.Props.onlyHostiles || (thing.Faction != null && this.parent.pawn.HostileTo(thing.Faction))) && this.VetPotentialTarget(thing))
                         {
@@ -151,7 +149,7 @@ namespace HautsFramework
         }
         public virtual bool AdditionalQualifiers(Thing thing)
         {
-            return true;
+            return !(thing is Pawn p) || !p.IsPsychologicallyInvisible();
         }
     }
     /*NPCs with this ability will try using it on a location away from any detected hostile combatants once every 250 ticks if their % body part hp threshold is below hpThreshold.

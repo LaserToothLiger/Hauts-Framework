@@ -127,8 +127,16 @@ namespace HautsFramework
             }
             return terrainDefList;
         }
-        //handles stuff for GiveHediffFromMenu ability comp
+        //handles stuff for GiveHediffFromMenu ability comp. The second method is intended for use with VEF abilities, but could obviously be used in any other instance in which a regular ability comp is not being used
         public static void AddHediffFromMenu(HediffDef chosenHediff, Pawn pawn, CompAbilityEffect_GiveHediffFromMenuBase ability, Pawn other, Pawn caster, List<HediffDef> removeAnyOfTheseHediffsFirst)
+        {
+            HautsMiscUtility.AddHediffFromMenuInner(chosenHediff,pawn,other,caster,removeAnyOfTheseHediffsFirst,ability.Props.onlyBrain,ability.GetDurationSeconds(pawn).SecondsToTicks(),ability.Props.severity);
+        }
+        public static void AddHediffFromMenu(HediffDef chosenHediff, Pawn pawn, float baseDurationSecs, StatDef targetScalarStat, Pawn other, Pawn caster, List<HediffDef> removeAnyOfTheseHediffsFirst)
+        {
+            HautsMiscUtility.AddHediffFromMenuInner(chosenHediff,pawn,other,caster,removeAnyOfTheseHediffsFirst,false,(baseDurationSecs*pawn.GetStatValue(targetScalarStat)).SecondsToTicks(),-1f);
+        }
+        public static void AddHediffFromMenuInner(HediffDef chosenHediff, Pawn pawn, Pawn other, Pawn caster, List<HediffDef> removeAnyOfTheseHediffsFirst, bool goToBrain, int durationTicks, float severity)
         {
             if (!removeAnyOfTheseHediffsFirst.NullOrEmpty())
             {
@@ -140,15 +148,15 @@ namespace HautsFramework
                     }
                 }
             }
-            Hediff hediff = HediffMaker.MakeHediff(chosenHediff, pawn, ability.Props.onlyBrain ? pawn.health.hediffSet.GetBrain() : null);
+            Hediff hediff = HediffMaker.MakeHediff(chosenHediff, pawn, goToBrain ? pawn.health.hediffSet.GetBrain() : null);
             HediffComp_Disappears hediffComp_Disappears = hediff.TryGetComp<HediffComp_Disappears>();
             if (hediffComp_Disappears != null)
             {
-                hediffComp_Disappears.ticksToDisappear = ability.GetDurationSeconds(pawn).SecondsToTicks();
+                hediffComp_Disappears.ticksToDisappear = durationTicks;
             }
-            if (ability.Props.severity >= 0f)
+            if (severity >= 0f)
             {
-                hediff.Severity = ability.Props.severity;
+                hediff.Severity = severity;
             }
             HediffComp_Link hediffComp_Link = hediff.TryGetComp<HediffComp_Link>();
             if (hediffComp_Link != null)
@@ -229,14 +237,7 @@ namespace HautsFramework
             if (t is Pawn p)
             {
                 damageFactor *= p.health.hediffSet.FactorForDamage(dinfo) * ((ModsConfig.BiotechActive && p.genes != null) ? p.genes.FactorForDamage(dinfo) : 1f);
-                SpecificDamageFactorStats sdfs = def.GetModExtension<SpecificDamageFactorStats>();
-                if (sdfs != null && !sdfs.factorStats.NullOrEmpty())
-                {
-                    foreach (KeyValuePair<StatDef, float> kvp in sdfs.factorStats)
-                    {
-                        dinfo.SetAmount(dinfo.Amount * Math.Max(0f, ((t.GetStatValue(kvp.Key) - 1f) * kvp.Value) + 1f));
-                    }
-                }
+                HautsMiscUtility.ApplySpecificDamageFactors(p, dinfo.Def, ref damageFactor);
             }
             if (t.def.damageMultipliers != null)
             {
@@ -249,6 +250,26 @@ namespace HautsFramework
                 }
             }
             return damageFactor;
+        }
+        public static void ApplySpecificDamageFactors(Pawn pawn, DamageDef def, ref float amount)
+        {
+            SpecificDamageFactorStats sdfs = def.GetModExtension<SpecificDamageFactorStats>();
+            if (sdfs != null && !sdfs.factorStats.NullOrEmpty())
+            {
+                foreach (KeyValuePair<StatDef, float> kvp in sdfs.factorStats)
+                {
+                    amount *= Math.Max(0f, ((pawn.GetStatValue(kvp.Key) - 1f) * kvp.Value) + 1f);
+                }
+            } else {
+                SpecificDamageFactorStats_ForParentStats fps = def.GetModExtension<SpecificDamageFactorStats_ForParentStats>();
+                if (fps != null && !fps.factorStats.NullOrEmpty())
+                {
+                    foreach (KeyValuePair<StatDef, float> kvp in fps.factorStats)
+                    {
+                        amount *= Math.Max(0f, ((pawn.GetStatValue(kvp.Key) - 1f) * kvp.Value) + 1f);
+                    }
+                }
+            }
         }
         //tells you the sum hit points of the pawn's body parts
         public static float HitPointTotalFor(Pawn p)

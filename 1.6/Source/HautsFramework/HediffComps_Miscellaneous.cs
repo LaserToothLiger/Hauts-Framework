@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
+using Verse.AI;
 using Verse.Sound;
 
 namespace HautsFramework
@@ -1417,5 +1418,275 @@ namespace HautsFramework
             Scribe_Values.Look<bool>(ref this.affectsAptitudes, "affectsAptitudes", false, false);
         }
         private bool affectsAptitudes;
+    }
+    /*virtually identical to CompTurretGun, the thing that lets e.g. Diaboli or War Queens have an intrinsic turret that automatically attacks nearby enemies; except this is a hediff comp instead of a race comp
+     * uh... yeah. It has all the same fields, basically. I haven't tested the pawn render nodes, though. You don't have to specify any.*/
+    public class HediffCompProperties_Turret : HediffCompProperties
+    {
+        public HediffCompProperties_Turret()
+        {
+            this.compClass = typeof(HediffComp_Turret);
+        }
+        public override IEnumerable<string> ConfigErrors(HediffDef parentDef)
+        {
+            
+			if (!this.renderNodeProperties.NullOrEmpty<PawnRenderNodeProperties>())
+			{
+				foreach (PawnRenderNodeProperties pawnRenderNodeProperties in this.renderNodeProperties)
+				{
+					if (!typeof(PawnRenderNode_TurretGunHediff).IsAssignableFrom(pawnRenderNodeProperties.nodeClass))
+					{
+						yield return "contains nodeClass which is not PawnRenderNode_TurretGunHediff or subclass thereof.";
+					}
+				}
+			}
+			yield break;
+        }
+        public ThingDef turretDef;
+        public float angleOffset;
+        public bool autoAttack = true;
+        public List<PawnRenderNodeProperties> renderNodeProperties;
+    }
+    public class HediffComp_Turret : HediffComp, IAttackTargetSearcher
+    {
+        public HediffCompProperties_Turret Props
+        {
+            get
+            {
+                return (HediffCompProperties_Turret)this.props;
+            }
+        }
+        public Thing Thing
+        {
+            get
+            {
+                return this.Pawn;
+            }
+        }
+        public Verb CurrentEffectiveVerb
+        {
+            get
+            {
+                return this.AttackVerb;
+            }
+        }
+        public LocalTargetInfo LastAttackedTarget
+        {
+            get
+            {
+                return this.lastAttackedTarget;
+            }
+        }
+        public int LastAttackTargetTick
+        {
+            get
+            {
+                return this.lastAttackTargetTick;
+            }
+        }
+        public CompEquippable GunCompEq
+        {
+            get
+            {
+                return this.gun.TryGetComp<CompEquippable>();
+            }
+        }
+        public Verb AttackVerb
+        {
+            get
+            {
+                return this.GunCompEq.PrimaryVerb;
+            }
+        }
+        private bool WarmingUp
+        {
+            get
+            {
+                return this.burstWarmupTicksLeft > 0;
+            }
+        }
+        protected virtual bool CanShoot
+        {
+            get
+            {
+                Pawn pawn = this.Pawn;
+                if (!pawn.Spawned || pawn.Downed || pawn.Dead || !pawn.Awake())
+                {
+                    return false;
+                }
+                if (pawn.stances.stunner.Stunned)
+                {
+                    return false;
+                }
+                if (this.TurretDestroyed)
+                {
+                    return false;
+                }
+                if (pawn.IsPlayerControlled && !this.fireAtWill)
+                {
+                    return false;
+                }
+                CompCanBeDormant compCanBeDormant = this.Pawn.TryGetComp<CompCanBeDormant>();
+                return compCanBeDormant == null || compCanBeDormant.Awake;
+            }
+        }
+        public bool TurretDestroyed
+        {
+            get
+            {
+                return this.AttackVerb.verbProps.linkedBodyPartsGroup != null && this.AttackVerb.verbProps.ensureLinkedBodyPartsGroupAlwaysUsable && PawnCapacityUtility.CalculateNaturalPartsAverageEfficiency(this.Pawn.health.hediffSet, this.AttackVerb.verbProps.linkedBodyPartsGroup) <= 0f;
+            }
+        }
+        public bool AutoAttack
+        {
+            get
+            {
+                return this.Props.autoAttack;
+            }
+        }
+        public override void CompPostPostAdd(DamageInfo? dinfo)
+        {
+            base.CompPostPostAdd(dinfo);
+            this.MakeGun();
+        }
+        private void MakeGun()
+        {
+            this.gun = ThingMaker.MakeThing(this.Props.turretDef, null);
+            this.UpdateGunVerbs();
+        }
+        private void UpdateGunVerbs()
+        {
+            List<Verb> allVerbs = this.gun.TryGetComp<CompEquippable>().AllVerbs;
+            for (int i = 0; i < allVerbs.Count; i++)
+            {
+                Verb verb = allVerbs[i];
+                verb.caster = this.Pawn;
+                verb.castCompleteCallback = delegate
+                {
+                    this.burstCooldownTicksLeft = this.AttackVerb.verbProps.defaultCooldownTime.SecondsToTicks();
+                };
+            }
+        }
+        public override void CompPostTick(ref float severityAdjustment)
+        {
+            base.CompPostTick(ref severityAdjustment);
+            if (!this.CanShoot)
+            {
+                return;
+            }
+            if (this.currentTarget.IsValid)
+            {
+                this.curRotation = (this.currentTarget.Cell.ToVector3Shifted() - this.Pawn.DrawPos).AngleFlat() + this.Props.angleOffset;
+            }
+            this.AttackVerb.VerbTick();
+            if (this.AttackVerb.state != VerbState.Bursting)
+            {
+                if (this.WarmingUp)
+                {
+                    this.burstWarmupTicksLeft--;
+                    if (this.burstWarmupTicksLeft == 0)
+                    {
+                        this.AttackVerb.TryStartCastOn(this.currentTarget, false, true, false, true);
+                        this.lastAttackTargetTick = Find.TickManager.TicksGame;
+                        this.lastAttackedTarget = this.currentTarget;
+                        return;
+                    }
+                } else {
+                    if (this.burstCooldownTicksLeft > 0)
+                    {
+                        this.burstCooldownTicksLeft--;
+                    }
+                    if (this.burstCooldownTicksLeft <= 0 && this.Pawn.IsHashIntervalTick(10))
+                    {
+                        this.currentTarget = (Thing)AttackTargetFinder.BestShootTargetFromCurrentPosition(this, TargetScanFlags.NeedThreat | TargetScanFlags.NeedAutoTargetable, null, 0f, 9999f);
+                        if (this.currentTarget.IsValid)
+                        {
+                            this.burstWarmupTicksLeft = 1;
+                            return;
+                        }
+                        this.ResetCurrentTarget();
+                    }
+                }
+            }
+        }
+        private void ResetCurrentTarget()
+        {
+            this.currentTarget = LocalTargetInfo.Invalid;
+            this.burstWarmupTicksLeft = 0;
+        }
+        public override IEnumerable<Gizmo> CompGetGizmos()
+        {
+            foreach (Gizmo gizmo in base.CompGetGizmos())
+            {
+                yield return gizmo;
+            }
+            if (this.Pawn.IsColonyMechPlayerControlled)
+            {
+                yield return new Command_Toggle
+                {
+                    defaultLabel = "CommandToggleTurret".Translate(),
+                    defaultDesc = "CommandToggleTurretDesc".Translate(),
+                    isActive = () => this.fireAtWill,
+                    icon = HediffComp_Turret.ToggleTurretIcon.Texture,
+                    toggleAction = delegate
+                    {
+                        this.fireAtWill = !this.fireAtWill;
+                    }
+                };
+            }
+            yield break;
+        }
+        public override void CompExposeData()
+        {
+            base.CompExposeData();
+            Scribe_Values.Look<int>(ref this.burstCooldownTicksLeft, "burstCooldownTicksLeft", 0, false);
+            Scribe_Values.Look<int>(ref this.burstWarmupTicksLeft, "burstWarmupTicksLeft", 0, false);
+            Scribe_TargetInfo.Look(ref this.currentTarget, "currentTarget");
+            Scribe_Deep.Look<Thing>(ref this.gun, "gun", Array.Empty<object>());
+            Scribe_Values.Look<bool>(ref this.fireAtWill, "fireAtWill", true, false);
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (this.gun == null)
+                {
+                    Log.Error("HediffComp_Turret had null gun after loading. Recreating.");
+                    this.MakeGun();
+                    return;
+                }
+                this.UpdateGunVerbs();
+            }
+        }
+        private static readonly CachedTexture ToggleTurretIcon = new CachedTexture("UI/Commands/FireAtWill");
+        public Thing gun;
+        protected int burstCooldownTicksLeft;
+        protected int burstWarmupTicksLeft;
+        protected LocalTargetInfo currentTarget = LocalTargetInfo.Invalid;
+        private bool fireAtWill = true;
+        private LocalTargetInfo lastAttackedTarget = LocalTargetInfo.Invalid;
+        private int lastAttackTargetTick;
+        public float curRotation;
+    }
+    public class PawnRenderNodeWorker_TurretGunHediff : PawnRenderNodeWorker
+    {
+        public override Quaternion RotationFor(PawnRenderNode node, PawnDrawParms parms)
+        {
+            Quaternion quaternion = base.RotationFor(node, parms);
+            if (node is PawnRenderNode_TurretGunHediff pawnRenderNode_TurretGun)
+            {
+                quaternion *= pawnRenderNode_TurretGun.turretComp.curRotation.ToQuat();
+            }
+            return quaternion;
+        }
+    }
+    public class PawnRenderNode_TurretGunHediff : PawnRenderNode
+    {
+        public PawnRenderNode_TurretGunHediff(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree)
+            : base(pawn, props, tree)
+        {
+        }
+        public override Graphic GraphicFor(Pawn pawn)
+        {
+            return GraphicDatabase.Get<Graphic_Single>(this.turretComp.Props.turretDef.graphicData.texPath, ShaderDatabase.Cutout);
+        }
+        public HediffComp_Turret turretComp;
     }
 }

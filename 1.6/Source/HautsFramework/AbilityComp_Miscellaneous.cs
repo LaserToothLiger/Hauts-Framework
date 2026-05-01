@@ -360,12 +360,14 @@ namespace HautsFramework
     }
     public class Dialog_GiveHediffFromMenu : Window
     {
-        public Dialog_GiveHediffFromMenu(CompAbilityEffect_GiveHediffFromMenuBase ability, List<Pawn> pawns, Pawn other, Pawn caster, List<HediffDef> hediffs, string menuLabel, string menuLabelPlural, bool removesOtherOptionsFromPawn = false, HediffDef removeThisAfterGrantingOption = null)
+        public Dialog_GiveHediffFromMenu(CompAbilityEffect_GiveHediffFromMenuBase ability, List<Pawn> pawns, Pawn other, Pawn caster, List<HediffDef> hediffs, string menuLabel, string menuLabelPlural, bool removesOtherOptionsFromPawn = false, HediffDef removeThisAfterGrantingOption = null, float baseDurationSecs = 1000, StatDef targetScalarStat = null)
         {
             this.pawns = pawns;
             this.other = other;
             this.caster = caster;
             this.ability = ability;
+            this.baseDurationSecs = baseDurationSecs;
+            this.targetScalarStat = targetScalarStat;
             this.forcePause = true;
             this.doCloseButton = false;
             this.doCloseX = true;
@@ -458,7 +460,12 @@ namespace HautsFramework
         }
         public void AffectPawn(Pawn p)
         {
-            HautsMiscUtility.AddHediffFromMenu(this.chosenHediff, p, this.ability, this.other, this.caster, this.removesOtherOptionsFromPawn ? this.possibleHediffs : null);
+            if (this.ability != null)
+            {
+                HautsMiscUtility.AddHediffFromMenu(this.chosenHediff, p, this.ability, this.other, this.caster, this.removesOtherOptionsFromPawn ? this.possibleHediffs : null);
+            } else {
+                HautsMiscUtility.AddHediffFromMenu(this.chosenHediff, p, this.baseDurationSecs, this.targetScalarStat, this.other, this.caster, this.removesOtherOptionsFromPawn ? this.possibleHediffs : null);
+            }
             if (this.removeThisAfterGrantingOption != null)
             {
                 foreach (Hediff h in p.health.hediffSet.hediffs)
@@ -502,6 +509,8 @@ namespace HautsFramework
         private Vector2 scrollPosition;
         private bool removesOtherOptionsFromPawn;
         private HediffDef removeThisAfterGrantingOption;
+        private float baseDurationSecs;
+        private StatDef targetScalarStat;
     }
     /*Gives hediffs to the target and/or destination Pawns (can be different hediffs in each case) and “pairs” them together if they have the PairedHediff comp.
      * If a given hediff has the Link comp, it will also link to the other party.

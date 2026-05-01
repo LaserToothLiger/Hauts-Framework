@@ -249,22 +249,6 @@ namespace HautsFramework
             {
                 ModCompatibilityUtility.isHighFantasy = ModsConfig.IsActive("Joe.RPGAdventureFlavour.Fork");
             }
-            //Hauts_HeatDamageFactor is hardcoded to apply to Flame, instead of being handled in an xpath patch, to avoid AcidBurn and ElectricalBurn inheriting its SDFS
-            Dictionary<StatDef, float> flameSDFS = new Dictionary<StatDef, float>
-            {
-                { HautsDefOf.Hauts_HeatDamageFactor, 1f }
-            };
-            if (DamageDefOf.Flame.modExtensions == null)
-            {
-                DamageDefOf.Flame.modExtensions = new List<DefModExtension>();
-            }
-            SpecificDamageFactorStats sdfs = DamageDefOf.Flame.GetModExtension<SpecificDamageFactorStats>();
-            if (sdfs != null)
-            {
-                sdfs.factorStats.Add(HautsDefOf.Hauts_HeatDamageFactor, 1f);
-            } else {
-                DamageDefOf.Flame.modExtensions.Add(new SpecificDamageFactorStats(flameSDFS));
-            }
             ModCompatibilityUtility.combatIsExtended = ModsConfig.IsActive("CETeam.CombatExtended");
             Log.Message("Hauts_Initialize".Translate().CapitalizeFirst());
         }
@@ -926,8 +910,7 @@ namespace HautsFramework
                 {
                     if (pawn.PositionHeld.IsValid && pawn.MapHeld != null)
                     {
-                        ThingWithComps thingWithComps;
-                        pawn.equipment.TryDropEquipment(pawn.equipment.Primary, out thingWithComps, pawn.PositionHeld, false);
+                        pawn.equipment.TryDropEquipment(pawn.equipment.Primary, out ThingWithComps thingWithComps, pawn.PositionHeld, false);
                     } else {
                         pawn.equipment.DestroyEquipment(pawn.equipment.Primary);
                     }
@@ -1121,14 +1104,9 @@ namespace HautsFramework
             {
                 if (dinfo.Def != null)
                 {
-                    SpecificDamageFactorStats sdfs = dinfo.Def.GetModExtension<SpecificDamageFactorStats>();
-                    if (sdfs != null && !sdfs.factorStats.NullOrEmpty())
-                    {
-                        foreach (KeyValuePair<StatDef, float> kvp in sdfs.factorStats)
-                        {
-                            dinfo.SetAmount(dinfo.Amount * Math.Max(0f, ((__instance.GetStatValue(kvp.Key) - 1f) * kvp.Value) + 1f));
-                        }
-                    }
+                    float amount = dinfo.Amount;
+                    HautsMiscUtility.ApplySpecificDamageFactors(__instance,dinfo.Def,ref amount);
+                    dinfo.SetAmount(amount);
                 }
                 if (dinfo.Amount > 0f)
                 {

@@ -717,6 +717,21 @@
 		</match>
 	</Operation>
 	
+	<!--Expanded Incidents (Continued)-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Expanded Incidents (Continued)</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/IncidentDef[defName="Quarrel" or defName="Clique" or defName="Sabotage" or defName="Thief"]</xpath>
+			<value>
+				<li Class="HautsFramework.BelongsToEventPool">
+					<bad>true</bad>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	
 	<!--fray of the fog-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>
@@ -851,7 +866,22 @@
 		</match>
 	</Operation>
 	
-	<!--M-->
+	<!--More Crashed Ship Parts-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>More Crashed Ship Parts</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/IncidentDef[defName="DolinskajaFireShipPartCrash" or defName="DolinskajaLightningShipPartCrash" or defName="DolinskajaEMPShipPartCrash"]</xpath>
+			<value>
+				<li Class="HautsFramework.BelongsToEventPool">
+					<bad>true</bad>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	
+	<!--Mythic ages: megafauna bestiary-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 			<li>Mythic Ages: Megafauna Bestiary</li>
@@ -899,6 +929,33 @@
 					<good>true</good>
 				</li>
 			</value>
+		</match>
+	</Operation>
+	
+	<!--sparkling worlds, more events-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Sparkling Worlds Addon - More Events - Standalone Addon</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="ShipCrashSW" or defName="ThrumboSightingSW" or defName="TradeFairSW" or defName="HuntingLodgeOppSW" or defName="WeaponsCachePodCrashSW"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="PsychicEmitterActivationSW" or defName="InsectHiveDropSW"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+			</operations>
 		</match>
 	</Operation>
 	

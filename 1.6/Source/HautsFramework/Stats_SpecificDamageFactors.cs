@@ -14,14 +14,25 @@ namespace HautsFramework
     public class SpecificDamageFactorStats : DefModExtension
     {
         public SpecificDamageFactorStats() { }
-        //Flame's SDFS needs to not be inherited by its children AcidBurn and ElectricalBurn, so we have to add it post inheritance, so we can't do it in xpath. We declare it after all the Harmony patches
         public SpecificDamageFactorStats(Dictionary<StatDef,float> dict)
         {
             this.factorStats = dict;
         }
         public Dictionary<StatDef, float> factorStats;
     }
-
+    /*some damagedefs are parents of others in the XML, and their children will inherit all their SDFS, overriding any SDFS you would otherwise xpath into them.
+     * This is good most of the time! But, to use a purely non-modded example, Anomaly's ElectricBurn is a child of Flame, so it would only be resisted by heat resist and not electric resist.
+     * So sometimes we need to sidestep parent inheritance. Parents SHOULD NOT GET an SDFS, they should get this instead, which wouldn't override any SDFS declared for children.
+     * The patch that applies the effects of SDFS first looks for any regular SDFS a damage def has, and ONLY IF it can't find one does it look for an SDFS_FPS.*/
+    public class SpecificDamageFactorStats_ForParentStats : DefModExtension
+    {
+        public SpecificDamageFactorStats_ForParentStats() { }
+        public SpecificDamageFactorStats_ForParentStats(Dictionary<StatDef, float> dict)
+        {
+            this.factorStats = dict;
+        }
+        public Dictionary<StatDef, float> factorStats;
+    }
     /*OUTDATED - previous approach to doing this, which was clunkier to use (only applicable to hediffs rather than any source of stats) and did not 'survive' the Hot Reload Defs dev tool.
      * I have removed all functionality for the below, do not use them*/
     [Obsolete]
