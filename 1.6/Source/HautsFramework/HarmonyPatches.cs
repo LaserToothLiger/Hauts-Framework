@@ -244,12 +244,45 @@ namespace HautsFramework
             //ignore natural goodwill's influence on the amount of goodwill gained or lost by a particular HED
             harmony.Patch(AccessTools.Method(typeof(Faction), nameof(Faction.TryAffectGoodwillWith)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsTryAffectGoodwillWithPrefix)));
-            ModCompatibilityUtility.isHighFantasy = ModsConfig.IsActive("MrSamuelStreamer.RPGAdventureFlavour.DEV");
-            if (!ModCompatibilityUtility.isHighFantasy)
-            {
-                ModCompatibilityUtility.isHighFantasy = ModsConfig.IsActive("Joe.RPGAdventureFlavour.Fork");
-            }
+            //determine whether certain mods are active so we can check for their presence quickly if needed
+            ModCompatibilityUtility.isHighFantasy = ModsConfig.IsActive("MrSamuelStreamer.RPGAdventureFlavour.DEV") || ModsConfig.IsActive("Joe.RPGAdventureFlavour.Fork");
             ModCompatibilityUtility.combatIsExtended = ModsConfig.IsActive("CETeam.CombatExtended");
+            ModCompatibilityUtility.psycastsAreVanillaExpanded = ModsConfig.IsActive("VanillaExpanded.VPsycastsE");
+            foreach (DamageDef dd in DefDatabase<DamageDef>.AllDefs)
+            {
+                SpecificDamageFactorStats sdfs = dd.GetModExtension<SpecificDamageFactorStats>();
+                if (sdfs != null && !sdfs.factorStats.NullOrEmpty())
+                {
+                    foreach (KeyValuePair<StatDef, float> kvp in sdfs.factorStats)
+                    {
+                        if (!HautsMiscUtility.cachedSpecificDamageFactorStatHyperlinks.ContainsKey(kvp.Key))
+                        {
+                            HautsMiscUtility.cachedSpecificDamageFactorStatHyperlinks.Add(kvp.Key,new List<DamageDef>() { dd });
+                        } else {
+                            HautsMiscUtility.cachedSpecificDamageFactorStatHyperlinks[kvp.Key].Add(dd);
+                        }
+                    }
+                } else {
+                    SpecificDamageFactorStats_ForParentStats fps = dd.GetModExtension<SpecificDamageFactorStats_ForParentStats>();
+                    if (fps != null && !fps.factorStats.NullOrEmpty())
+                    {
+                        foreach (KeyValuePair<StatDef, float> kvp in fps.factorStats)
+                        {
+                            if (!HautsMiscUtility.cachedSpecificDamageFactorStatHyperlinks.ContainsKey(kvp.Key))
+                            {
+                                HautsMiscUtility.cachedSpecificDamageFactorStatHyperlinks.Add(kvp.Key, new List<DamageDef>() { dd });
+                            } else {
+                                HautsMiscUtility.cachedSpecificDamageFactorStatHyperlinks[kvp.Key].Add(dd);
+                            }
+                        }
+                    }
+                }
+            }
+            //prompt the sdfs stats to fill out their descriptions with affected damage stats. I did try doing this with hyperlinks in a custom stat worker, but the infocard for a damagedef is so minimal that it just felt like a waste
+            foreach (SpecificDamageFactorStatDef sdfs in DefDatabase<SpecificDamageFactorStatDef>.AllDefs)
+            {
+                sdfs.ResolveReferences();
+            }
             Log.Message("Hauts_Initialize".Translate().CapitalizeFirst());
         }
         internal static object GetInstanceField(Type type, object instance, string fieldName)

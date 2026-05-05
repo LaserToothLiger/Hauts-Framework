@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="CE_ArmorPenetrationStatPatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Verbs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

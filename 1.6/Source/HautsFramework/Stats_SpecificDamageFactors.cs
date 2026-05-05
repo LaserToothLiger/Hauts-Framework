@@ -33,6 +33,42 @@ namespace HautsFramework
         }
         public Dictionary<StatDef, float> factorStats;
     }
+    //any given incoming specific damage factor stat should display a list of each affected damage def
+    /*public class StatWorker_HyperlinkAllAffectedDamageDefs : StatWorker
+    {
+        public override IEnumerable<Dialog_InfoCard.Hyperlink> GetInfoCardHyperlinks(StatRequest statRequest)
+        {
+            foreach (Dialog_InfoCard.Hyperlink hyperlink in base.GetInfoCardHyperlinks(statRequest))
+            {
+                yield return hyperlink;
+            }
+            HautsMiscUtility.cachedSpecificDamageFactorStatHyperlinks.TryGetValue(this.stat,out List<DamageDef> dds);
+            if (!dds.NullOrEmpty())
+            {
+                foreach (DamageDef dd in dds)
+                {
+                    yield return new Dialog_InfoCard.Hyperlink(dd, -1);
+                }
+            }
+            yield break;
+        }
+    }*/
+    public class SpecificDamageFactorStatDef : StatDef
+    {
+        public override void ResolveReferences()
+        {
+            base.ResolveReferences();
+            HautsMiscUtility.cachedSpecificDamageFactorStatHyperlinks.TryGetValue(this, out List<DamageDef> dds);
+            if (!dds.NullOrEmpty())
+            {
+                this.description += "\n\n" + "Hauts_AffectsTheseDamageTypes".Translate() + ":";
+                foreach (DamageDef dd in dds)
+                {
+                    this.description += "\n" + dd.LabelCap + " (" + dd.modContentPack.Name + ")";
+                }
+            }
+        }
+    }
     /*OUTDATED - previous approach to doing this, which was clunkier to use (only applicable to hediffs rather than any source of stats) and did not 'survive' the Hot Reload Defs dev tool.
      * I have removed all functionality for the below, do not use them*/
     [Obsolete]

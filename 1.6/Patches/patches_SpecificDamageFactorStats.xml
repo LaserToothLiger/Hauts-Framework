@@ -359,13 +359,29 @@
 					<xpath>/Defs/DamageDef[defName="CoolPsycasts_GammaRadiation"]</xpath>
 					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>1</value></li></factorStats></li></value>
 				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="CoolPsycasts_GravityPulseDD"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>0.5</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="CoolPsycasts_AntiPsycasterDD"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
 				<li Class="PatchOperationFindMod">
 					<mods>
 					  <li>Combat Extended</li>
 					</mods>
-					<nomatch Class="PatchOperationAddModExtension">
-						<xpath>/Defs/DamageDef[defName="CoolPsycasts_SkipCut"]</xpath>
-						<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_SkipDamageFactor</key><value>1</value></li></factorStats></li></value>
+					<nomatch Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/DamageDef[defName="CoolPsycasts_SkipCut"]</xpath>
+								<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_SkipDamageFactor</key><value>1</value></li></factorStats></li></value>
+							</li>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/DamageDef[defName="CoolPsycasts_GravityPulseArchotechDD"]</xpath>
+								<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>0.5</value></li></factorStats></li></value>
+							</li>
+						</operations>
 					</nomatch>
 				</li>
 			</operations>

@@ -52,7 +52,11 @@ namespace HautsFramework
         {
 
         }
-        //vpe tools. self-explanatory checks for the first two
+        //vpe tools. self-explanatory checks for the first three
+        public static bool PsycastsAreVanillaExpanded()
+        {
+            return ModCompatibilityUtility.psycastsAreVanillaExpanded;
+        }
         public static bool IsVPEPsycast(VEF.Abilities.Ability ability)
         {
             return false;
@@ -89,5 +93,6 @@ namespace HautsFramework
         }
         public static bool isHighFantasy;
         public static bool combatIsExtended;
+        public static bool psycastsAreVanillaExpanded;
     }
 }

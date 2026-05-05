@@ -434,5 +434,6 @@ namespace HautsFramework
             }
             return (pme.allowAnyFlesh && p.RaceProps.IsFlesh) || (pme.allowAnyNonflesh && !p.RaceProps.IsFlesh) || ((pme.allowDryads || !p.RaceProps.Dryad) && (pme.allowEntities || !p.RaceProps.IsAnomalyEntity) && (pme.allowInsectoids || !p.RaceProps.Insect) && (pme.allowMechs || !p.RaceProps.IsMechanoid) && (pme.allowDrones || !p.RaceProps.IsDrone) && (pme.allowAnimals || !p.RaceProps.Animal) && (pme.allowHumanlikes || !p.RaceProps.Humanlike));
         }
+        public static Dictionary<StatDef, List<DamageDef>> cachedSpecificDamageFactorStatHyperlinks = new Dictionary<StatDef, List<DamageDef>>();
     }
 }
