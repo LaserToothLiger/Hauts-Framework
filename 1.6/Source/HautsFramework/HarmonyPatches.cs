@@ -244,6 +244,9 @@ namespace HautsFramework
             //ignore natural goodwill's influence on the amount of goodwill gained or lost by a particular HED
             harmony.Patch(AccessTools.Method(typeof(Faction), nameof(Faction.TryAffectGoodwillWith)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsTryAffectGoodwillWithPrefix)));
+            //pawns of a trader kind def that DoesntHaveToSellAnythingToTrade can be interacted w even if they don't actually sell anything
+            harmony.Patch(AccessTools.Property(typeof(Pawn_TraderTracker), nameof(Pawn_TraderTracker.CanTradeNow)).GetGetMethod(),
+                           postfix: new HarmonyMethod(patchType, nameof(HautsCanTradeNowPostfix)));
             //determine whether certain mods are active so we can check for their presence quickly if needed
             ModCompatibilityUtility.isHighFantasy = ModsConfig.IsActive("MrSamuelStreamer.RPGAdventureFlavour.DEV") || ModsConfig.IsActive("Joe.RPGAdventureFlavour.Fork");
             ModCompatibilityUtility.combatIsExtended = ModsConfig.IsActive("CETeam.CombatExtended");
@@ -533,7 +536,7 @@ namespace HautsFramework
         }
         public static void HautsCheckMeditationScheduleTeachOpportunityPostfix(Pawn pawn)
         {
-            pawn.psychicEntropy.OffsetPsyfocusDirectly((pawn.GetStatValue(HautsDefOf.Hauts_PsyfocusRegenRate)+Pawn_PsychicEntropyTracker.FallRatePerPsyfocusBand[pawn.psychicEntropy.PsyfocusBand]) / 400f);
+            ModCompatibilityUtility.OffsetPsyfocusButMaybeNotXp(Hauts_Mod.settings.vpeXpFromPsyfocusRegen, pawn.psychicEntropy, (pawn.GetStatValue(HautsDefOf.Hauts_PsyfocusRegenRate) + Pawn_PsychicEntropyTracker.FallRatePerPsyfocusBand[pawn.psychicEntropy.PsyfocusBand]) / 400f);
         }
         public static void HautsNotify_PawnKilledPostfix(Pawn killed, Pawn killer)
         {
@@ -550,7 +553,7 @@ namespace HautsFramework
                         psyfocus *= 0.75f;
                     }
                 }
-                psychicEntropy.OffsetPsyfocusDirectly(psyfocus);
+                ModCompatibilityUtility.OffsetPsyfocusButMaybeNotXp(Hauts_Mod.settings.vpeXpFromPsyfocusOnKill, psychicEntropy, psyfocus);
             }
         }
         public static bool HautsGainFilthPrefix(Pawn_FilthTracker __instance)
@@ -619,7 +622,7 @@ namespace HautsFramework
                 Pawn_PsychicEntropyTracker psychicEntropy = ingester.psychicEntropy;
                 if (psychicEntropy != null && ingester.GetStatValue(HautsDefOf.Hauts_PsyfocusFromFood) != 0f)
                 {
-                    psychicEntropy.OffsetPsyfocusDirectly(__result * ingester.GetStatValue(HautsDefOf.Hauts_PsyfocusFromFood));
+                    ModCompatibilityUtility.OffsetPsyfocusButMaybeNotXp(Hauts_Mod.settings.vpeXpFromPsyfocusPerNutrition, psychicEntropy, __result * ingester.GetStatValue(HautsDefOf.Hauts_PsyfocusFromFood));
                 }
             }
         }
@@ -1522,6 +1525,15 @@ namespace HautsFramework
                 __result = true;
             }
             return false;
+        }
+        //trader kind def dme
+        public static void HautsCanTradeNowPostfix(ref bool __result, Pawn_TraderTracker __instance)
+        {
+            if (!__result && __instance.traderKind.HasModExtension<DoesntHaveToSellAnythingToTrade>() && __instance.traderKind.tradeCurrency != TradeCurrency.Favor)
+            {
+                Pawn pawn = GetInstanceField(typeof(Pawn_TraderTracker), __instance, "pawn") as Pawn;
+                __result = !pawn.Dead && pawn.Spawned && pawn.mindState.wantsToTradeWithColony && pawn.CanCasuallyInteractNow(false, false, false, false) && !pawn.Downed && !pawn.IsPrisoner && pawn.Faction != Faction.OfPlayer && (pawn.Faction == null || !pawn.Faction.HostileTo(Faction.OfPlayer));
+            }
         }
     }
 }

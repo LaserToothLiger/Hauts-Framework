@@ -13,6 +13,14 @@
 <Hauts_TooltipOSC>If enabled, grants -1% overdose susceptibility per level of medical skill.</Hauts_TooltipOSC>
 <Hauts_SettingPSC>Social skill affects pilfering stealth</Hauts_SettingPSC>
 <Hauts_TooltipPSC>If enabled, grants +0.01x pilfering stealth per level of social skill. Note, however, that the base value for pilfering stealth is 0, and only the Biotech DLC or certain other mods (such as Hauts' Added Traits or Vanilla Skills Expanded) provide sources of flat pilfering stealth.</Hauts_TooltipPSC>
+<Hauts_SettingVPEXPregen>Gain Vanilla Psycasts Expanded xp from "psyfocus per day"</Hauts_SettingVPEXPregen>
+<Hauts_TooltipVPEXPregen>If enabled, psyfocus gained through the psyfocus per day stat generates xp.</Hauts_TooltipVPEXPregen>
+<Hauts_SettingVPEXPrefund>Gain Vanilla Psycasts Expanded xp from "psycast focus refund"</Hauts_SettingVPEXPrefund>
+<Hauts_TooltipVPEXPrefund>If enabled, psyfocus gained through the psyfocus focus refund stat generates xp.</Hauts_TooltipVPEXPrefund>
+<Hauts_SettingVPEXPonKill>Gain Vanilla Psycasts Expanded xp from "psyfocus gain on kill"</Hauts_SettingVPEXPonKill>
+<Hauts_TooltipVPEXPonKill>If enabled, psyfocus gained through the psyfocus gain on kill stat generates xp.</Hauts_TooltipVPEXPonKill>
+<Hauts_SettingVPEXPonFood>Gain Vanilla Psycasts Expanded xp from "psyfocus gain per nutrition"</Hauts_SettingVPEXPonFood>
+<Hauts_TooltipVPEXPonFood>If enabled, psyfocus gained through the psyfocus gain per nutrition stat generates xp.</Hauts_TooltipVPEXPonFood>
 <!--UI-->
 <Hauts_AbilityNeedsHigherStatToUse>Requires at least {0} {1}.</Hauts_AbilityNeedsHigherStatToUse>
 <HVT_JumpRangeFactorScalar>Jump range factor</HVT_JumpRangeFactorScalar>
@@ -129,5 +137,15 @@
 <HVT_SettingMinTraits>Minimum traits per pawn</HVT_SettingMinTraits>
 <HVT_TooltipMinTraits>The lowest number of traits a pawn can spawn with, barring particularly unusual circumstances.\n\nPawns young enough to still go through growth moments (Biotech DLC) are unaffected.</HVT_TooltipMinTraits>
 <HVT_SettingMaxTraits>Maximum traits per pawn</HVT_SettingMaxTraits>
-<HVT_TooltipMaxTraits>Pawns will be able to spawn with up to this many traits, except in rare circumstances that force additional traits.\n\n\nWith the Biotech DLC, the number and spacing of growth moments for children adjusts as follows:\n\n3 max traits) Growth moments happen on the 7th, 10th, and 13th birthdays; growth points gain at the usual rate (25% slower for the first one, then at 1x speed).\n\n4mt) Growth moments on bdays 6, 9, 11, and 13; growth points gain 50% faster for the last two.\n\n5mt) Growth moments on bdays 5, 7, 9, 11, and 13; growth points gain 50% faster.\n\n6mt) Identical to 3mt, but there are two growth moments for each such birthday.\n\n7mt) One growth moment on bday 6, and two growth moments on bdays 9, 11, and 13; growth points gain 50% faster for the last two.\n\n8mt) Two growth moments each on bdays 6, 9, 11, and 13; growth points gain 50% faster for the last two.\n\n9mt) Identical to 3mt, but there are three growth moments for each such birthday.</HVT_TooltipMaxTraits>
+<HVT_TooltipMaxTraits>Pawns will be able to spawn with up to this many traits, except in rare circumstances that force additional traits.\n\n\nWith the Biotech DLC, the number and spacing of growth moments for children adjusts as follows:
+\n-3 max traits) Growth moments happen on the 7th, 10th, and 13th birthdays; growth points gain at the usual rate (25% slower for the first one, then at 1x speed).
+\n-4mt) Moments on bdays 6, 9, 11, 13; growth points gain 50% faster for the last two.
+\n-5mt) Moments on bdays 5, 7, 9, 11, 13; points gain 50% faster.
+\n-6mt) Identical to 3mt, but there are two moments per bday.
+\n-7mt) One moment on bday 6; two on bdays 9, 11, 13; points gain 50% faster for the last two.
+\n-8mt) Two moments each on bdays 6, 9, 11, 13; points gain 50% faster for the last two.
+\n-9mt) Identical to 3mt, but there are three moments per bday.
+\n-10mt) Two moments on bdays 5, 7, 9, 11, 13; points gain 50% faster.
+\n-11mt) Two moments on bday 6; three on bdays 9, 11, 13; points gain 50% faster for the last two.
+\n-12mt) Three moments on bdays 6, 9, 11, 13; points gain 50% faster for the last two.</HVT_TooltipMaxTraits>
 </LanguageData>

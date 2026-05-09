@@ -74,6 +74,10 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="EnergyBolt"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/DamageDef[defName="Psychic"]</xpath>
 					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
 				</li>

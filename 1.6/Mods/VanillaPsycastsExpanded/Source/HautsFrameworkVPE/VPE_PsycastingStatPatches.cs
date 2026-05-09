@@ -15,6 +15,8 @@ namespace HautsFrameworkVPE
         static HautsFrameworkVPE()
         {
             Harmony harmony = new Harmony(id: "rimworld.hautarche.hautsframeworkvpe.main");
+            harmony.Patch(AccessTools.Method(typeof(ModCompatibilityUtility), nameof(ModCompatibilityUtility.OffsetPsyfocusButMaybeNotXp)),
+                            prefix: new HarmonyMethod(patchType, nameof(HautsOffsetPsyfocusButMaybeNotXpPrefix)));
             harmony.Patch(AccessTools.Method(typeof(AbilityExtension_Psycast), nameof(AbilityExtension_Psycast.GetPsyfocusUsedByPawn)),
                             postfix: new HarmonyMethod(patchType, nameof(HautsVPEGetPsyfocusUsedByPawnPostfix)));
             harmony.Patch(AccessTools.Method(typeof(AbilityExtension_Psycast), nameof(AbilityExtension_Psycast.Cast), new[] { typeof(GlobalTargetInfo[]), typeof(VEF.Abilities.Ability) }),
@@ -31,6 +33,17 @@ namespace HautsFrameworkVPE
                             postfix: new HarmonyMethod(patchType, nameof(HautsVPEUnlockAbilityPostfix)));
             harmony.Patch(AccessTools.Method(typeof(ModCompatibilityUtility), nameof(ModCompatibilityUtility.VPESetSkillPointsAndExperienceTo)),
                             postfix: new HarmonyMethod(patchType, nameof(HautsVPESetSkillPointsAndExperiencePostfix)));
+        }
+        public static bool HautsOffsetPsyfocusButMaybeNotXpPrefix(bool xpGainIsOk, Pawn_PsychicEntropyTracker psychicEntropy, float psyfocus)
+        {
+            float xpPerPercent = PsycastsMod.Settings.XPPerPercent;
+            if (!xpGainIsOk)
+            {
+                PsycastsMod.Settings.XPPerPercent = 0f;
+            }
+            psychicEntropy.OffsetPsyfocusDirectly(psyfocus);
+            PsycastsMod.Settings.XPPerPercent = xpPerPercent;
+            return false;
         }
         //applies the effect of T1 psycast cost offset to VPE casts: here, it IS actually an offset since VPE lets us do that, rather than a refund exclusive to 1st-level casts
         public static void HautsVPEGetPsyfocusUsedByPawnPostfix(ref float __result, AbilityExtension_Psycast __instance, Pawn pawn)
@@ -69,7 +82,7 @@ namespace HautsFrameworkVPE
                     }
                 }
                 float psyfocus = Math.Min(__instance.GetPsyfocusUsedByPawn(pawn), HautsMiscUtility.TotalPsyfocusRefund(pawn, __instance.GetPsyfocusUsedByPawn(pawn), ability.def.abilityClass == typeof(Ability_WordOf), Stats_AbilityRangesUtility.IsSkipAbility(ability.def)));
-                pawn.psychicEntropy.OffsetPsyfocusDirectly(psyfocus);
+                ModCompatibilityUtility.OffsetPsyfocusButMaybeNotXp(Hauts_Mod.settings.vpeXpFromPsycastRefund,pawn.psychicEntropy,psyfocus);
                 /*Hediff_PsycastAbilities psylink = pawn.Psycasts();
                 if (psyfocus > 0f && psylink != null)
                 {

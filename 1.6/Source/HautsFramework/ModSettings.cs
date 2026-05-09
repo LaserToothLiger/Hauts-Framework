@@ -17,6 +17,10 @@ namespace HautsFramework
         public bool breachDamageConstruction = false;
         public bool overdoseSusceptibilityMedicine = false;
         public bool pilferingStealthSocial = false;
+        public bool vpeXpFromPsyfocusRegen = true;
+        public bool vpeXpFromPsycastRefund = false;
+        public bool vpeXpFromPsyfocusOnKill = true;
+        public bool vpeXpFromPsyfocusPerNutrition = true;
         public override void ExposeData()
         {
             Scribe_Values.Look(ref doForcedBodyTypes, "doForcedBodyTypes", true);
@@ -24,6 +28,10 @@ namespace HautsFramework
             Scribe_Values.Look(ref breachDamageConstruction, "breachDamageConstruction", false);
             Scribe_Values.Look(ref overdoseSusceptibilityMedicine, "overdoseSusceptibilityMedicine", false);
             Scribe_Values.Look(ref pilferingStealthSocial, "pilferingStealthSocial", false);
+            Scribe_Values.Look(ref vpeXpFromPsyfocusRegen, "vpeXpFromPsyfocusRegen", true);
+            Scribe_Values.Look(ref vpeXpFromPsycastRefund, "vpeXpFromPsycastRefund", false);
+            Scribe_Values.Look(ref vpeXpFromPsyfocusOnKill, "vpeXpFromPsyfocusOnKill", true);
+            Scribe_Values.Look(ref vpeXpFromPsyfocusPerNutrition, "vpeXpFromPsyfocusPerNutrition", true);
             base.ExposeData();
         }
     }
@@ -42,6 +50,13 @@ namespace HautsFramework
             listingStandard.CheckboxLabeled("Hauts_SettingBDFC".Translate(), ref settings.breachDamageConstruction, "Hauts_TooltipBDFC".Translate());
             listingStandard.CheckboxLabeled("Hauts_SettingOSC".Translate(), ref settings.overdoseSusceptibilityMedicine, "Hauts_TooltipOSC".Translate());
             listingStandard.CheckboxLabeled("Hauts_SettingPSC".Translate(), ref settings.pilferingStealthSocial, "Hauts_TooltipPSC".Translate());
+            if (ModCompatibilityUtility.PsycastsAreVanillaExpanded())
+            {
+                listingStandard.CheckboxLabeled("Hauts_SettingVPEXPregen".Translate(), ref settings.vpeXpFromPsyfocusRegen, "Hauts_TooltipVPEXPregen".Translate());
+                listingStandard.CheckboxLabeled("Hauts_SettingVPEXPrefund".Translate(), ref settings.vpeXpFromPsycastRefund, "Hauts_TooltipVPEXPrefund".Translate());
+                listingStandard.CheckboxLabeled("Hauts_SettingVPEXPonKill".Translate(), ref settings.vpeXpFromPsyfocusOnKill, "Hauts_TooltipVPEXPonKill".Translate());
+                listingStandard.CheckboxLabeled("Hauts_SettingVPEXPonFood".Translate(), ref settings.vpeXpFromPsyfocusPerNutrition, "Hauts_TooltipVPEXPonFood".Translate());
+            }
             listingStandard.End();
             base.DoSettingsWindowContents(inRect);
         }

@@ -104,6 +104,7 @@
     <Compile Include="Stats_Miscellaneous.cs" />
     <Compile Include="ThingComps.cs" />
     <Compile Include="ThoughtMechanics.cs" />
+    <Compile Include="TraderMechanics.cs" />
     <Compile Include="TraitModExtensions.cs" />
     <Compile Include="Verbs.cs" />
   </ItemGroup>

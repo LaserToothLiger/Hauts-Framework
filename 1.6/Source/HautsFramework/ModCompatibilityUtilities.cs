@@ -57,6 +57,10 @@ namespace HautsFramework
         {
             return ModCompatibilityUtility.psycastsAreVanillaExpanded;
         }
+        public static void OffsetPsyfocusButMaybeNotXp(bool xpGainIsOk, Pawn_PsychicEntropyTracker psychicEntropy, float psyfocus)
+        {
+            psychicEntropy.OffsetPsyfocusDirectly(psyfocus);
+        }
         public static bool IsVPEPsycast(VEF.Abilities.Ability ability)
         {
             return false;

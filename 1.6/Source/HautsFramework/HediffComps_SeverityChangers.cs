@@ -1330,6 +1330,8 @@ float defaultSeverity: if none of the prior conditions are fulfilled, the hediff
         }
         public float defaultSeverity;
         public int periodicity = 250;
+        public float? setToInSpace;
+        public float? incrementInSpace;
         public Dictionary<PlanetLayerDef, float> setToInLayer;
         public Dictionary<PlanetLayerDef, float> incrementInLayer;
     }
@@ -1347,6 +1349,19 @@ float defaultSeverity: if none of the prior conditions are fulfilled, the hediff
             base.CompPostTickInterval(ref severityAdjustment, delta);
             if (this.Pawn.IsHashIntervalTick(this.Props.periodicity, delta) && this.Pawn.Tile != null && this.Pawn.Tile.Layer != null)
             {
+                if (this.Pawn.Tile.LayerDef.isSpace)
+                {
+                    if (this.Props.setToInSpace != null)
+                    {
+                        this.parent.Severity = (float)this.Props.setToInSpace;
+                        return;
+                    }
+                    if (this.Props.incrementInSpace != null)
+                    {
+                        this.parent.Severity += (float)this.Props.incrementInSpace;
+                        return;
+                    }
+                }
                 if (!this.Props.setToInLayer.NullOrEmpty() && this.Props.setToInLayer.TryGetValue(this.Pawn.Tile.LayerDef, out float value))
                 {
                     this.parent.Severity = value;
