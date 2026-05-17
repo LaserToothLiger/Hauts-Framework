@@ -123,47 +123,4 @@
 		  </li>
 		</children>
 	  </EffecterDef>
-	  
-	  <EffecterDef MayRequire="Ludeon.RimWorld.Anomaly">
-		<defName>Hauts_DarkPsychicShockwave</defName>
-		<maintainTicks>120</maintainTicks>
-		<children>
-		  <li>
-			<subEffecterClass>SubEffecter_SprayerTriggered</subEffecterClass>
-			<fleckDef>ExpandingDistortionRing</fleckDef>
-			<spawnLocType>OnTarget</spawnLocType>
-			<burstCount>1</burstCount>
-			<positionRadius>0</positionRadius>
-			<positionRadiusMin>0</positionRadiusMin>
-			<scale>.4</scale>
-			<rotation>0</rotation>
-			<rotationRate>0</rotationRate>
-			<angle>0~0</angle>
-			<speed>0</speed>
-			<attachToSpawnThing>true</attachToSpawnThing>
-		  </li>
-		  <li>
-			<subEffecterClass>SubEffecter_SprayerTriggered</subEffecterClass>
-			<fleckDef>PsychicRitual_Complete</fleckDef>
-			<spawnLocType>OnTarget</spawnLocType>
-			<burstCount>25</burstCount>
-			<positionRadius>1</positionRadius>
-			<positionRadiusMin>1</positionRadiusMin>
-			<scale>.2~.25</scale>
-			<rotation>50~120</rotation>
-			<rotationRate>-5~5</rotationRate>
-			<angle>0~0</angle>
-			<speed>6~9</speed>
-			<fleckUsesAngleForVelocity>True</fleckUsesAngleForVelocity>
-			<rotateTowardsTargetCenter>true</rotateTowardsTargetCenter>
-			<attachToSpawnThing>true</attachToSpawnThing>
-		  </li>
-		  
-		  <li>
-			<subEffecterClass>SubEffecter_SoundTriggered</subEffecterClass>
-			<soundDef>PsychicRitual_Complete</soundDef>
-			<spawnLocType>OnSource</spawnLocType>
-		  </li>
-		</children>
-	  </EffecterDef>
 </Defs>
