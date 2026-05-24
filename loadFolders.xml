@@ -47,5 +47,6 @@
 		<li IfModActive="VPE.Neurophage.Sentinel">1.6/Mods/VPE_Neurophage</li>
 		<li IfModActive="VanillaExpanded.VPE.Puppeteer">1.6/Mods/VPE_Puppeteer</li>
 		<li IfModActive="CP.Uncle.Boris.Brainwash.Chair">1.6/Mods/UncleBorisBrainwashChair</li>
+		<li IfModActive="reo.RimScent">1.6/Mods/RimScent</li>
 	</v1.6>
 </loadFolders>

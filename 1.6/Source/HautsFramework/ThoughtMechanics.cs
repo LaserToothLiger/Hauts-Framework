@@ -32,4 +32,12 @@ namespace HautsFramework
             return true;
         }
     }
+    //situational social thought whose magnitude is multiplied by RimScent's smell stat and health capacity
+    public class Thought_SituationalSocial_RimScentScaling : Thought_SituationalSocial
+    {
+        public override float OpinionOffset()
+        {
+            return base.OpinionOffset() * ModCompatibilityUtility.RimScentFactorFor(this.pawn);
+        }
+    }
 }

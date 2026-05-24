@@ -78,9 +78,7 @@ namespace HautsFramework
                             this.AffectPawn(p);
                         }
                     }
-                }
-                else
-                {
+                } else {
                     foreach (Pawn p in GenRadial.RadialDistinctThingsAround(this.parent.PositionHeld, this.parent.MapHeld, this.FunctionalRange, true).OfType<Pawn>().Distinct<Pawn>())
                     {
                         if (this.ShouldAffectPawn(p))
@@ -106,13 +104,9 @@ namespace HautsFramework
                 if (this.faction == null)
                 {
                     return true;
-                }
-                else if (pawn.Faction == null && this.Props.affectNeutrals)
-                {
+                } else if (pawn.Faction == null && this.Props.affectNeutrals) {
                     return true;
-                }
-                else if (this.Props.affectEnemies && pawn.Faction.HostileTo(this.faction) || (this.Props.affectOwnFaction && pawn.Faction == this.faction))
-                {
+                } else if (this.Props.affectEnemies && pawn.Faction.HostileTo(this.faction) || (this.Props.affectOwnFaction && pawn.Faction == this.faction)) {
                     return true;
                 }
             }

@@ -52,6 +52,11 @@ namespace HautsFramework
         {
 
         }
+        //rimscent: get how much smell stat and health capacity a pawn has
+        public static float RimScentFactorFor(Pawn p)
+        {
+            return 1f;
+        }
         //vpe tools. self-explanatory checks for the first three
         public static bool PsycastsAreVanillaExpanded()
         {

@@ -813,6 +813,134 @@
 		</match>
 	</Operation>
 	
+	<!--leo events-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Leo - Events</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--the good-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="LE_ArtisticRenaissance" or defName="LE_AtmosphericExcitant" or defName="LE_BlackMarket" or defName="LE_DielectricResonance" or defName="LE_FavorableReputation" or defName="LE_Gift" or defName="LE_GravityLow"
+					or defName="LE_MagneticMiracle" or defName="LE_MassInspiration" or defName="LE_NutrientRain" or defName="LE_NutrientSurge" or defName="LE_PsychicCalm" or defName="LE_ResearchBreakthrough" or defName="LE_SilverShower"
+					or defName="LE_SuddenEpiphany" or defName="LE_VegetativeSpurt"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="LE_UnexpectedMineralSeams"]</xpath><!--provisional. there are a lot of comments on the Steam page about this particular event, unclear why that is but I suspect it has an unusual trigger-->
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<!--the good/bad-->
+				<li Class="PatchOperationAddModExtension"><!--rats ARE food. rat infestation is only bad if you're vegetarian-->
+					<xpath>/Defs/IncidentDef[defName="LE_AtmosphericHallucinogen" or defName="LE_MechaniteCloud" or defName="LE_RatInfestation" or defName="LE_SupplyChainShortage" or defName="LE_WashedUpFlotsam"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<!--the bad-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="LE_DielectricInterference" or defName="LE_DimensionalJitter" or defName="LE_DrySpell" or defName="LE_EconomicDepression" or defName="LE_EmberFallout" or defName="LE_FeralNeurotoxin" or defName="LE_FireSupportBase"
+					or defName="LE_ForwardOperatingBase" or defName="LE_GravityHigh" or defName="LE_InterdictionPoint" or defName="LE_MagneticDisruption" or defName="LE_MedicineSpoiled" or defName="LE_MigratingForests" or defName="LE_Mimic" or defName="LE_PowerDrain"
+					or defName="LE_PsychicAggression" or defName="LE_PsychicDeadzone" or defName="LE_ResearchSetback" or defName="LE_RiseTrees" or defName="LE_ScandalousInsult" or defName="LE_ShipCrash" or defName="LE_SubatomicTurbulence" or defName="LE_TurretMalfunction"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="LE_FrayedWires"]</xpath><!--some events should probably have a 'minor' tag, which MakeGood/BadEvent would have a toggle for as to whether or not these should even count-->
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<!--and the DLCs. har di har, please clap-->
+				<li Class="PatchOperationFindMod">
+					<mods>
+						<li>Royalty</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/IncidentDef[defName="LE_AnimaBloom"]</xpath>
+								<value>
+									<li Class="HautsFramework.BelongsToEventPool">
+										<good>true</good>
+									</li>
+								</value>
+							</li>
+						</operations>
+					</match>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
+						<li>Ideology</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/IncidentDef[defName="LE_GauranlenBloom" or defName="LE_RebelPlanExposed"]</xpath>
+								<value>
+									<li Class="HautsFramework.BelongsToEventPool">
+										<good>true</good>
+									</li>
+								</value>
+							</li>
+						</operations>
+					</match>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
+						<li>Biotech</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/IncidentDef[defName="LE_CargoPodsWastepack" or defName="LE_RaidEnemy_SanguophageHunter"]</xpath>
+								<value>
+									<li Class="HautsFramework.BelongsToEventPool">
+										<bad>true</bad>
+									</li>
+								</value>
+							</li>
+						</operations>
+					</match>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
+						<li>Odyssey</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/IncidentDef[defName="LE_ForceWeather_ToxRain"]</xpath>
+								<value>
+									<li Class="HautsFramework.BelongsToEventPool">
+										<bad>true</bad>
+									</li>
+								</value>
+							</li>
+						</operations>
+					</match>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
 	<!--mashed's ashlands-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>

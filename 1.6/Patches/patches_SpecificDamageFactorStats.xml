@@ -422,6 +422,31 @@
 	
 	<Operation Class="PatchOperationFindMod">
 		<mods>
+		  <li>MUSC_Zerg Mod</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="MUSC_WalkingScourge_BileSplash"]</xpath>
+					<value>
+						<li Class="HautsFramework.SpecificDamageFactorStats">
+							<factorStats>
+								<li><key>Hauts_AcidDamageFactor</key><value>1</value></li>
+								<li><key>Hauts_ToxicDamageFactor</key><value>0.5</value></li>
+							</factorStats>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="MUSC_PheromoneSplash"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
 		  <li>Obsidia Expansion</li>
 		</mods>
 		<match Class="PatchOperationSequence">
@@ -491,7 +516,7 @@
 					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>1</value></li></factorStats></li></value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/DamageDef[defName="Seg_COTO_PlasDamage"]</xpath>
+					<xpath>/Defs/DamageDef[defName="Seg_COTO_PlasDamage" or defName="PhosphorFlame"]</xpath>
 					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
 				</li>
 				<li Class="PatchOperationAddModExtension">

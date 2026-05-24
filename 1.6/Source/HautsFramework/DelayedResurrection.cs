@@ -42,6 +42,17 @@ namespace HautsFramework
                 this.pawns.Add(new Hauts_DelayedResurrection(corpse, initialRareTicks, explanationKey, shouldSendMessage, shouldTranslateMessage, preventRisingAsShambler, mutation, mutationSeverity));
             }
         }
+        public bool CorpseHasDelayedResurrection(Corpse corpse)
+        {
+            foreach (Hauts_DelayedResurrection hdr in this.pawns)
+            {
+                if (hdr.corpse == corpse)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         public void RemoveFromRoster(Corpse corpse)
         {
             for (int i = this.pawns.Count - 1; i >= 0; i--)
