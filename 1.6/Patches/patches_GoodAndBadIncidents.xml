@@ -1087,6 +1087,25 @@
 		</match>
 	</Operation>
 	
+	<!--Mythic ages: megafauna bestiary-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>The Army Of Fetid Corpses (Continued)</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="NecrotionFallout" or defName="CorruptedShip" or defName="Necronoid_Horde" or defName="Chupacabras_SilentRaid" or defName="CorruptedDropShip" or defName="NecronoidBiomass" or defName="Necronoid_CenterDropRaid" or defName="HowlingSpiders_SilentRaid" or defName="Wendigo_SilentRaid"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
 	<!--vanilla events expanded-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>

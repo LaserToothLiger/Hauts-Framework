@@ -51,6 +51,7 @@ namespace HautsF_Ideology
         public bool initiallyHidden;
         public bool requiredPreceptsOnly;
         //book strength
+        public float conversionIfNoBelieversExistFactor = 1f;
         public SimpleCurve conversionPerHour = new SimpleCurve
             {
                 {new CurvePoint(0f, 0.01f),true},
@@ -82,6 +83,7 @@ namespace HautsF_Ideology
                 {new CurvePoint(5f, 0f),true},
                 {new CurvePoint(6f, 0f),true},
             };
+        public bool upsetThoughtDisablesEffectsForNonbelievers = true;
     }
     public class BookOutcomeDoerPromoteIdeo : BookOutcomeDoer
     {
@@ -111,13 +113,9 @@ namespace HautsF_Ideology
                 if (author != null && author.Ideo != null && author.Spawned)
                 {
                     this.ideo = author.Ideo;
-                }
-                else if (Rand.Chance(this.Props.newIdeoChance))
-                {
+                } else if (Rand.Chance(this.Props.newIdeoChance)) {
                     this.MakeNewIdeo();
-                }
-                else
-                {
+                } else {
                     this.ideo = Find.IdeoManager.IdeosListForReading.RandomElement();
                 }
                 /*if (this.ideo != null)
@@ -137,9 +135,7 @@ namespace HautsF_Ideology
             if (parms.fixedIdeo)
             {
                 ideo = IdeoGenerator.MakeFixedIdeo(parms);
-            }
-            else
-            {
+            } else {
                 ideo = IdeoGenerator.GenerateIdeo(parms);
             }
             ideo.primaryFactionColor = new Color(Rand.Value, Rand.Value, Rand.Value, 1f);
@@ -149,6 +145,15 @@ namespace HautsF_Ideology
         public override void Reset()
         {
             this.OnBookGenerated(null);
+        }
+        public void SetIdeo(Ideo ideo, Pawn author)
+        {
+            this.ideo = ideo;
+            this.ValidateIdeo(author);
+            if (this.Parent is Book book)
+            {
+                book.GenerateBook(author,null);
+            }
         }
         public float ConversionPerHour
         {
@@ -246,12 +251,18 @@ namespace HautsF_Ideology
                             }
                             if (Rand.Chance(this.ChanceToUpsetPerHour * Math.Min(reader.GetStatValue(StatDefOf.ReadingSpeed), 1f) / 10f) && !ThoughtUtility.ThoughtNullified(reader, ThoughtDefOf.FailedConvertIdeoAttemptResentment))
                             {
-                                reader.needs.mood.thoughts.memories.TryGainMemory(this.Props.upsetOnFailedConversionThought, null, null);
+                                if (reader.needs.mood != null && reader.needs.mood.thoughts != null && reader.needs.mood.thoughts.memories != null)
+                                {
+                                    reader.needs.mood.thoughts.memories.TryGainMemory(this.Props.upsetOnFailedConversionThought, null, null);
+                                }
                                 this.ExtraUpsetEffect(reader, curCertainty);
-                            }
-                            else
-                            {
-                                if (reader.ideo.IdeoConversionAttempt(this.ConversionPerHour * reader.GetStatValue(StatDefOf.CertaintyLossFactor) * reader.GetStatValue(StatDefOf.ReadingSpeed) * this.ConversionPowerFromReaderTraits(reader) / 10f, this.ideo, true))
+                            } else if (!this.Props.upsetThoughtDisablesEffectsForNonbelievers || reader.needs.mood == null || reader.needs.mood.thoughts == null || reader.needs.mood.thoughts.memories == null || reader.needs.mood.thoughts.memories.GetFirstMemoryOfDef(this.Props.upsetOnFailedConversionThought) == null) {
+                                float conversionPerHour = this.ConversionPerHour;
+                                if (!Find.IdeoManager.IdeosListForReading.Contains(this.ideo))
+                                {
+                                    conversionPerHour *= this.Props.conversionIfNoBelieversExistFactor;
+                                }
+                                if (reader.ideo.IdeoConversionAttempt(conversionPerHour * reader.GetStatValue(StatDefOf.CertaintyLossFactor) * reader.GetStatValue(StatDefOf.ReadingSpeed) * this.ConversionPowerFromReaderTraits(reader) / 10f, this.ideo, true))
                                 {
                                     if (this.ideo.hidden)
                                     {
@@ -283,9 +294,7 @@ namespace HautsF_Ideology
                                 this.ExtraConversionEffect(reader, curCertainty, oldIdeo);
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         reader.ideo.OffsetCertainty(this.ReassurePerHour * reader.GetStatValue(StatDefOf.ReadingSpeed) * this.ConversionPowerFromReaderTraits(reader) / 10f);
                         this.ExtraReasurreEffect(reader, curCertainty);
                     }
@@ -355,9 +364,7 @@ namespace HautsF_Ideology
             if (this.ideoFoundInManager)
             {
                 Scribe_References.Look<Ideo>(ref this.ideo, "ideo", false);
-            }
-            else
-            {
+            } else {
                 Scribe_Deep.Look<Ideo>(ref this.ideo, "ideo", new object[] { });
             }
         }
@@ -455,7 +462,7 @@ namespace HautsF_Ideology
                 {
                     if (bod is BookOutcomeDoerPromoteIdeo bodpi && this.caller != null && this.caller.Ideo != null)
                     {
-                        bodpi.ideo = this.caller.Ideo;
+                        bodpi.SetIdeo(this.caller.Ideo, null);
                         break;
                     }
                 }

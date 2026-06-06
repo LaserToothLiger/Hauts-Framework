@@ -12,7 +12,7 @@
     <stages>
       <li>
         <label>literary conversion resentment</label>
-        <description>A book tried to convert me. I hate being proselytized this way.</description>
+        <description>A book tried to convert me. I hate being proselytized this way.\n\n&lt;color=#F46D6C&gt;(Prevents ideoligious books from reducing this character's certainty)&lt;/color&gt;</description>
         <baseMoodEffect>-5</baseMoodEffect>
       </li>
     </stages>

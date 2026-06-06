@@ -411,6 +411,115 @@
 	</Operation>
 	
 	<Operation Class="PatchOperationFindMod">
+		<mods><!--so... many... redundancies........-->
+			<li>Kraltech Industries Rebalanced (1.6)</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--so nova damage is explicitly explosive in nature, but also heavily implied to be an electrical energy attack. "NovaBlastShot", which seems to be unused?, is presumably the same-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="NovaShot" or defName="NovaBlastShot"]</xpath>
+					<value>
+					  <li Class="HautsFramework.SpecificDamageFactorStats">
+						<factorStats>
+						  <li><key>Hauts_ElectricalDamageFactor</key><value>0.5</value></li>
+						  <li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li>
+						</factorStats>
+					  </li>
+					</value>
+				</li>
+				<!--meanwhile charged blast is explicitly energy-based, BUUUUT it's also sharp and only ever used for explosions. These other things are also pretty clearly explosivos-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="ChargeBlast" or defName="ChargeBlastEX" or defName="BombUltra" or defName="AntiPersonel" or defName="ThunderWave" or defName="ThunderWaveEX" or defName="ThunderWaveUlt"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<!--unclear if Warlord's Wrath's psychic component is just the activation, or if the actual damage itself is supposed to be psychic. It's definitely thermal and kinetic though-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="WarlordWrath"]</xpath>
+					<value>
+					  <li Class="HautsFramework.SpecificDamageFactorStats">
+						<factorStats>
+								<li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li>
+								<li><key>Hauts_HeatDamageFactor</key><value>0.5</value></li>
+								<li><key>Hauts_PsychicDamageFactor</key><value>0.5</value></li>
+						</factorStats>
+					  </li>
+					</value>
+				</li>
+				<!--is laser, sets things aflame-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[@Name="Mech_LaserBlasterBullets"]</xpath>
+					<value>
+					  <li Class="HautsFramework.SpecificDamageFactorStats">
+						<factorStats>
+								<li><key>Hauts_HeatDamageFactor</key><value>1</value></li>
+								<li><key>Hauts_RadiationDamageFactor</key><value>1</value></li>
+						</factorStats>
+					  </li>
+					</value>
+				</li>
+				<!--some non-acid attacks cause acidic wounds. Those wounds inflict severe stat maluses, because of the acid. They also setMax the moving health cap, which this won't affect, but at least those stats can be modulated by IacidDF-->
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/HediffDef[defName="Corrosion" or defName="CorrosionMild"]/stages/li</xpath>
+					<value>
+					  <statFactorEffectMultiplier>Hauts_AcidDamageFactor</statFactorEffectMultiplier>
+					</value>
+				</li>
+				<!--FrostBullet is directly resisted by cold damage factor, instead of its hediff's effects being multiplied by it, bc said hediff includes offsets to health caps, and such offsets specifically can't be multiplied by a stat-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="FrostBullet"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>0.4</value></li></factorStats></li></value>
+				</li>
+				<!--EMP Cross Slash is not resisted, as the vibroslash katana's 9 trillion different damage types are explicitly supposed to be difficult to defend against, and the EMP component is actually an extraDamage instead.
+				Ok no more explanations. Everything else is pretty str8forward.-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="MjolnirThunderBlast"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ElectricalDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="FlameShot" or defName="PlasmaBeam" or defName="BlastFlame" or defName="AntiOrganicBlast" or defName="MagnesiumGoo" or defName="BolterExplosion"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_HeatDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="PsiBlast" or defName="PsiExplosion"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[@Name="PSIBullet"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="GammaBeam" or defName="LaserHeavyDam" or defName="LaserSniperDam" or defName="LaserAssaultDam" or defName="GammaBeamLaser"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[@Name="FlashArcz"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>0.5</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[@Name="Mech_HeavyLaserBullets"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_RadiationDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AntiHumanNanites"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>0.3</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AntiHumanNanitesFlame"]</xpath>
+					<value>
+					  <li Class="HautsFramework.SpecificDamageFactorStats">
+						<factorStats>
+								<li><key>Hauts_HeatDamageFactor</key><value>1</value></li>
+								<li><key>Hauts_ToxicDamageFactor</key><value>0.3</value></li>
+						</factorStats>
+					  </li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
 		<mods>
 		  <li>Mechanoid Invaders</li>
 		</mods>
@@ -540,6 +649,21 @@
 			</operations>
 		</match>
 	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>The Army Of Fetid Corpses (Continued)</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="RottingExplosion" or defName="PlagueBile" or defName="InfectiousBomb"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 		  <li>Vanilla Genetics Expanded</li>
