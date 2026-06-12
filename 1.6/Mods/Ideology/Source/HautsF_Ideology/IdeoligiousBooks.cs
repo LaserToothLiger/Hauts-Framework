@@ -22,7 +22,7 @@ namespace HautsF_Ideology
      * conversionPerHour (x-coordinates should be integers from 0-6 in order of worst to best book quality level): how much certainty the book removes w/ conversion attempts per hour, calculated before certainty loss factor and dis/agreement.
      *   Scales w/ reading speed. The book attempts to convert a non-believing reader to its ideo every 250 ticks.
      * reassurePerHour: as conversionPerHour, except this is how much certainty it grants to readers who already believe in its ideo.
-     * upsetLikelihood (default 0 at all levels): the chance each time the book tries to convert a reader that it instead inflicts upsetOnFailedConversionThought on its reader, causing no certainty change.
+     * upsetLikelihood (default 0 at all levels): the chance each time the book tries to convert a reader that it instead inflicts upsetOnFailedConversionThought and upsetOnFailedConversionHediff on its reader, causing no certainty change.
      *   Like the other SimpleCurves, this also evaluates based on quality level. Pawns for whom the ‘resentment from someone attempting to convert them’ thought is nullified will also be immune to this feature. Scales w/ reading speed, but caps at 1x.
      * ExtraUpsetEffect: performed whenever the book upsets its reader; float argument is the reader’s certainty.
      * ExtraConversionEffect: performed whenever the book attempts conversion on its reader; float argument is the reader’s certainty PRIOR to the conversion’s effect.
@@ -73,6 +73,7 @@ namespace HautsF_Ideology
                 {new CurvePoint(6f, 0.01f),true},
             };
         public ThoughtDef upsetOnFailedConversionThought;
+        public HediffDef upsetOnFailedConversionHediff;
         public SimpleCurve upsetLikelihood = new SimpleCurve
             {
                 {new CurvePoint(0f, 0f),true},
@@ -83,7 +84,7 @@ namespace HautsF_Ideology
                 {new CurvePoint(5f, 0f),true},
                 {new CurvePoint(6f, 0f),true},
             };
-        public bool upsetThoughtDisablesEffectsForNonbelievers = true;
+        public bool upsetThoughtDisablesEffectsForNonbelievers;
     }
     public class BookOutcomeDoerPromoteIdeo : BookOutcomeDoer
     {
@@ -254,6 +255,10 @@ namespace HautsF_Ideology
                                 if (reader.needs.mood != null && reader.needs.mood.thoughts != null && reader.needs.mood.thoughts.memories != null)
                                 {
                                     reader.needs.mood.thoughts.memories.TryGainMemory(this.Props.upsetOnFailedConversionThought, null, null);
+                                }
+                                if (this.Props.upsetOnFailedConversionHediff != null)
+                                {
+                                    reader.health.AddHediff(this.Props.upsetOnFailedConversionHediff);
                                 }
                                 this.ExtraUpsetEffect(reader, curCertainty);
                             } else if (!this.Props.upsetThoughtDisablesEffectsForNonbelievers || reader.needs.mood == null || reader.needs.mood.thoughts == null || reader.needs.mood.thoughts.memories == null || reader.needs.mood.thoughts.memories.GetFirstMemoryOfDef(this.Props.upsetOnFailedConversionThought) == null) {

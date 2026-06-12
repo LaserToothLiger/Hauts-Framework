@@ -392,6 +392,40 @@
 		</match>
 	</Operation>
 	
+	<!--apparently very liable to change over time. Will wait on this a bit
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Ecotech (Birthday Release)</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="ET_AcidDamage"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="ET_GlowsapExplosionDamage"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="RT_WaylightBulletDamage" or defName="RT_WaylightHeavyBulletDamage" or defName="ET_VivicoreBeam"]</xpath>
+					<value>
+						<li Class="HautsFramework.SpecificDamageFactorStats">
+							<factorStats>
+								<li><key>Hauts_HeatDamageFactor</key><value>1</value></li>
+								<li><key>Hauts_RadiationDamageFactor</key><value>1</value></li>
+							</factorStats>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="ET_PsychicShot" or defName="ET_PsychicDisruptionShot" or defName="ET_MentalDisruptionShot" or defName="ET_MuscleDisruptionShot"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>0.4</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>-->
+	
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 		  <li>Fray of the Fog</li>

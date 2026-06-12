@@ -1,5 +1,47 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Patch>
+	<!--unless they're given the BelongsToEventPool DME, incidents are eligible for auto-assignation of a BelongsToEventPool based on their letterDef. Makeable is off by default for these-->
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/LetterDef[@Name="ThreatBig"]</xpath>
+		<value>
+			<li Class="HautsFramework.AutoAssignEventPool">
+				<autoBad>true</autoBad>
+				<autoImpact>2</autoImpact>
+				<autoMakeable>false</autoMakeable>
+			</li>
+		</value>
+	</Operation>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/LetterDef[defName="ThreatSmall"]</xpath>
+		<value>
+			<li Class="HautsFramework.AutoAssignEventPool">
+				<autoBad>true</autoBad>
+				<autoImpact>1</autoImpact>
+				<autoMakeable>false</autoMakeable>
+			</li>
+		</value>
+	</Operation>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/LetterDef[@Name="NegativeEvent"]</xpath>
+		<value>
+			<li Class="HautsFramework.AutoAssignEventPool">
+				<autoBad>true</autoBad>
+				<autoImpact>1</autoImpact>
+				<autoMakeable>false</autoMakeable>
+			</li>
+		</value>
+	</Operation>
+	<Operation Class="PatchOperationAddModExtension">
+		<xpath>/Defs/LetterDef[@Name="PositiveEvent"]</xpath>
+		<value>
+			<li Class="HautsFramework.AutoAssignEventPool">
+				<autoGood>true</autoGood>
+				<autoImpact>1</autoImpact>
+				<autoMakeable>false</autoMakeable>
+			</li>
+		</value>
+	</Operation>
+	
 	<!--good events-->
 	<Operation Class="PatchOperationAddModExtension">
 		<xpath>/Defs/IncidentDef[defName="ResourcePodCrash"]</xpath>
@@ -86,6 +128,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<good>true</good>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -94,6 +137,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<good>true</good>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -102,6 +146,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<good>true</good>
+				<impact>0</impact>
 			</li>
 		</value>
 	</Operation>
@@ -124,6 +169,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
+							<impact>0</impact>
 						</li>
 					</value>
 				</li>
@@ -149,6 +195,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
+							<impact>3</impact>
 						</li>
 					</value>
 				</li>
@@ -193,6 +240,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -201,6 +249,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -209,6 +258,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -217,6 +267,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -233,6 +284,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
+				<impact>0</impact>
 			</li>
 		</value>
 	</Operation>
@@ -257,6 +309,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -265,6 +318,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -281,6 +335,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -289,6 +344,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -297,6 +353,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
+				<impact>2</impact>
 			</li>
 		</value>
 	</Operation>
@@ -343,6 +400,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -351,6 +409,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -359,6 +418,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -367,6 +427,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -375,6 +436,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>3</impact>
 						</li>
 					</value>
 				</li>
@@ -399,6 +461,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -431,6 +494,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -439,6 +503,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -447,6 +512,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -455,6 +521,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -463,6 +530,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -479,6 +547,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -496,6 +565,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -504,6 +574,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -521,6 +592,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -529,6 +601,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -545,6 +618,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>0</impact>
 						</li>
 					</value>
 				</li>
@@ -553,6 +627,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -569,6 +644,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -585,6 +661,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -609,6 +686,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
+							<impact>3</impact>
 						</li>
 					</value>
 				</li>
@@ -636,6 +714,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -644,6 +723,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
+							<!--<bad>true</bad>-->
 						</li>
 					</value>
 				</li>
@@ -660,6 +740,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -685,6 +766,7 @@
 			<value>
 				<li Class="HautsFramework.BelongsToEventPool">
 					<bad>true</bad>
+					<impact>2</impact>
 				</li>
 			</value>
 		</match>
@@ -722,13 +804,26 @@
 		<mods>
 			<li>Expanded Incidents (Continued)</li>
 		</mods>
-		<match Class="PatchOperationAddModExtension">
-			<xpath>/Defs/IncidentDef[defName="Quarrel" or defName="Clique" or defName="Sabotage" or defName="Thief"]</xpath>
-			<value>
-				<li Class="HautsFramework.BelongsToEventPool">
-					<bad>true</bad>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="Quarrel" or defName="Clique"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>0</impact>
+						</li>
+					</value>
 				</li>
-			</value>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="Sabotage" or defName="Thief"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+			</operations>
 		</match>
 	</Operation>
 	
@@ -777,6 +872,7 @@
 			<value>
 				<li Class="HautsFramework.BelongsToEventPool">
 					<good>true</good>
+					<impact>2</impact>
 				</li>
 			</value>
 		</match>
@@ -792,6 +888,7 @@
 			<value>
 				<li Class="HautsFramework.BelongsToEventPool">
 					<bad>true</bad>
+					<impact>2</impact>
 				</li>
 			</value>
 		</match>
@@ -810,6 +907,44 @@
 					<good>true</good>
 				</li>
 			</value>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Kraltech Industries Rebalanced (1.6)</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="CrashingMerchantShipRuined" or defName="DamagedShipChunk"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="CrashingMerchantShip" or defName="DamagedShipPod"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<impact>2</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="MechanitorCargoShipCrash" or defName="OverdrivenFabricatorAlpha" or defName="OverdrivenFabricatorBeta" or defName="OverdrivenFabricatorGamma" or defName="OverdrivenFabricatorUltima" or defName="PsychicDronerShipz"
+					or defName="EMIDynamoShipz" or defName="ToxicSpewerShipz" or defName="ADVColdSnapShipz" or defName="ADVHeatWaveShipz" or defName="CrimsonShipz" or defName="Disease_AntiOrg" or defName="ExtremeColdSnap" or defName="ExtremeHeatWave" or defName="ToxicRain"
+					or defName="AntiOrganicFallout" or defName="CorpseFog" or defName="CrimsonRain"]</xpath>
+					<value><!-- or defName="MechanitorCargoShipCrashOne" or defName="MechanitorCargoShipCrashTwo"-->
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>3</impact>
+						</li>
+					</value>
+				</li>
+			</operations>
 		</match>
 	</Operation>
 	
@@ -832,10 +967,11 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="LE_UnexpectedMineralSeams"]</xpath><!--provisional. there are a lot of comments on the Steam page about this particular event, unclear why that is but I suspect it has an unusual trigger-->
+					<xpath>/Defs/IncidentDef[defName="LE_UnexpectedMineralSeams"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
+							<makeable>false</makeable><!--a lot of comments on the Steam page lead me to suspect it's not such a good idea to create this willy-nilly...-->
 						</li>
 					</value>
 				</li>
@@ -851,9 +987,18 @@
 				</li>
 				<!--the bad-->
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="LE_DielectricInterference" or defName="LE_DimensionalJitter" or defName="LE_DrySpell" or defName="LE_EconomicDepression" or defName="LE_EmberFallout" or defName="LE_FeralNeurotoxin" or defName="LE_FireSupportBase"
-					or defName="LE_ForwardOperatingBase" or defName="LE_GravityHigh" or defName="LE_InterdictionPoint" or defName="LE_MagneticDisruption" or defName="LE_MedicineSpoiled" or defName="LE_MigratingForests" or defName="LE_Mimic" or defName="LE_PowerDrain"
-					or defName="LE_PsychicAggression" or defName="LE_PsychicDeadzone" or defName="LE_ResearchSetback" or defName="LE_RiseTrees" or defName="LE_ScandalousInsult" or defName="LE_ShipCrash" or defName="LE_SubatomicTurbulence" or defName="LE_TurretMalfunction"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="LE_FrayedWires"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>0</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="LE_DielectricInterference" or defName="LE_DimensionalJitter" or defName="LE_DrySpell" or defName="LE_EconomicDepression" or defName="LE_FeralNeurotoxin" or defName="LE_GravityHigh" or defName="LE_MagneticDisruption"
+					or defName="LE_MedicineSpoiled" or defName="LE_MigratingForests" or defName="LE_Mimic" or defName="LE_PowerDrain" or defName="LE_PsychicAggression" or defName="LE_PsychicDeadzone" or defName="LE_ResearchSetback" or defName="LE_ScandalousInsult"
+					or defName="LE_ShipCrash" or defName="LE_SubatomicTurbulence" or defName="LE_TurretMalfunction"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
@@ -861,10 +1006,11 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="LE_FrayedWires"]</xpath><!--some events should probably have a 'minor' tag, which MakeGood/BadEvent would have a toggle for as to whether or not these should even count-->
+					<xpath>/Defs/IncidentDef[defName="LE_EmberFallout" or defName="LE_FireSupportBase" or defName="LE_ForwardOperatingBase" or defName="LE_InterdictionPoint" or defName="LE_RiseTrees"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -893,7 +1039,16 @@
 					<match Class="PatchOperationSequence">
 						<operations>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/IncidentDef[defName="LE_GauranlenBloom" or defName="LE_RebelPlanExposed"]</xpath>
+								<xpath>/Defs/IncidentDef[defName="LE_GauranlenBloom"]</xpath>
+								<value>
+									<li Class="HautsFramework.BelongsToEventPool">
+										<good>true</good>
+										<impact>0</impact>
+									</li>
+								</value>
+							</li>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/IncidentDef[defName="LE_RebelPlanExposed"]</xpath>
 								<value>
 									<li Class="HautsFramework.BelongsToEventPool">
 										<good>true</good>
@@ -910,10 +1065,19 @@
 					<match Class="PatchOperationSequence">
 						<operations>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/IncidentDef[defName="LE_CargoPodsWastepack" or defName="LE_RaidEnemy_SanguophageHunter"]</xpath>
+								<xpath>/Defs/IncidentDef[defName="LE_CargoPodsWastepack"]</xpath>
 								<value>
 									<li Class="HautsFramework.BelongsToEventPool">
 										<bad>true</bad>
+									</li>
+								</value>
+							</li>
+							<li Class="PatchOperationAddModExtension">
+								<xpath>/Defs/IncidentDef[defName="LE_RaidEnemy_SanguophageHunter"]</xpath>
+								<value>
+									<li Class="HautsFramework.BelongsToEventPool">
+										<bad>true</bad>
+										<impact>2</impact>
 									</li>
 								</value>
 							</li>
@@ -931,6 +1095,7 @@
 								<value>
 									<li Class="HautsFramework.BelongsToEventPool">
 										<bad>true</bad>
+										<impact>2</impact>
 									</li>
 								</value>
 							</li>
@@ -987,6 +1152,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -1004,6 +1170,7 @@
 			<value>
 				<li Class="HautsFramework.BelongsToEventPool">
 					<bad>true</bad>
+					<impact>2</impact>
 				</li>
 			</value>
 		</match>
@@ -1038,6 +1205,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -1055,6 +1223,7 @@
 			<value>
 				<li Class="HautsFramework.BelongsToEventPool">
 					<good>true</good>
+					<impact>2</impact>
 				</li>
 			</value>
 		</match>
@@ -1076,10 +1245,20 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="PsychicEmitterActivationSW"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/IncidentDef[defName="PsychicEmitterActivationSW" or defName="InsectHiveDropSW"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -1095,10 +1274,20 @@
 		<match Class="PatchOperationSequence">
 			<operations>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="NecrotionFallout" or defName="CorruptedShip" or defName="Necronoid_Horde" or defName="Chupacabras_SilentRaid" or defName="CorruptedDropShip" or defName="NecronoidBiomass" or defName="Necronoid_CenterDropRaid" or defName="HowlingSpiders_SilentRaid" or defName="Wendigo_SilentRaid"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="CorruptedShip" or defName="Necronoid_Horde" or defName="Chupacabras_SilentRaid" or defName="CorruptedDropShip" or defName="NecronoidBiomass" or defName="Necronoid_CenterDropRaid" or defName="HowlingSpiders_SilentRaid" or defName="Wendigo_SilentRaid"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="NecrotionFallout"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>3</impact>
 						</li>
 					</value>
 				</li>
@@ -1113,6 +1302,16 @@
 		</mods>
 		<match Class="PatchOperationSequence">
 			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/LetterDef[defName="PurpleEvent"]</xpath>
+					<value>
+						<li Class="HautsFramework.AutoAssignEventPool">
+							<autoBad>true</autoBad>
+							<autoImpact>3</autoImpact>
+							<autoMakeable>false</autoMakeable>
+						</li>
+					</value>
+				</li>
 				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/IncidentDef[defName="VEE_MeteoriteShower"]</xpath>
 					<value>
@@ -1150,6 +1349,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
+							<impact>0</impact>
 						</li>
 					</value>
 				</li>
@@ -1166,6 +1366,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -1209,6 +1410,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -1217,6 +1419,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -1225,6 +1428,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -1233,6 +1437,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -1251,6 +1456,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>3</impact>
 						</li>
 					</value>
 				</li>
@@ -1259,6 +1465,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -1267,6 +1474,7 @@
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
 						</li>
 					</value>
 				</li>

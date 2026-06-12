@@ -214,22 +214,40 @@ namespace HautsFramework
                           prefix: new HarmonyMethod(patchType, nameof(HautsResurrectionPrefix_Caravan)));
             harmony.Patch(AccessTools.Method(typeof(ResurrectionUtility), nameof(ResurrectionUtility.TryResurrect)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsResurrectionPostfix_Caravan)));
-            //ability, incident, and trait categories
-            List<TraitDef> ConceitedTraits = GetTypeField(typeof(RoyalTitleUtility), "ConceitedTraits") as List<TraitDef>;
-            foreach (IncidentDef i in DefDatabase<IncidentDef>.AllDefs)
+            //auto-assign event "goodness" or "badness" to any event that doesn't already have a BelongsToEventPool DME, based on their letterDefs. Also populates the good and bad event pools for quicker reference
+            foreach (IncidentDef id in DefDatabase<IncidentDef>.AllDefs)
             {
-                if (i.HasModExtension<BelongsToEventPool>())
+                if (!id.HasModExtension<BelongsToEventPool>() && id.letterDef != null)
                 {
-                    if (i.GetModExtension<BelongsToEventPool>().good)
+                    AutoAssignEventPool aaep = id.letterDef.GetModExtension<AutoAssignEventPool>();
+                    if (aaep != null)
                     {
-                        GoodAndBadIncidentsUtility.goodEventPool.Add(i);
-                    }
-                    if (i.GetModExtension<BelongsToEventPool>().bad)
-                    {
-                        GoodAndBadIncidentsUtility.badEventPool.Add(i);
+                        BelongsToEventPool btep = new BelongsToEventPool();
+                        btep.good = aaep.autoGood;
+                        btep.bad = aaep.autoBad;
+                        btep.makeable = aaep.autoMakeable;
+                        btep.impact = aaep.autoImpact;
+                        if (id.modExtensions == null)
+                        {
+                            id.modExtensions = new List<DefModExtension>();
+                        }
+                        id.modExtensions.Add(btep);
                     }
                 }
-            } 
+                if (id.HasModExtension<BelongsToEventPool>())
+                {
+                    if (id.GetModExtension<BelongsToEventPool>().good)
+                    {
+                        GoodAndBadIncidentsUtility.goodEventPool.Add(id);
+                    }
+                    if (id.GetModExtension<BelongsToEventPool>().bad)
+                    {
+                        GoodAndBadIncidentsUtility.badEventPool.Add(id);
+                    }
+                }
+            }
+            //ability and trait categories
+            List<TraitDef> ConceitedTraits = GetTypeField(typeof(RoyalTitleUtility), "ConceitedTraits") as List<TraitDef>;
             foreach (TraitDef t in DefDatabase<TraitDef>.AllDefs)
             {
                 if (t.HasModExtension<ExciseTraitExempt>())
