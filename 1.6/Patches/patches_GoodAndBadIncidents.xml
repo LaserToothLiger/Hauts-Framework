@@ -64,6 +64,7 @@
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<good>true</good>
+				<impact>0</impact>
 			</li>
 		</value>
 	</Operation>
@@ -1213,22 +1214,6 @@
 		</match>
 	</Operation>
 	
-	<!--insect lair incident-->
-	<Operation Class="PatchOperationFindMod">
-		<mods>
-			<li>Ushankas Hacking Expansion</li>
-		</mods>
-		<match Class="PatchOperationAddModExtension">
-			<xpath>/Defs/IncidentDef[defName="USH_BlackBoxDrop"]</xpath>
-			<value>
-				<li Class="HautsFramework.BelongsToEventPool">
-					<good>true</good>
-					<impact>2</impact>
-				</li>
-			</value>
-		</match>
-	</Operation>
-	
 	<!--sparkling worlds, more events-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>
@@ -1245,15 +1230,6 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="PsychicEmitterActivationSW"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/IncidentDef[defName="PsychicEmitterActivationSW" or defName="InsectHiveDropSW"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
@@ -1266,7 +1242,7 @@
 		</match>
 	</Operation>
 	
-	<!--Mythic ages: megafauna bestiary-->
+	<!--taofc-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 			<li>The Army Of Fetid Corpses (Continued)</li>
@@ -1292,6 +1268,22 @@
 					</value>
 				</li>
 			</operations>
+		</match>
+	</Operation>
+	
+	<!--hacking expansion-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Ushankas Hacking Expansion</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/IncidentDef[defName="USH_BlackBoxDrop"]</xpath>
+			<value>
+				<li Class="HautsFramework.BelongsToEventPool">
+					<good>true</good>
+					<impact>2</impact>
+				</li>
+			</value>
 		</match>
 	</Operation>
 	
