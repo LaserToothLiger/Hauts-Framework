@@ -1294,6 +1294,7 @@
 		</mods>
 		<match Class="PatchOperationSequence">
 			<operations>
+				<!--default fallback for purple events-->
 				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/LetterDef[defName="PurpleEvent"]</xpath>
 					<value>
@@ -1304,40 +1305,9 @@
 						</li>
 					</value>
 				</li>
+				<!--the good-->
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VEE_MeteoriteShower"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<good>true</good>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VEE_Cargopodsweapons"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<good>true</good>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VEE_Cargopodsapparel"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<good>true</good>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VEE_CaravanAnimalsWanderIn"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<good>true</good>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VEE_CropSprout"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="VEE_CropSprout" or defName="VEE_PsychicStimulation"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
@@ -1346,15 +1316,24 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VEE_BattleAnimalsWanderIn"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="VEE_AnimalPodCrash" or defName="VEE_Cargopodsweapons" or defName="VEE_Cargopodsapparel" or defName="VEE_CaravanAnimalsWanderIn" or defName="VEE_BattleAnimalsWanderIn" or defName="VEE_WildMenWanderIn" or defName="VEE_WandererJoinsTraitor" or defName="VEE_Crashlanded" or defName="VEE_PsychicOverdrive"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
 						</li>
 					</value>
 				</li>
+				<!--the bad-->
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VEE_Drought"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="VEE_ManhunterSingleArrival" or defName="VEE_PsychicHum"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="VEE_Drought" or defName="VEE_Earthquake" or defName="VEE_VisitorGroupRaid"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
@@ -1363,10 +1342,43 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VEE_Earthquake"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="RaidEnemyPurple" or defName="ManhunterPackPurple" or defName="InfestationPurple" or defName="AnimalInsanityMassPurple"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
+							<impact>2</impact>
+							<makeable>false</makeable>
+						</li>
+					</value>
+				</li>
+				<!--the "please don't hit anything important"s-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="VEE_ShuttleCrash"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="VEE_SpaceBattle" or defName="VEE_MeteoriteShower"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<bad>true</bad>
+							<impact>2</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="VEE_WhiteoutRefugees"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<bad>true</bad>
+							<impact>2</impact>
+							<makeable>false</makeable>
 						</li>
 					</value>
 				</li>
