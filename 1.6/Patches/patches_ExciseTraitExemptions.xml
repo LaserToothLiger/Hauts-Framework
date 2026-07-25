@@ -74,19 +74,7 @@
 		<match Class="PatchOperationSequence">
 			<operations>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/TraitDef[defName="PE_LowTechProficiency"]</xpath>
-					<value>
-						<li Class="HautsFramework.ExciseTraitExempt" />
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/TraitDef[defName="PE_FirearmProficiency"]</xpath>
-					<value>
-						<li Class="HautsFramework.ExciseTraitExempt" />
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/TraitDef[defName="PE_HighTechProficiency"]</xpath>
+					<xpath>/Defs/TraitDef[defName="PE_LowTechProficiency" or defName="PE_FirearmProficiency" or defName="PE_HighTechProficiency" or defName="PE_AnimalRidingProficiency" or defName="PE_AutomobileDrivingProficiency" or defName="PE_AerialPilotingProficiency" or defName="PE_OrbitalPilotingProficiency" or defName="PE_MuteProficiency" or defName="PE_BasicSpeechProficiency" or defName="PE_FluentSpeechProficiency"]</xpath>
 					<value>
 						<li Class="HautsFramework.ExciseTraitExempt" />
 					</value>

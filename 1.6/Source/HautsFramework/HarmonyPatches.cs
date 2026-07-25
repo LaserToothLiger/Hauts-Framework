@@ -1429,8 +1429,12 @@ namespace HautsFramework
             }
         }
         //resurrection in unusual circumstances should not delete a pawn!!!!! Now it does not!!!!!!
-        public static void HautsResurrectionPrefix_Interred(Pawn pawn)
+        public static void HautsResurrectionPrefix_Interred(Pawn pawn, ResurrectionParams parms)
         {
+            if (parms != null && parms.dontSpawn)
+            {
+                return;
+            }
             Corpse corpse = pawn.Corpse;
             if (corpse != null && corpse.SpawnedOrAnyParentSpawned && corpse.ParentHolder != null)
             {
@@ -1442,8 +1446,7 @@ namespace HautsFramework
                         {
                             casket.EjectContents();
                         } else {
-                            Thing newThing;
-                            corpse.holdingOwner.TryDrop(corpse, ThingPlaceMode.Near, 1, out newThing, null, null);
+                            corpse.holdingOwner.TryDrop(corpse, ThingPlaceMode.Near, 1, out Thing newThing, null, null);
                         }
                     }
                 }

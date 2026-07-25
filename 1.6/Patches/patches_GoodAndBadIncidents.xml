@@ -1271,6 +1271,22 @@
 		</match>
 	</Operation>
 	
+	<!--the glorious fernworld: trauma and integrity-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Trauma and Integrity</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/IncidentDef[defName="TI_TraitorEvent"]</xpath>
+			<value>
+				<li Class="HautsFramework.BelongsToEventPool">
+					<bad>true</bad>
+					<makeable>false</makeable>
+				</li>
+			</value>
+		</match>
+	</Operation>TI_TraitorEvent
+	
 	<!--hacking expansion-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>

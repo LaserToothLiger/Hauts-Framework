@@ -32,6 +32,7 @@
 		<li IfModActive="CETeam.CombatExtended">1.6/Mods/CombatExtended</li><!--makes armor pen factor stats work with their system-->
 		<li IfModActive="lts.I" IfModNotActive="MSE2.Core">1.6/Mods/ThisIsGettingALittleIntoTheWeeds</li><!--enables AbilityCooldownModifiers that affect all bionic abilities to affect abilities granted by II modules-->
 		<li IfModActive="ferny.ProgressionEducation">1.6/Mods/ProgressionEducation</li><!--makes the new ways to teach people affected by the Instructive Ability stat-->
+		<li IfModActive="ferny.ProgressionTherapy">1.6/Mods/ProgressionTherapy</li><!--same like-->
 		<li IfModActive="DimonSever000.FactionLanguages">1.6/Mods/RimLanguages</li><!--makes ModCompatibilityUtility.LearnLanguage work as advertised, so I don't need to make specific subdirectories for RimLanguages in each of my mods JUST to implement one or two new methods of learning languages-->
 		<li IfModActive="vanillaexpanded.skills">1.6/Mods/VE_Skills</li><!--SkillAdjustment hediff comps that cause xp loss are affeted by VSE's forgetting speed modifiers. Also adds expertises that grant some of the stats from this framework-->
 		<li IfModActive="OskarPotocki.VFE.Insectoid2">1.6/Mods/VFE_Insectoids2</li><!--makes Verb_CastAbilityJumpUnrestricted verbs work with jump range factor, as they are apparently not derivatives of ordinary jump verbs-->
@@ -40,7 +41,7 @@
 		<li IfModActive="vanillaexpanded.gravship">1.6/Mods/VGravshipE</li><!--makes ModCompatibilityUtility.AddGravdata work, so that I don't have to make a similar subdirectory all over again in other mods where I want a phenomenon to be a new means of gravdata research-->
 		<li IfModActive="vanillaracesexpanded.sanguophage">1.6/Mods/VRE_Sanguophage</li><!--scales corpsefeeding's hemogen gain by the corpse's pawn's hemogen yield stat. The other bloodfeeding methods introduced in VRESang are already affected by the normal Harmony patch for hemogen yield-->
 		<li IfModActive="VanillaExpanded.VPsycastsE">1.6/Mods/VanillaPsycastsExpanded</li><!--makes the various VPE-relevant ModCompatibilityUtility functions work, so that if I have an effect in another mod that interacts with psycasters I don't need to make another subdirectory all over again just to replicate certain effects in VPE's casting system. Also enables psyfocus cost refund and t1 psycast cost offset to work on VPE casts-->
-		<!--the following are all ExciseTraitExemption arms racing-->
+		<!--the following are all ExciseTraitExemption arms racing. Can't y'all at least preemptively exclude 0-commonality traits from your random pool? C'mon.-->
 		<li IfModActive="sarg.alphagenes">1.6/Mods/AlphaGenes</li>
 		<li IfModActive="sarg.alpharandom">1.6/Mods/AlphaRandom</li>
 		<li IfModActive="doug.conn">1.6/Mods/COaNN</li>
@@ -48,5 +49,6 @@
 		<li IfModActive="VanillaExpanded.VPE.Puppeteer">1.6/Mods/VPE_Puppeteer</li>
 		<li IfModActive="CP.Uncle.Boris.Brainwash.Chair">1.6/Mods/UncleBorisBrainwashChair</li>
 		<li IfModActive="reo.RimScent">1.6/Mods/RimScent</li>
+		<li IfModActive="ferny.characterdevelopment">1.6/Mods/CharacterDevelopment</li>
 	</v1.6>
 </loadFolders>
