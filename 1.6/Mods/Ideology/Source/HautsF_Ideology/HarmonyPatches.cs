@@ -66,7 +66,7 @@ namespace HautsF_Ideology
             if (pawn != null && pawn.Ideo == __instance.parent.pawn.Ideo && pawn.mindState != null && pawn.mindState.mentalStateHandler.CurStateDef == __instance.Props.stateDef)
             {
                 int newDuration = (int)(pawn.mindState.mentalStateHandler.CurState.forceRecoverAfterTicks * pawn.GetStatValue(HautsDefOf.Hauts_IdeoAbilityDurationSelf));
-                pawn.mindState.mentalStateHandler.CurState.forceRecoverAfterTicks *= newDuration;
+                pawn.mindState.mentalStateHandler.CurState.forceRecoverAfterTicks = newDuration;
             }
         }
         //max dryad factor
