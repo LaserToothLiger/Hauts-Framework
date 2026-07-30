@@ -1529,7 +1529,7 @@ namespace HautsFramework
         {
             get
             {
-                return this.CalledFaction;
+                return this.calledFaction;
             }
         }
         public virtual void AffectPawnInner(PermitMoreEffects pme, Pawn pawn, Faction faction)
