@@ -239,7 +239,7 @@
 	<StatDef>
 		<defName>Hauts_SurveySpeed</defName>
 		<label>surveying speed</label>
-		<description>How quickly this person can find things using scanning equipment.</description>
+		<description>How quickly this person can find things using scanning equipment.\nAffects the operation of the following devices:</description>
 		<category>PawnWork</category>
 		<defaultBaseValue>1</defaultBaseValue>
 		<minValue>0.1</minValue>
@@ -256,6 +256,14 @@
 		  </li>
 		</skillNeedFactors>
 		<displayPriorityInCategory>4290</displayPriorityInCategory>
+		<modExtensions>
+            <li Class="HautsFramework.SurveySpeedsExtraDescriptionPopulator">
+				<affectedThings>
+					<li>GroundPenetratingScanner</li>
+					<li>LongRangeMineralScanner</li>
+				</affectedThings>
+            </li>
+        </modExtensions>
 	</StatDef>
 	<StatDef>
 		<defName>Hauts_BreachDamageFactor</defName>

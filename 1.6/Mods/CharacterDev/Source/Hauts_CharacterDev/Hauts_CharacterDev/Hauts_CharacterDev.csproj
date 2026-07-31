@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3698BF85-4A4D-4D09-BE1F-A6790EF0D145}</ProjectGuid>
+    <ProjectGuid>{E8C7D36C-5F7A-4D3D-A143-5275B4EB75B9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Hauts_CharacterDevelopment</RootNamespace>
-    <AssemblyName>Hauts_CharacterDevelopment</AssemblyName>
+    <RootNamespace>Hauts_CharacterDev</RootNamespace>
+    <AssemblyName>Hauts_CharacterDev</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -61,7 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HarmonyPatches.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

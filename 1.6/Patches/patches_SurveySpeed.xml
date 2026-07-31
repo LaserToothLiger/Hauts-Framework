@@ -46,6 +46,12 @@
 						<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
 					</value>
 				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/StatDef[defName="Hauts_SurveySpeed"]/modExtensions/li[@Class="HautsFramework.SurveySpeedsExtraDescriptionPopulator"]/affectedThings</xpath>
+					<value>
+						<li>AsteroidMineralScanner</li>
+					</value>
+				</li>
 			</operations>
 		</match>
 	</Operation>
@@ -59,6 +65,12 @@
 					<xpath>/Defs/ThingDef[defName="CO_TerrainScanner"]/comps/li[@Class="ComplementaryOdyssey.CompProperties_TerrainScanner"]/scanSpeedStat</xpath>
 					<value>
 						<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/StatDef[defName="Hauts_SurveySpeed"]/modExtensions/li[@Class="HautsFramework.SurveySpeedsExtraDescriptionPopulator"]/affectedThings</xpath>
+					<value>
+						<li>CO_TerrainScanner</li>
 					</value>
 				</li>
 			</operations>
@@ -76,6 +88,12 @@
 						<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
 					</value>
 				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/StatDef[defName="Hauts_SurveySpeed"]/modExtensions/li[@Class="HautsFramework.SurveySpeedsExtraDescriptionPopulator"]/affectedThings</xpath>
+					<value>
+						<li>Bart_DeepScanner</li>
+					</value>
+				</li>
 			</operations>
 		</match>
 	</Operation>
@@ -83,11 +101,21 @@
 		<mods>
 		  <li>Vanilla Gravship Expanded - Chapter 1</li>
 		</mods>
-		<match Class="PatchOperationReplace">
-			<xpath>Defs/ThingDef[defName="VGE_GravshipScannerCluster"]/comps/li[@Class="VanillaGravshipExpanded.CompProperties_ScannerCluster"]/scanSpeedStat</xpath>
-			<value>
-				<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
-			</value>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationReplace">
+					<xpath>/Defs/ThingDef[defName="VGE_GravshipScannerCluster"]/comps/li[@Class="VanillaGravshipExpanded.CompProperties_ScannerCluster"]/scanSpeedStat</xpath>
+					<value>
+						<scanSpeedStat>Hauts_SurveySpeed</scanSpeedStat>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/StatDef[defName="Hauts_SurveySpeed"]/modExtensions/li[@Class="HautsFramework.SurveySpeedsExtraDescriptionPopulator"]/affectedThings</xpath>
+					<value>
+						<li>VGE_GravshipScannerCluster</li>
+					</value>
+				</li>
+			</operations>
 		</match>
 	</Operation>
 </Patch>

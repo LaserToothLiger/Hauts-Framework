@@ -24,6 +24,7 @@ namespace HautsFramework
         public static StatDef Hauts_MaxPilferingValue;
         public static StatDef Hauts_PawnAlertLevel;
         public static StatDef Hauts_SkillGainFromRecreation;
+        public static StatDef Hauts_SurveySpeed;
         public static StatDef Hauts_CaravanVisibilityOffset;
         public static StatDef Hauts_PersonalCaravanVisibilityFactor;
         public static StatDef Hauts_TrackSize;

@@ -304,6 +304,15 @@ namespace HautsFramework
             {
                 sdfs.ResolveReferences();
             }
+            //similar but far lesser in scope, be a little helpful and populate the survey speed description with a list of all ThingDefs whose operation it affects
+            SurveySpeedsExtraDescriptionPopulator ssedp = HautsDefOf.Hauts_SurveySpeed.GetModExtension<SurveySpeedsExtraDescriptionPopulator>();
+            if (ssedp != null)
+            {
+                foreach (ThingDef td in ssedp.affectedThings)
+                {
+                    HautsDefOf.Hauts_SurveySpeed.description += "\n- " + td.LabelCap;
+                }
+            }
             Log.Message("Hauts_Initialize".Translate().CapitalizeFirst());
         }
         internal static object GetInstanceField(Type type, object instance, string fieldName)
@@ -661,20 +670,23 @@ namespace HautsFramework
         }
         public static void HautsJoyToleranceSet_NeedIntervalPostfix(JoyToleranceSet __instance, Pawn pawn)
         {
-            DefMap<JoyKindDef, float> tolerances = GetInstanceField(typeof(JoyToleranceSet), __instance, "tolerances") as DefMap<JoyKindDef, float>;
-            DefMap<JoyKindDef, bool> bored = GetInstanceField(typeof(JoyToleranceSet), __instance, "bored") as DefMap<JoyKindDef, bool>;
-            for (int i = 0; i < tolerances.Count; i++)
+            if (pawn.IsHashIntervalTick(1500))
             {
-                float num2 = tolerances[i];
-                num2 -= (pawn.GetStatValue(HautsDefOf.Hauts_BoredomDropPerDay)-ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay) * 150f / 60000f;
-                if (num2 < 0f)
+                DefMap<JoyKindDef, float> tolerances = GetInstanceField(typeof(JoyToleranceSet), __instance, "tolerances") as DefMap<JoyKindDef, float>;
+                DefMap<JoyKindDef, bool> bored = GetInstanceField(typeof(JoyToleranceSet), __instance, "bored") as DefMap<JoyKindDef, bool>;
+                for (int i = 0; i < tolerances.Count; i++)
                 {
-                    num2 = 0f;
-                }
-                tolerances[i] = num2;
-                if (bored[i] && num2 < 0.3f)
-                {
-                    bored[i] = false;
+                    float num2 = tolerances[i];
+                    num2 -= (pawn.GetStatValue(HautsDefOf.Hauts_BoredomDropPerDay) - ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay) * 1500f / 60000f;
+                    if (num2 < 0f)
+                    {
+                        num2 = 0f;
+                    }
+                    tolerances[i] = num2;
+                    if (bored[i] && num2 < 0.3f)
+                    {
+                        bored[i] = false;
+                    }
                 }
             }
         }
@@ -1063,17 +1075,14 @@ namespace HautsFramework
         }
         public static void HautsStatPart_GlowActiveForPostfix(ref bool __result, StatPart_Glow __instance, Thing t)
         {
-            if (__result && (bool)__instance.GetType().GetField("ignoreIfPrefersDarkness", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance))
+            if (__result && t is Pawn p && p.story != null)
             {
-                if (t is Pawn p && p.story != null)
+                foreach (Trait trait in p.story.traits.TraitsSorted)
                 {
-                    foreach (Trait trait in p.story.traits.TraitsSorted)
+                    if (trait.def.HasModExtension<UnaffectedByDarkness>())
                     {
-                        if (trait.def.HasModExtension<UnaffectedByDarkness>())
-                        {
-                            __result = false;
-                            break;
-                        }
+                        __result = false;
+                        break;
                     }
                 }
             }

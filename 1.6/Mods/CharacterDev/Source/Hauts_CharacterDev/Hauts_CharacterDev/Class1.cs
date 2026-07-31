@@ -6,15 +6,15 @@ using System.Linq;
 using Verse;
 using WantsAndQuirks;
 
-namespace Hauts_CharacterDevelopment
+namespace Hauts_CharacterDev
 {
     [StaticConstructorOnStartup]
-    public class Hauts_CharacterDevelopment
+    public class Hauts_CharacterDev
     {
-        private static readonly Type patchType = typeof(Hauts_CharacterDevelopment);
-        static Hauts_CharacterDevelopment()
+        private static readonly Type patchType = typeof(Hauts_CharacterDev);
+        static Hauts_CharacterDev()
         {
-            Harmony harmony = new Harmony(id: "rimworld.hautarche.hautsbrainwashchair.main");
+            Harmony harmony = new Harmony(id: "rimworld.hautarche.hautscharacterdevelopment.main");
             harmony.Patch(AccessTools.Method(typeof(RewardWorker_RandomTrait), nameof(RewardWorker_RandomTrait.OnAcquired)),
                            prefix: new HarmonyMethod(patchType, nameof(HautsRandomTrait_OnAcquirePrefix)));
             harmony.Patch(AccessTools.Method(typeof(RewardWorker_RemoveTrait), nameof(RewardWorker_RemoveTrait.CanBestowOn)),
@@ -27,6 +27,14 @@ namespace Hauts_CharacterDevelopment
         public static bool HautsRandomTrait_OnAcquirePrefix(Pawn pawn)
         {
             TraitDef traitDef = DefDatabase<TraitDef>.AllDefsListForReading.Where((TraitDef t) => !pawn.story.traits.HasTrait(t) && !t.HasModExtension<ExciseTraitExempt>() && t.GetGenderSpecificCommonality(pawn.gender) > 0f).RandomElementWithFallback(null);
+            if (traitDef == null)
+            {
+                traitDef = DefDatabase<TraitDef>.AllDefsListForReading.Where((TraitDef t) => !pawn.story.traits.HasTrait(t) && !t.HasModExtension<ExciseTraitExempt>()).RandomElementWithFallback(null);
+            }
+            if (traitDef == null)
+            {
+                traitDef = DefDatabase<TraitDef>.AllDefsListForReading.Where((TraitDef t) => !pawn.story.traits.HasTrait(t)).RandomElementWithFallback(null);
+            }
             if (traitDef != null)
             {
                 int num = PawnGenerator.RandomTraitDegree(traitDef);
