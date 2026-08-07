@@ -57,14 +57,14 @@
     <hediffClass>HediffWithComps</hediffClass>
     <label>increased alertness</label>
     <description>Due to a recent pickpocketing attempt, this trader is on alert.</description>
-    <initialSeverity>5</initialSeverity>
+    <initialSeverity>1</initialSeverity>
 	<maxSeverity>1000</maxSeverity>
     <stages>
       <li>
 		<becomeVisible>false</becomeVisible>
-        <statOffsets>
-		  <Hauts_PawnAlertLevel>1</Hauts_PawnAlertLevel>
-        </statOffsets>
+        <statFactors>
+		  <Hauts_PawnAlertLevel>2</Hauts_PawnAlertLevel>
+        </statFactors>
 		<multiplyStatChangesBySeverity>true</multiplyStatChangesBySeverity>
       </li>
     </stages>

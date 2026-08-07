@@ -670,22 +670,26 @@ namespace HautsFramework
         }
         public static void HautsJoyToleranceSet_NeedIntervalPostfix(JoyToleranceSet __instance, Pawn pawn)
         {
-            if (pawn.IsHashIntervalTick(1500))
+            if (pawn.IsHashIntervalTick(1500,15))
             {
-                DefMap<JoyKindDef, float> tolerances = GetInstanceField(typeof(JoyToleranceSet), __instance, "tolerances") as DefMap<JoyKindDef, float>;
-                DefMap<JoyKindDef, bool> bored = GetInstanceField(typeof(JoyToleranceSet), __instance, "bored") as DefMap<JoyKindDef, bool>;
-                for (int i = 0; i < tolerances.Count; i++)
+                float boredomDecay = (pawn.GetStatValue(HautsDefOf.Hauts_BoredomDropPerDay) - ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay);
+                if (boredomDecay != 0f)
                 {
-                    float num2 = tolerances[i];
-                    num2 -= (pawn.GetStatValue(HautsDefOf.Hauts_BoredomDropPerDay) - ExpectationsUtility.CurrentExpectationFor(pawn).joyToleranceDropPerDay) * 1500f / 60000f;
-                    if (num2 < 0f)
+                    DefMap<JoyKindDef, float> tolerances = GetInstanceField(typeof(JoyToleranceSet), __instance, "tolerances") as DefMap<JoyKindDef, float>;
+                    DefMap<JoyKindDef, bool> bored = GetInstanceField(typeof(JoyToleranceSet), __instance, "bored") as DefMap<JoyKindDef, bool>;
+                    for (int i = 0; i < tolerances.Count; i++)
                     {
-                        num2 = 0f;
-                    }
-                    tolerances[i] = num2;
-                    if (bored[i] && num2 < 0.3f)
-                    {
-                        bored[i] = false;
+                        float num2 = tolerances[i];
+                        num2 -= boredomDecay * 1500f / 60000f;
+                        if (num2 < 0f)
+                        {
+                            num2 = 0f;
+                        }
+                        tolerances[i] = num2;
+                        if (bored[i] && num2 < 0.3f)
+                        {
+                            bored[i] = false;
+                        }
                     }
                 }
             }

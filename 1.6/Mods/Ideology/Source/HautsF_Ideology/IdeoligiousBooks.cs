@@ -106,6 +106,18 @@ namespace HautsF_Ideology
         public override void OnBookGenerated(Pawn author = null)
         {
             this.ValidateIdeo(author);
+            WorldComponent_HautsFactionComps WCFC = (WorldComponent_HautsFactionComps)Find.World.GetComponent(typeof(WorldComponent_HautsFactionComps));
+            if (WCFC != null)
+            {
+                if (WCFC.secondaryIdeoHolders == null)
+                {
+                    WCFC.secondaryIdeoHolders = new List<Thing>();
+                }
+                if (!WCFC.secondaryIdeoHolders.Contains(this.Parent))
+                {
+                    WCFC.secondaryIdeoHolders.Add(this.Parent);
+                }
+            }
         }
         public void ValidateIdeo(Pawn author = null)
         {
@@ -119,15 +131,8 @@ namespace HautsF_Ideology
                 } else {
                     this.ideo = Find.IdeoManager.IdeosListForReading.RandomElement();
                 }
-                /*if (this.ideo != null)
-                {
-                    if (!Find.IdeoManager.IdeosListForReading.Contains(this.ideo))
-                    {
-                        Find.IdeoManager.Add(this.ideo);
-                    }
-                }*/
-                this.ideoFoundInManager = Find.IdeoManager.IdeosListForReading.Contains(this.ideo);
             }
+            this.ideoFoundInManager = Find.IdeoManager.IdeosListForReading.Contains(this.ideo);
         }
         public void MakeNewIdeo()
         {
@@ -142,6 +147,14 @@ namespace HautsF_Ideology
             ideo.primaryFactionColor = new Color(Rand.Value, Rand.Value, Rand.Value, 1f);
             this.ideo = ideo;
             this.ideoFoundInManager = Find.IdeoManager.IdeosListForReading.Contains(this.ideo);
+            if (!this.ideoFoundInManager)
+            {
+                WorldComponent_HautsFactionComps WCFC = (WorldComponent_HautsFactionComps)Find.World.GetComponent(typeof(WorldComponent_HautsFactionComps));
+                if (WCFC != null && WCFC.secondaryIdeoManager != null)
+                {
+                    WCFC.secondaryIdeoManager.Add(this.ideo);
+                }
+            }
         }
         public override void Reset()
         {
@@ -366,12 +379,7 @@ namespace HautsF_Ideology
         public override void PostExposeData()
         {
             Scribe_Values.Look<bool>(ref this.ideoFoundInManager, "ideoFoundInManager", false, false);
-            if (this.ideoFoundInManager)
-            {
-                Scribe_References.Look<Ideo>(ref this.ideo, "ideo", false);
-            } else {
-                Scribe_Deep.Look<Ideo>(ref this.ideo, "ideo", new object[] { });
-            }
+            Scribe_References.Look<Ideo>(ref this.ideo, "ideo", false);
         }
         //title and description nonsense for the books, because Ludeon never anticipated people would want to make custom book-naming rules ig
         public void AppendDoerRules(Book parent, Pawn author, GrammarRequest common)

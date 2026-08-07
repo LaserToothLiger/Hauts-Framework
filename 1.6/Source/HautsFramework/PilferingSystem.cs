@@ -594,8 +594,7 @@ namespace HautsFramework
                             Messages.Message(message, actor, MessageTypeDefOf.RejectInput, true);
                             return;
                         } else {
-                            float alertRaise = 0f, minAlertRaise = 0f;
-                            minAlertRaise += HautsDefOf.Hauts_RaisedAlertLevel.initialSeverity;
+                            float alertRaise = 0f, minAlertRaise = 1f;
                             if (Rand.Value <= successChance)
                             {
                                 while (burglaryMaxWeight > 0f && burglaryMaxValue > 0f && victim.inventory.innerContainer.Count > 0)
@@ -622,7 +621,7 @@ namespace HautsFramework
                                                 victim.inventory.RemoveCount(toSteal.def, toSteal.stackCount, false);
                                                 actor.inventory.TryAddAndUnforbid(toSteal);
                                                 thingsStolen = true;
-                                                alertRaise += toSteal.MarketValue * trueLowest * 0.02f;
+                                                alertRaise += toSteal.MarketValue * trueLowest * 0.001f;
                                                 break;
                                             }
                                         }
@@ -853,7 +852,7 @@ namespace HautsFramework
             } else {
                 Hediff newHediff = HediffMaker.MakeHediff(HautsDefOf.Hauts_RaisedAlertLevel, victim, null);
                 victim.health.AddHediff(newHediff);
-                newHediff.Severity = value;
+                newHediff.Severity = Math.Max(HautsDefOf.Hauts_RaisedAlertLevel.initialSeverity,value);
             }
         }
     }

@@ -82,12 +82,46 @@ namespace HautsFramework
         {
             //you put Harmony patches in here to also go off at the same time as the initial traitgrantedstuff load check
         }
+        public List<Ideo> SaveSecondaryIdeos()
+        {
+            return new List<Ideo>(); //for easier postfixing in other assemblies. __result is not null!
+        }
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Collections.Look<Hauts_FactionCompHolder>(ref this.factions, "factions", LookMode.Deep, Array.Empty<object>());
+            if (this.secondaryIdeoHolders != null)
+            {
+                for (int i = this.secondaryIdeoHolders.Count - 1; i >= 0; i--)
+                {
+                    if (this.secondaryIdeoHolders[i] == null)
+                    {
+                        this.secondaryIdeoHolders.RemoveAt(i);
+                    }
+                }
+            }
+            Scribe_Collections.Look<Thing>(ref this.secondaryIdeoHolders, "secondaryIdeoHolders", LookMode.Reference, Array.Empty<object>());
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                List<Ideo> ideosToKeep = this.SaveSecondaryIdeos();
+                if (!ideosToKeep.NullOrEmpty())
+                {
+                    for (int i = this.secondaryIdeoManager.Count - 1; i >= 0; i--)
+                    {
+                        if (!ideosToKeep.Contains(this.secondaryIdeoManager[i]))
+                        {
+                            this.secondaryIdeoManager.RemoveAt(i);
+                        }
+                    }
+                }
+            }
+            Scribe_Collections.Look<Ideo>(ref this.secondaryIdeoManager, "secondaryIdeoManager", LookMode.Deep, Array.Empty<object>());
         }
         public List<Hauts_FactionCompHolder> factions = new List<Hauts_FactionCompHolder>();
+        /*the secondaryIdeoManager permits ideoligions to persist under certain conditions even if they would no longer persist in the world's IdeoManager due to lacking adherent factions or pawns.
+         * This interface is for non-faction non-pawn phenomena that have ideos; so long as one of these phenomena exists and is in the FactionComps component's secondaryIdeoHolders, its ideo will remain in the world IdeoManager (if there) or the secondaryIdeoManager otherwise*/
+        public List<Ideo> secondaryIdeoManager = new List<Ideo>();
+        public List<Thing> secondaryIdeoHolders = new List<Thing>();
     }
     public class Hauts_FactionCompHolder : IExposable
     {

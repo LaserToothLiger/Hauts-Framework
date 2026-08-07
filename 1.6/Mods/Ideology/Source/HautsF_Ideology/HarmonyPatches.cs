@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 using Verse.Grammar;
@@ -30,6 +28,8 @@ namespace HautsF_Ideology
                           postfix: new HarmonyMethod(patchType, nameof(HautsSetIdeoPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Book), nameof(Book.GenerateBook)),
                           postfix: new HarmonyMethod(patchType, nameof(HautsGenerateBookPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(WorldComponent_HautsFactionComps), nameof(WorldComponent_HautsFactionComps.SaveSecondaryIdeos)),
+                          postfix: new HarmonyMethod(patchType, nameof(HautsSaveSecondaryIdeosPostfix)));
         }
         //ideoligious ability susceptibility affects hediffs and mental states caused by ideo role abilities
         public static void HautsGiveHediffPostfix(CompAbilityEffect_GiveHediff __instance, LocalTargetInfo target)
@@ -66,7 +66,7 @@ namespace HautsF_Ideology
             if (pawn != null && pawn.Ideo == __instance.parent.pawn.Ideo && pawn.mindState != null && pawn.mindState.mentalStateHandler.CurStateDef == __instance.Props.stateDef)
             {
                 int newDuration = (int)(pawn.mindState.mentalStateHandler.CurState.forceRecoverAfterTicks * pawn.GetStatValue(HautsDefOf.Hauts_IdeoAbilityDurationSelf));
-                pawn.mindState.mentalStateHandler.CurState.forceRecoverAfterTicks *= newDuration;
+                pawn.mindState.mentalStateHandler.CurState.forceRecoverAfterTicks = newDuration;
             }
         }
         //max dryad factor
@@ -128,6 +128,47 @@ namespace HautsF_Ideology
                     break;
                 }
             }
+        }
+        //save the ideos of ideo books whose ideoligions aren't present in the world's IdeoManager
+        public static void HautsSaveSecondaryIdeosPostfix(WorldComponent_HautsFactionComps __instance, ref List<Ideo> __result)
+        {
+            List<Ideo> newSIM = __instance.secondaryIdeoManager??new List<Ideo>();
+            if (__instance.secondaryIdeoManager != null)
+            {
+                for (int i = __instance.secondaryIdeoManager.Count - 1; i >= 0; i--)
+                {
+                    Ideo id = __instance.secondaryIdeoManager[i];
+                    if (Find.IdeoManager.IdeosListForReading.Contains(id))
+                    {
+                        __instance.secondaryIdeoManager.Remove(id);
+                    }
+                }
+            }
+            foreach (Thing t in __instance.secondaryIdeoHolders)
+            {
+                if (t is Book b)
+                {
+                    foreach (BookOutcomeDoer bod in b.BookComp.Doers)
+                    {
+                        if (bod is BookOutcomeDoerPromoteIdeo bodpi)
+                        {
+                            if (bodpi.ideo != null && !Find.IdeoManager.IdeosListForReading.Contains(bodpi.ideo))
+                            {
+                                if (!newSIM.Contains(bodpi.ideo))
+                                {
+                                    newSIM.Add(bodpi.ideo);
+                                }
+                                if (!__result.Contains(bodpi.ideo))
+                                {
+                                    __result.Add(bodpi.ideo);
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            __instance.secondaryIdeoManager = newSIM;
         }
     }
 }

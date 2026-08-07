@@ -11,9 +11,9 @@
 		<initialAlertLevel>0</initialAlertLevel>
 		<minAlertGainFromBurgle>5</minAlertGainFromBurgle>
 		<alertGainPerMarketValueStolen>0.001</alertGainPerMarketValueStolen>
-		<advancedDecayThreshold>50</advancedDecayThreshold><!--if a faction's alert level exceeds this value...-->
+		<advancedDecayThreshold>13.34</advancedDecayThreshold><!--if a faction's alert level exceeds this value...-->
 		<advancedDecayPerDayPct>0.15</advancedDecayPerDayPct><!--decrease by this percent each day, down to the threshold. Since decay is actually incremented in hours, this is a different curve than "per day" would ordinarily imply-->
-		<alertDecayPerDay>1</alertDecayPerDay><!--otherwise decay by this flat value per day-->
+		<alertDecayPerDay>2</alertDecayPerDay><!--otherwise decay by this flat value per day-->
 		<specificFactionMinAlertLevels>
 		</specificFactionMinAlertLevels>
 		<minAlertLevelPerTechLevel>

@@ -256,6 +256,9 @@
 		  </li>
 		</skillNeedFactors>
 		<displayPriorityInCategory>4290</displayPriorityInCategory>
+		<parts>
+		  <li MayRequire="Hautarche.HautsDeepenedMemes" Class="HautsDeepenedMemes.StatPart_MultiSurveyors" />
+		</parts>
 		<modExtensions>
             <li Class="HautsFramework.SurveySpeedsExtraDescriptionPopulator">
 				<affectedThings>
