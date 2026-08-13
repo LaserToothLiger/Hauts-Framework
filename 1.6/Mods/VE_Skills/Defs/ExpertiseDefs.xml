@@ -19,6 +19,25 @@
       <Hauts_SurveySpeed>0.075</Hauts_SurveySpeed>
     </statOffsets>
   </VSE.Expertise.ExpertiseDef>
+  <VSE.Expertise.ExpertiseDef>
+    <defName>Hauts_Larceny</defName>
+    <label>Larceny</label>
+    <skill>Intellectual</skill>
+    <description>An expertise in finding more valuable items when stealing from others without being caught.\n\n(Pilfering stealth allows you to command this character to pickpocket non-player characters or burglarize non-player settlements on visiting them.)</description>
+    <statOffsets>
+      <Hauts_MaxPilferingValue>20</Hauts_MaxPilferingValue>
+      <Hauts_PilferingStealth>0.02</Hauts_PilferingStealth>
+    </statOffsets>
+  </VSE.Expertise.ExpertiseDef>
+  <VSE.Expertise.ExpertiseDef>
+    <defName>Hauts_Skulduggery</defName>
+    <label>Skulduggery</label>
+    <skill>Social</skill>
+    <description>An expertise in stealing from others without being caught.\n\n(Pilfering stealth allows you to command this character to pickpocket non-player characters or burglarize non-player settlements on visiting them.)</description>
+    <statOffsets>
+      <Hauts_PilferingStealth>0.07</Hauts_PilferingStealth>
+    </statOffsets>
+  </VSE.Expertise.ExpertiseDef>
   <VSE.Expertise.ExpertiseDef MayRequire="Ludeon.RimWorld.Ideology">
     <defName>Hauts_GauranlenExpert</defName>
     <label>Gautending</label>
@@ -26,24 +45,6 @@
     <description>An expertise in supporting dryads from tended Gauranlen trees.</description>
     <statOffsets>
       <Hauts_MaxDryadFactor>0.05</Hauts_MaxDryadFactor>
-    </statOffsets>
-  </VSE.Expertise.ExpertiseDef>
-  <VSE.Expertise.ExpertiseDef>
-    <defName>Hauts_Skulduggery</defName>
-    <label>Skulduggery</label>
-    <skill>Social</skill>
-    <description>An expertise in pickpocketing individuals or burglarizing settlements without being caught.</description>
-    <statOffsets>
-      <Hauts_PilferingStealth>0.05</Hauts_PilferingStealth>
-    </statOffsets>
-  </VSE.Expertise.ExpertiseDef>
-  <VSE.Expertise.ExpertiseDef>
-    <defName>Hauts_Larceny</defName>
-    <label>Larceny</label>
-    <skill>Intellectual</skill>
-    <description>An expertise in finding more valuable items when pickpocketing individuals or burglarizing settlements.</description>
-    <statOffsets>
-      <Hauts_MaxPilferingValue>20</Hauts_MaxPilferingValue>
     </statOffsets>
   </VSE.Expertise.ExpertiseDef>
   <VSE.Expertise.ExpertiseDef MayRequire="Ludeon.RimWorld.Ideology">
@@ -71,6 +72,22 @@
     <description>An expertise in the recycling of pollution and its byproducts.</description>
     <statOffsets>
       <Hauts_RecyclingSpeed>0.05</Hauts_RecyclingSpeed>
+    </statOffsets>
+  </VSE.Expertise.ExpertiseDef>
+  
+  <!--the above get modified if you have Vanilla Skills Rexamined, as its design philosophy strongly differs from the normal VSE. Here is one that could really only exist in its paradigm-->
+  <VSE.Expertise.ExpertiseDef MayRequire="Gravenwitch.VSRexamined">
+    <defName>Hauts_Ambusher</defName>
+    <label>Ambusher</label>
+    <skill>Melee</skill>
+    <description>An expertise in decisive first strikes and quick retreats.</description>
+    <statOffsets>
+	  <MoveSpeed>0.01</MoveSpeed>
+	  <Hauts_MeleeArmorPenetration>0.02</Hauts_MeleeArmorPenetration>
+      <Hauts_JumpRangeFactor>0.05</Hauts_JumpRangeFactor>
+	  <Hauts_PersonalCaravanVisibilityFactor>-0.05</Hauts_PersonalCaravanVisibilityFactor>
+      <Hauts_PilferingStealth>0.02</Hauts_PilferingStealth>
+	  <HuntingStealth>0.04</HuntingStealth>
     </statOffsets>
   </VSE.Expertise.ExpertiseDef>
 </Defs>

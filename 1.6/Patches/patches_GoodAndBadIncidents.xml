@@ -773,6 +773,55 @@
 		</match>
 	</Operation>
 	
+	<!--biomes series-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Biomes! Caverns</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="BMT_AmbrosyxSprout" or defName="CaveIn" or defName="BMT_Incident_PhosphoricLights" or defName="BMT_ThrumbungusPasses"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="BMT_ExplodingAngel" or defName="BMT_SkulltopSprout"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="Earthquake" or defName="BMT_HungeringHydraIncident" or defName="BMT_SporeCloud"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>2</impact>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Biomes! Polluted Lands</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/IncidentDef[defName="BMT_HagbloomSprout"]</xpath>
+			<value>
+				<li Class="HautsFramework.BelongsToEventPool">
+					<good>true</good>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	
 	<!--dark ages: beasts and monsters-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Patch><!--Spew range factor works on the following abilities-->
+<Patch><!--Certain ability cooldown modifiers work on the following abilities
+		Obsidia Expansion mods-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 		  <li>Obsidia Expansion - Ceratons Xenotype</li>
 		</mods>
-		<!--social abilities-->
 		<match Class="PatchOperationAddModExtension">
 			<xpath>/Defs/AbilityGroupDef[defName="OEAuraBuff"]</xpath>
 			<value>
@@ -14,6 +14,60 @@
 			</value>
 		</match>
 	</Operation>
+	<!--Sierra's mods-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Cooking Specialist</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="SO_ButcherCommand"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Cooking</affectedByAnyACMwithThisWorkTag>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Penitent Specialist</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="SO_PenitentCommand"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Violent</affectedByAnyACMwithThisWorkTag>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Podcaster Specialist</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="SO_PodcasterCommand"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+				</li>
+			</value>
+		</match>
+	</Operation><!--No need for Rimfluencer Specialist patch as its abilities already require Social. Void Specialist not included here as it has a couple other patches, and we might as well all group them in one FindMod patch-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Zealot Specialist </li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="SO_HolyFervour"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag><!--or maybe violent...?-->
+				</li>
+			</value>
+		</match>
+	</Operation>
+	<!--VE mods-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 		  <li>Vanilla Ideology Expanded - Memes and Structures</li>

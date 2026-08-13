@@ -2,15 +2,58 @@
 <Patch>
 	<Operation Class="PatchOperationFindMod">
 		<mods>
+			<li>Fray of the Fog</li>
+		</mods><!--the other patches in this file register certain VEF Abilities as "leaps" 2 be affected by jump range factor, this is for 'regular' abilities. Their range is not affected by jrf due to a custom class override of Range that uses a custom stat, so we statFactor that stat-->
+		<match Class="PatchOperationConditional"><!--note that this stat caps out at 20-->
+			<xpath>/Defs/StatDef[defName="dvd_JumpRangeFray"]/statFactors</xpath>
+			<match Class="PatchOperationAdd">
+				<xpath>/Defs/StatDef[defName="dvd_JumpRangeFray"]/statFactors</xpath>
+				<value>
+					<li>Hauts_JumpRangeFactor</li>
+				</value>
+			</match>
+			<nomatch Class="PatchOperationAdd">
+				<xpath>/Defs/StatDef[defName="dvd_JumpRangeFray"]</xpath>
+				<value>
+					<statFactors>
+						<li>Hauts_JumpRangeFactor</li>
+					</statFactors>
+				</value>
+			</nomatch>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
 			<li>Vanilla Factions Expanded - Pirates</li>
 		</mods>
-		<match Class="PatchOperationAddModExtension">
-			<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VFEP_PowerJump"]</xpath>
-			<value>
-				<li Class="HautsFramework.AbilityStatEffecters">
-					<leap>true</leap>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/VEF.Abilities.AbilityDef[defName="VFEP_PowerJump"]</xpath>
+					<value>
+						<li Class="HautsFramework.AbilityStatEffecters">
+							<leap>true</leap>
+						</li>
+					</value>
 				</li>
-			</value>
+				<li Class="PatchOperationConditional">
+					<xpath>/Defs/StatDef[defName="VFEP_PowerJumpRange"]/statFactors</xpath>
+					<match Class="PatchOperationAdd">
+						<xpath>/Defs/StatDef[defName="VFEP_PowerJumpRange"]/statFactors</xpath>
+						<value>
+							<li>Hauts_JumpRangeFactor</li>
+						</value>
+					</match>
+					<nomatch Class="PatchOperationAdd">
+						<xpath>/Defs/StatDef[defName="VFEP_PowerJumpRange"]</xpath>
+						<value>
+							<statFactors>
+								<li>Hauts_JumpRangeFactor</li>
+							</statFactors>
+						</value>
+					</nomatch>
+				</li>
+			</operations>
 		</match>
 	</Operation>
 	<Operation Class="PatchOperationFindMod">

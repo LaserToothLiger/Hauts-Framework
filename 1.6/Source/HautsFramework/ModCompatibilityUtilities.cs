@@ -41,6 +41,11 @@ namespace HautsFramework
         {
             return ModCompatibilityUtility.isHighFantasy;
         }
+        //HAR: what birthdays does a given pawn have growth moments?
+        public static int[] GrowthMomentAgesFor(Pawn p)
+        {
+            return GrowthUtility.GrowthMomentAges;
+        }
         //HAT integration: check if the pawn has a woke trait or gene. HAT has a Harmony patch to make this work. Any mod using this framework can therefore just reference this without needing a whole dedicated subdirectory just to check if a pawn is woke
         public static bool IsAwakenedPsychic(Pawn pawn)
         {

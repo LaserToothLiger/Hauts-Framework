@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Skills Rexamined</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--rebalances-->
+				<li Class="PatchOperationAdd">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Demolisher"]/statOffsets</xpath>
+					<value>
+					  <MoveSpeed>0.01</MoveSpeed>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Surveyor"]/statOffsets</xpath>
+					<value>
+					  <CaravanBonusSpeedFactor>0.01</CaravanBonusSpeedFactor>
+					  <Hauts_CaravanVisibilityOffset>-0.06</Hauts_CaravanVisibilityOffset>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Skulduggery"]/statOffsets</xpath>
+					<value>
+					  <Hauts_MaxPilferingValue>25</Hauts_MaxPilferingValue>
+					  <NegotiationAbility>0.025</NegotiationAbility>
+					</value>
+				</li>
+				<!--renames-->
+				<li Class="PatchOperationReplace">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Demolisher"]/label</xpath>
+					<value>
+					  <label>Demolisher</label>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Surveyor"]/label</xpath>
+					<value>
+					  <label>Geographer</label>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Skulduggery"]/label</xpath>
+					<value>
+					  <label>Swindler</label>
+					</value>
+				</li>
+				<!--redescribes-->
+				<li Class="PatchOperationReplace">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Demolisher"]/description</xpath>
+					<value>
+					  <description>An expertise in quickly and safely taking apart buildings and bases.</description>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Surveyor"]/description</xpath>
+					<value>
+					  <description>An expertise in navigating and scanning the terrain.</description>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Skulduggery"]/description</xpath>
+					<value>
+					  <description>An expertise in deceiving others, so as to take their valuables without their noticing.\n\n(Pilfering stealth allows you to command this character to pickpocket non-player characters or burglarize non-player settlements on visiting them.)</description>
+					</value>
+				</li>
+				<!--removal
+				<li Class="XmlExtensions.PatchOperationSafeRemove">
+					<xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Larceny"]</xpath>
+				</li>
+				DLC-locked stuff-->
+				<li Class="PatchOperationFindMod">
+					<mods>
+					  <li>Ideology</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<!--give max dryad factor to Treespeaker, since foraged food per day is so trivial this might as well just be the designated Gauranlen Tree Expertise in Rexamined's paradigm.
+							Note: VSR must be loaded above this framework for Treespeaker to get the buff-->
+							<li Class="PatchOperationAdd">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="HarvesterCareful"]/statOffsets</xpath>
+								<value>
+								  <Hauts_MaxDryadFactor>0.05</Hauts_MaxDryadFactor>
+								</value>
+							</li>
+							<!--<li Class="XmlExtensions.PatchOperationSafeRemove">
+								<xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_GauranlenExpert"]</xpath>
+							</li>
+							<li Class="XmlExtensions.PatchOperationSafeRemove">
+								<xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_GauranlenExpert2"]</xpath>
+							</li>-->
+						</operations>
+					</match>
+				</li>
+				<li Class="PatchOperationFindMod">
+					<mods>
+					  <li>Biotech</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<li Class="PatchOperationReplace">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Teacher"]/statOffsets/Hauts_InstructiveAbility</xpath>
+								<value>
+								  <Hauts_InstructiveAbility>0.1</Hauts_InstructiveAbility>
+								  <GlobalLearningFactor>0.01</GlobalLearningFactor>
+								</value>
+							</li>
+							<li Class="PatchOperationReplace">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Teacher"]/label</xpath>
+								<value>
+								  <label>Educator</label>
+								</value>
+							</li>
+							<li Class="PatchOperationReplace">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Teacher"]/description</xpath>
+								<value>
+								  <description>An expertise in educating others and, to a lesser extent, oneself.</description>
+								</value>
+							</li>
+						</operations>
+					</match>
+				</li>
+				<!--other mod-locked stuff-->
+				<li Class="PatchOperationFindMod">
+					<mods>
+					  <li>Vanilla Recycling Expanded</li>
+					</mods>
+					<match Class="PatchOperationSequence">
+						<operations>
+							<!--give recycling speed to Processor, as it's a rather niche stat
+							Note: VSR must be loaded above this framework for Processor to get the buff-->
+							<li Class="PatchOperationAdd">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="IndustrialProcessExpert"]/statOffsets</xpath>
+								<value>
+								  <Hauts_RecyclingSpeed>0.05</Hauts_RecyclingSpeed>
+								</value>
+							</li>
+							<!--<li Class="XmlExtensions.PatchOperationSafeRemove">
+								<xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Recycler"]</xpath>
+							</li>-->
+						</operations>
+					</match>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

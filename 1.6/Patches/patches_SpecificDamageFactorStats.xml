@@ -288,11 +288,96 @@
 	
 	<Operation Class="PatchOperationFindMod">
 		<mods>
-		  <li>[FSF] More Psycast Powers</li>
+		  <li>Anty the war ant race</li>
 		</mods>
-		<match Class="PatchOperationAddModExtension">
-			<xpath>/Defs/DamageDef[defName="FSFFrostbite"]</xpath>
-			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>1</value></li></factorStats></li></value>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AT_AcidDamage" or defName="AT_AcidDamage_High" or defName="AT_AcidBullet" or defName="AT_AcidBomb"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_AcidDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="AT_glueBomb" or defName="AT_glueBomb_B"]</xpath>
+					<value>
+						<li Class="HautsFramework.SpecificDamageFactorStats">
+							<factorStats>
+								<li><key>Hauts_ExplosiveDamageFactor</key><value>0.75</value></li>
+								<li><key>Hauts_AcidDamageFactor</key><value>0.75</value></li>
+							</factorStats>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Biomes! Core</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="BMT_BurningSting"]</xpath>
+					<value>
+					  <li Class="HautsFramework.SpecificDamageFactorStats">
+						<factorStats>
+								<li><key>Hauts_HeatDamageFactor</key><value>0.5</value></li>
+								<li><key>Hauts_ToxicDamageFactor</key><value>1</value></li>
+						</factorStats>
+					  </li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="BMT_ToxicSting" or defName="BMT_ParalyzingVenom"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Biomes! Caverns</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="BMT_ChillingVenom"]</xpath>
+					<value>
+					  <li Class="HautsFramework.SpecificDamageFactorStats">
+						<factorStats>
+								<li><key>Hauts_ColdDamageFactor</key><value>0.5</value></li>
+								<li><key>Hauts_ToxicDamageFactor</key><value>1</value></li>
+						</factorStats>
+					  </li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="BMT_Crystalope_SharpBomb"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ExplosiveDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="BMT_ToxicSpores" or defName="BMT_StunningSpores"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Biomes! Polluted Lands</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[@Name="BMT_SharpToxicAttackBase" or @Name="BMT_BluntToxicAttackBase"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats_ForParentStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/DamageDef[defName="BMT_SlimedUp" or defName="BMT_Neurotoxin" or defName="BMT_PhoridSting"]</xpath>
+					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ToxicDamageFactor</key><value>1</value></li></factorStats></li></value>
+				</li>
+			</operations>
 		</match>
 	</Operation>
 	
@@ -441,6 +526,16 @@
 					<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_PsychicDamageFactor</key><value>1</value></li></factorStats></li></value>
 				</li>
 			</operations>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>[FSF] More Psycast Powers</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/DamageDef[defName="FSFFrostbite"]</xpath>
+			<value><li Class="HautsFramework.SpecificDamageFactorStats"><factorStats><li><key>Hauts_ColdDamageFactor</key><value>1</value></li></factorStats></li></value>
 		</match>
 	</Operation>
 	

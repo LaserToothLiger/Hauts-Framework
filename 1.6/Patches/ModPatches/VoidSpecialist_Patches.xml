@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Void Specialist</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--Intellectual ACMs affect this ability's cooldown-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityDef[defName="SO_VoidCommand"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Intellectual</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--Void Specialists gain and via their command confer anti-entity damage factor, which helps keep them useful even after you're done with anomaly research-->
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/PreceptDef[defName="SO_IdeoRole_VoidSpecialist"]/roleEffects</xpath>
+					<value>
+						<li Class="RoleEffect_PawnStatOffset">
+							<statDef>Hauts_EntityDamageFactor</statDef>
+							<modifier>0.3</modifier>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/HediffDef[defName="SO_VoidCommandBuff"]/stages/li/statOffsets</xpath>
+					<value>
+						<Hauts_EntityDamageFactor>0.3</Hauts_EntityDamageFactor>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

@@ -30,13 +30,13 @@
 		<li IfModActive="Ludeon.RimWorld.Anomaly">1.6/Mods/Anomaly</li><!--bioferrite destabilizer hediff comp-->
 		<li IfModActive="RedMattis.BetterPrerequisites">1.6/Mods/BigAndSmall</li><!--makes ModCompatibilityUtility.IsAnimalOrSapientAnimal and .Sapienate work, so I don't need subfolders in each distinct mod I use this stuff for-->
 		<li IfModActive="CETeam.CombatExtended">1.6/Mods/CombatExtended</li><!--makes armor pen factor stats work with their system-->
+		<li IfModActive="erdelf.HumanoidAlienRaces">1.6/Mods/HAR</li><!--get growth moment ages for aliens that have custom growthAges-->
 		<li IfModActive="lts.I" IfModNotActive="MSE2.Core">1.6/Mods/ThisIsGettingALittleIntoTheWeeds</li><!--enables AbilityCooldownModifiers that affect all bionic abilities to affect abilities granted by II modules-->
 		<li IfModActive="ferny.ProgressionEducation">1.6/Mods/ProgressionEducation</li><!--makes the new ways to teach people affected by the Instructive Ability stat-->
 		<li IfModActive="ferny.ProgressionTherapy">1.6/Mods/ProgressionTherapy</li><!--same like-->
 		<li IfModActive="DimonSever000.FactionLanguages">1.6/Mods/RimLanguages</li><!--makes ModCompatibilityUtility.LearnLanguage work as advertised, so I don't need to make specific subdirectories for RimLanguages in each of my mods JUST to implement one or two new methods of learning languages-->
 		<li IfModActive="vanillaexpanded.skills">1.6/Mods/VE_Skills</li><!--SkillAdjustment hediff comps that cause xp loss are affeted by VSE's forgetting speed modifiers. Also adds expertises that grant some of the stats from this framework-->
 		<li IfModActive="OskarPotocki.VFE.Insectoid2">1.6/Mods/VFE_Insectoids2</li><!--makes Verb_CastAbilityJumpUnrestricted verbs work with jump range factor, as they are apparently not derivatives of ordinary jump verbs-->
-		<li IfModActive="OskarPotocki.VFE.Pirates">1.6/Mods/VFE_Pirates</li><!--power jump's stat cannot simply be statFactored by jump range factor (or at least it couldn't when I first tried this, but it's been two DLCs since then so if you have evidene to the contrary hmu), so this code handles a less elegant workaround-->
 		<li IfModActive="OskarPotocki.VFE.Tribals">1.6/Mods/VFE_Tribal</li><!--just adds cornerstones-->
 		<li IfModActive="vanillaexpanded.gravship">1.6/Mods/VGravshipE</li><!--makes ModCompatibilityUtility.AddGravdata work, so that I don't have to make a similar subdirectory all over again in other mods where I want a phenomenon to be a new means of gravdata research-->
 		<li IfModActive="vanillaracesexpanded.sanguophage">1.6/Mods/VRE_Sanguophage</li><!--scales corpsefeeding's hemogen gain by the corpse's pawn's hemogen yield stat. The other bloodfeeding methods introduced in VRESang are already affected by the normal Harmony patch for hemogen yield-->

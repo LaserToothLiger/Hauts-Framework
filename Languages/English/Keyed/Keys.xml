@@ -137,15 +137,17 @@
 <HVT_SettingMinTraits>Minimum traits per pawn</HVT_SettingMinTraits>
 <HVT_TooltipMinTraits>The lowest number of traits a pawn can spawn with, barring particularly unusual circumstances.\n\nPawns young enough to still go through growth moments (Biotech DLC) are unaffected.</HVT_TooltipMinTraits>
 <HVT_SettingMaxTraits>Maximum traits per pawn</HVT_SettingMaxTraits>
-<HVT_TooltipMaxTraits>Pawns will be able to spawn with up to this many traits, except in rare circumstances that force additional traits.\n\n\nWith the Biotech DLC, the number and spacing of growth moments for children adjusts as follows:
-\n-3 max traits) Growth moments happen on the 7th, 10th, and 13th birthdays; growth points gain at the usual rate (25% slower for the first one, then at 1x speed).
-\n-4mt) Moments on bdays 6, 9, 11, 13; growth points gain 50% faster for the last two.
-\n-5mt) Moments on bdays 5, 7, 9, 11, 13; points gain 50% faster.
-\n-6mt) Identical to 3mt, but there are two moments per bday.
-\n-7mt) One moment on bday 6; two on bdays 9, 11, 13; points gain 50% faster for the last two.
-\n-8mt) Two moments each on bdays 6, 9, 11, 13; points gain 50% faster for the last two.
-\n-9mt) Identical to 3mt, but there are three moments per bday.
-\n-10mt) Two moments on bdays 5, 7, 9, 11, 13; points gain 50% faster.
-\n-11mt) Two moments on bday 6; three on bdays 9, 11, 13; points gain 50% faster for the last two.
-\n-12mt) Three moments on bdays 6, 9, 11, 13; points gain 50% faster for the last two.</HVT_TooltipMaxTraits>
+<HVT_TooltipMaxTraits>Pawns will be able to spawn with up to this many traits, except in rare circumstances that force additional traits.\n\n\nWith the Biotech DLC, children gain 'bonus' growth moments (BGMs) on their growth birthdays to enable them to reach the maximum trait count:
+\n-3 max traits) 0/0/0 BGMs on the first/second/third growth bday, respectively.
+\n-4mt) 0/0/1
+\n-5mt) 0/1/1
+\n-6mt) 1/1/1
+\n-7mt) 1/1/2
+\n-8mt) 1/2/2
+\n-9mt) 2/2/2
+\n-10mt) 2/2/3
+\n-11mt) 2/3/3
+\n-12mt) 3/3/3
+\nThese bonus growth moments only grant a trait, not any skill passions.
+\nThis system assumes that the pawn has at least three growth birthdays. If a pawn has fewer growth moments due to some strange other mod, they won't have the opportunity to get as many bonus growth moments.</HVT_TooltipMaxTraits>
 </LanguageData>
