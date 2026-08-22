@@ -14,6 +14,13 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAdd">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Larceny"]/statOffsets</xpath>
+					<value>
+					  <HackingSpeed>0.05</HackingSpeed>
+					  <HackingStealth>1</HackingStealth>
+					</value>
+				</li>
+				<li Class="PatchOperationAdd">
 				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Surveyor"]/statOffsets</xpath>
 					<value>
 					  <CaravanBonusSpeedFactor>0.01</CaravanBonusSpeedFactor>
@@ -41,6 +48,12 @@
 					</value>
 				</li>
 				<li Class="PatchOperationReplace">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Larceny"]/label</xpath>
+					<value>
+					  <label>Safecracker</label>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
 				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Skulduggery"]/label</xpath>
 					<value>
 					  <label>Swindler</label>
@@ -60,36 +73,61 @@
 					</value>
 				</li>
 				<li Class="PatchOperationReplace">
+				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Larceny"]/description</xpath>
+					<value>
+					  <description>An expertise in bypassing security measures and nabbing valuables.\n\n(Pilfering stealth allows you to command this character to pickpocket non-player characters or burglarize non-player settlements on visiting them.)</description>
+					</value>
+				</li>
+				<li Class="PatchOperationReplace">
 				  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Skulduggery"]/description</xpath>
 					<value>
 					  <description>An expertise in deceiving others, so as to take their valuables without their noticing.\n\n(Pilfering stealth allows you to command this character to pickpocket non-player characters or burglarize non-player settlements on visiting them.)</description>
 					</value>
 				</li>
-				<!--removal
-				<li Class="XmlExtensions.PatchOperationSafeRemove">
-					<xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Larceny"]</xpath>
-				</li>
-				DLC-locked stuff-->
+				<!--DLC-locked stuff-->
 				<li Class="PatchOperationFindMod">
 					<mods>
 					  <li>Ideology</li>
 					</mods>
 					<match Class="PatchOperationSequence">
 						<operations>
-							<!--give max dryad factor to Treespeaker, since foraged food per day is so trivial this might as well just be the designated Gauranlen Tree Expertise in Rexamined's paradigm.
-							Note: VSR must be loaded above this framework for Treespeaker to get the buff-->
+							<!--alternatives to Treespeaker solely focused on dryads; the Plants one also grants (a smaller amount of) pruning speed, the Animals one is substantially more dryad per dryad-->
 							<li Class="PatchOperationAdd">
-							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="HarvesterCareful"]/statOffsets</xpath>
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_GauranlenExpert2"]/statOffsets</xpath>
 								<value>
-								  <Hauts_MaxDryadFactor>0.05</Hauts_MaxDryadFactor>
+								  <PruningSpeed>0.03</PruningSpeed>
 								</value>
 							</li>
-							<!--<li Class="XmlExtensions.PatchOperationSafeRemove">
-								<xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_GauranlenExpert"]</xpath>
+							<li Class="PatchOperationReplace">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_GauranlenExpert2"]/label</xpath>
+								<value>
+								  <label>Gauranlen Caretaker</label>
+								</value>
 							</li>
-							<li Class="XmlExtensions.PatchOperationSafeRemove">
-								<xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_GauranlenExpert2"]</xpath>
-							</li>-->
+							<li Class="PatchOperationReplace">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_GauranlenExpert2"]/description</xpath>
+								<value>
+								  <description>An expertise in taking care of gauranlen trees to support their dryad populations.</description>
+								</value>
+							</li>
+							<li Class="PatchOperationReplace">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_GauranlenExpert"]/statOffsets/Hauts_MaxDryadFactor</xpath>
+								<value>
+								  <Hauts_MaxDryadFactor>0.1</Hauts_MaxDryadFactor>
+								</value>
+							</li>
+							<li Class="PatchOperationReplace">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_GauranlenExpert"]/label</xpath>
+								<value>
+								  <label>Dryad Handler</label>
+								</value>
+							</li>
+							<li Class="PatchOperationReplace">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_GauranlenExpert"]/description</xpath>
+								<value>
+								  <description>An expertise in facilitating larger populations of dryads per gauranlen tree.</description>
+								</value>
+							</li>
 						</operations>
 					</match>
 				</li>
@@ -127,18 +165,27 @@
 					  <li>Vanilla Recycling Expanded</li>
 					</mods>
 					<match Class="PatchOperationSequence">
-						<operations>
-							<!--give recycling speed to Processor, as it's a rather niche stat
-							Note: VSR must be loaded above this framework for Processor to get the buff-->
+						<operations><!--Recycling becomes Toxicologist-->
 							<li Class="PatchOperationAdd">
-							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="IndustrialProcessExpert"]/statOffsets</xpath>
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Recycler"]/statOffsets</xpath>
 								<value>
-								  <Hauts_RecyclingSpeed>0.05</Hauts_RecyclingSpeed>
+								  <Hauts_OverdoseSusceptibility>-0.02</Hauts_OverdoseSusceptibility>
+								  <ToxicResistance>0.025</ToxicResistance>
+								  <Hauts_ToxicDamageFactor>-0.01</Hauts_ToxicDamageFactor>
 								</value>
 							</li>
-							<!--<li Class="XmlExtensions.PatchOperationSafeRemove">
-								<xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Recycler"]</xpath>
-							</li>-->
+							<li Class="PatchOperationReplace">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Recycler"]/label</xpath>
+								<value>
+								  <label>Toxicologist</label>
+								</value>
+							</li>
+							<li Class="PatchOperationReplace">
+							  <xpath>Defs/VSE.Expertise.ExpertiseDef[defName="Hauts_Recycler"]/description</xpath>
+								<value>
+								  <description>An expertise in safely handling and utilizing dangerous chemicals.</description>
+								</value>
+							</li>
 						</operations>
 					</match>
 				</li>

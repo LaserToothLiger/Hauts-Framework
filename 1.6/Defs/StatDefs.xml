@@ -257,7 +257,10 @@
 		</skillNeedFactors>
 		<displayPriorityInCategory>4290</displayPriorityInCategory>
 		<parts>
-		  <li MayRequire="Hautarche.HautsDeepenedMemes" Class="HautsDeepenedMemes.StatPart_MultiSurveyors" />
+		  <li Class="HautsFramework.StatPart_MultiplyByStatOfCurTarget">
+		    <statOfCurTarget>Hauts_SurveySpeedFactor</statOfCurTarget>
+			<curTargetMustBeBuilding>true</curTargetMustBeBuilding>
+		  </li>
 		</parts>
 		<modExtensions>
             <li Class="HautsFramework.SurveySpeedsExtraDescriptionPopulator">

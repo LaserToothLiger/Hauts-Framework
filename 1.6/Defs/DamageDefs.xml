@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   
+  <DamageDef ParentName="Bomb">
+    <defName>Hauts_GravPulverization</defName>
+    <label>gravitic pulverization</label>
+    <explosionAffectOutsidePartsOnly>false</explosionAffectOutsidePartsOnly>
+    <explosionHeatEnergyPerCell>2</explosionHeatEnergyPerCell>
+    <explosionCellFleck>BlastDry</explosionCellFleck>
+    <explosionColorCenter>(131, 226, 235)</explosionColorCenter>
+    <explosionColorEdge>(69, 38, 135)</explosionColorEdge>
+    <explosionInteriorFleck>ElectricalSpark</explosionInteriorFleck>
+    <additionalHediffs>
+      <li>
+        <hediff>Hauts_AmplifiedGraviticPull</hediff>
+        <severityPerDamageDealt>0.1</severityPerDamageDealt>
+      </li>
+    </additionalHediffs>
+	<modExtensions>
+	  <li Class="HautsFramework.SpecificDamageFactorStats">
+		<factorStats>
+			<li><key>Hauts_GravityDamageFactor</key><value>1</value></li>
+		</factorStats>
+	  </li>
+	</modExtensions>
+  </DamageDef>
+	  <HediffDef>
+		<defName>Hauts_AmplifiedGraviticPull</defName>
+		<label>amplified gravitic pull</label>
+		<description>Heightened gravity impedes movement.</description>
+		<hediffClass>HediffWithComps</hediffClass>
+		<defaultLabelColor>(110,61,216)</defaultLabelColor>
+		<stages>
+		  <li>
+			<statOffsets>
+			  <MoveSpeed>-1</MoveSpeed>
+			  <MeleeDodgeChance>-1.5</MeleeDodgeChance>
+			</statOffsets>
+			<statFactors>
+			  <VEF_RangedDodgeChance>0.99</VEF_RangedDodgeChance>
+			</statFactors>
+			<multiplyStatChangesBySeverity>true</multiplyStatChangesBySeverity>
+		  </li>
+		</stages>
+		<comps>
+		  <li Class="HediffCompProperties_SeverityPerDay">
+			<severityPerDay>-60</severityPerDay>
+			<showDaysToRecover>true</showDaysToRecover>
+		  </li>
+		  <li Class="HediffCompProperties_DisappearsOnDeath"/>
+		</comps>
+	  </HediffDef>
+  
   <DamageDef>
     <defName>Hauts_SkipFrag</defName>
     <label>skip</label>
@@ -27,22 +77,22 @@
 	  </li>
 	</modExtensions>
   </DamageDef>
-  <ToolCapacityDef>
-    <defName>Hauts_Skipcut</defName>
-    <label>skipcut</label>
-  </ToolCapacityDef>
-  <ManeuverDef>
-    <defName>Hauts_Skipslash</defName>
-    <requiredCapacity>Hauts_Skipcut</requiredCapacity>
-    <verb>
-      <verbClass>Verb_MeleeAttackDamage</verbClass>
-      <meleeDamageDef>Hauts_SkipFrag</meleeDamageDef>
-    </verb>
-    <logEntryDef>MeleeAttack</logEntryDef>
-    <combatLogRulesHit>Maneuver_Slash_MeleeHit</combatLogRulesHit>
-    <combatLogRulesDeflect>Maneuver_Slash_MeleeDeflect</combatLogRulesDeflect>
-    <combatLogRulesMiss>Maneuver_Slash_MeleeMiss</combatLogRulesMiss>
-    <combatLogRulesDodge>Maneuver_Slash_MeleeDodge</combatLogRulesDodge>
-  </ManeuverDef>
+	  <ToolCapacityDef>
+		<defName>Hauts_Skipcut</defName>
+		<label>skipcut</label>
+	  </ToolCapacityDef>
+	  <ManeuverDef>
+		<defName>Hauts_Skipslash</defName>
+		<requiredCapacity>Hauts_Skipcut</requiredCapacity>
+		<verb>
+		  <verbClass>Verb_MeleeAttackDamage</verbClass>
+		  <meleeDamageDef>Hauts_SkipFrag</meleeDamageDef>
+		</verb>
+		<logEntryDef>MeleeAttack</logEntryDef>
+		<combatLogRulesHit>Maneuver_Slash_MeleeHit</combatLogRulesHit>
+		<combatLogRulesDeflect>Maneuver_Slash_MeleeDeflect</combatLogRulesDeflect>
+		<combatLogRulesMiss>Maneuver_Slash_MeleeMiss</combatLogRulesMiss>
+		<combatLogRulesDodge>Maneuver_Slash_MeleeDodge</combatLogRulesDodge>
+	  </ManeuverDef>
   
 </Defs>

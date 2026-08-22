@@ -98,6 +98,49 @@ namespace HautsFramework
             return "Hauts_StatWorkerPsyfocusBand".Translate() + ": " + (-1f * Pawn_PsychicEntropyTracker.FallRatePerPsyfocusBand[pawn.psychicEntropy.PsyfocusBand]).ToStringPercent();
         }
     }
+    //while a pawn is doing a job targeting smth else, its value for this stat is multiplied by a stat of the building's (used for Survey Speed and Survey Speed Factor)
+    public class StatPart_MultiplyByStatOfCurTarget : StatPart
+    {
+        public override void TransformValue(StatRequest req, ref float val)
+        {
+            Pawn pawn;
+            if ((pawn = (req.Thing as Pawn)) == null)
+            {
+                return;
+            }
+            if (pawn.CurJob != null && pawn.CurJob.targetA != null && this.statOfCurTarget != null)
+            {
+                Thing t = pawn.CurJob.targetA.Thing;
+                if (t != null && (!this.curTargetMustBeBuilding || t is Building))
+                {
+                    val *= t.GetStatValue(this.statOfCurTarget);
+                }
+            }
+        }
+        public override string ExplanationPart(StatRequest req)
+        {
+            Pawn pawn;
+            if ((pawn = (req.Thing as Pawn)) == null)
+            {
+                return null;
+            }
+            if (pawn.CurJob != null && pawn.CurJob.targetA != null && this.statOfCurTarget != null)
+            {
+                Thing t = pawn.CurJob.targetA.Thing;
+                if (t != null && (!this.curTargetMustBeBuilding || t is Building))
+                {
+                    float ssf = t.GetStatValue(this.statOfCurTarget);
+                    if (ssf != 1f)
+                    {
+                        return "Hauts_StatWorkerAffectedByStatOfCurTarget".Translate(this.statOfCurTarget.LabelCap) + ": x" + ssf;
+                    }
+                }
+            }
+            return null;
+        }
+        public StatDef statOfCurTarget;
+        public bool curTargetMustBeBuilding;
+    }
     //currently unused - for a stat that is offset by another stat
     public class StatPart_OwnStatOffset : StatPart
     {

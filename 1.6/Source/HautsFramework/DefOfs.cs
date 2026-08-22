@@ -10,6 +10,7 @@ namespace HautsFramework
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(HautsDefOf));
         }
+        public static DamageDef Hauts_GravPulverization;
         public static DamageDef Hauts_SkipFrag;
         public static EffecterDef Hauts_ToxThornsMist;
 
@@ -58,6 +59,8 @@ namespace HautsFramework
         public static StatDef Hauts_EntityDamageFactor;
         public static StatDef Hauts_MeleeArmorPenetration;
         public static StatDef Hauts_RangedArmorPenetration;
+
+        public static StatDef Hauts_SurveySpeedFactor;
 
         public static ThingDef Hauts_DefaultAuraGraphic;
 

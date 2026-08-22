@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
-	<!--see patches_SpecificDamageFactorStats.xml for what specific damage types are affected. In the future, I'd like to be able to display what specific damage types are affected when you mouse over the stat in the info tab-->
+	<!--see patches_SpecificDamageFactorStats.xml for what specific damage types are affected-->
 	<HautsFramework.SpecificDamageFactorStatDef Name="Hauts_IncomingXDamageFactorStat" Abstract="True">
 		<category>PawnResistances</category>
 		<minValue>0</minValue>
@@ -33,6 +33,12 @@
 		<displayPriorityInCategory>3004</displayPriorityInCategory>
 	</HautsFramework.SpecificDamageFactorStatDef>
 	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_GravityDamageFactor</defName>
+		<label>incoming gravitic damage factor</label>
+		<description>A multiplier on incoming damage taken of various 'gravitic' types.\n\nThere are no gravitic damage types in the base game or its DLCs - they are only found in specific mods.</description>
+		<displayPriorityInCategory>3003</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
 		<defName>Hauts_HeatDamageFactor</defName>
 		<label>incoming heat damage factor</label>
 		<description>A multiplier on incoming damage taken of various heat-related types. Note that lightning strikes actually do flame damage, and as such are affected by this stat.</description>
@@ -41,7 +47,7 @@
 	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
 		<defName>Hauts_PsychicDamageFactor</defName>
 		<label>incoming psychic damage factor</label>
-		<description>A multiplier on incoming damage taken of various psychic types.\n\nPsychic damage types are very rare; although some anomalous entities use psychic damage, they typically apply it as part of an instant-kill effect which does not need the damage to function, so this stat is only useful if you have mods that add more conventionally-applied sources of psychic damage.</description>
+		<description>A multiplier on incoming damage taken of various psychic types.\n\nPsychic damage types are very rare; although some unnatural entities from the Anomaly DLC use psychic damage, they typically apply it as part of an instant-kill effect which does not need the damage to function, so this stat is only useful if you have mods that add more conventionally-applied sources of psychic damage.</description>
 		<displayPriorityInCategory>3006</displayPriorityInCategory>
 	</HautsFramework.SpecificDamageFactorStatDef>
 	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">

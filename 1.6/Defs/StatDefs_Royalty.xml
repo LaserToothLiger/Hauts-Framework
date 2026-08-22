@@ -78,7 +78,7 @@
 	<StatDef MayRequire="Ludeon.RimWorld.Royalty">
 		<defName>Hauts_TierOnePsycastCostOffset</defName>
 		<label>first-level psycast cost offset</label>
-		<description>If Vanilla Psycasts Expanded is in the active modlist, provides a flat offset to the amount of psyfocus needed to cast 1st-level psycasts. If not, it is added to the total psyfocus cost refund of any 1st-level psycast.</description>
+		<description>If you are using Vanilla Psycasts Expanded, provides a flat offset to the amount of psyfocus needed to cast 1st-level psycasts. If not, it is added to the total psyfocus cost refund of any 1st-level psycast.</description>
 		<category>PawnPsyfocus</category>
 		<hideAtValue>0</hideAtValue>
 		<defaultBaseValue>0</defaultBaseValue>
