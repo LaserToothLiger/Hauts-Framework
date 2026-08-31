@@ -34,6 +34,7 @@
 		  <li>
 			<statOffsets>
 			  <MoveSpeed>-1</MoveSpeed>
+			  <CrawlSpeed>-1</CrawlSpeed>
 			  <MeleeDodgeChance>-1.5</MeleeDodgeChance>
 			</statOffsets>
 			<statFactors>

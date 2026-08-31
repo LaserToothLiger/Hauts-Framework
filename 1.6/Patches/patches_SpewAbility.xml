@@ -340,6 +340,18 @@
 	
 	<Operation Class="PatchOperationFindMod">
 		<mods>
+		  <li>Det's Xenotypes - Boglegs</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="DV_MuckSpit"]</xpath>
+			<value>
+				<li Class="HautsFramework.Hauts_SpewAbility" />
+			</value>
+		</match>
+	</Operation>
+	
+	<Operation Class="PatchOperationFindMod">
+		<mods>
 		  <li>Fray of the Fog</li>
 		</mods>
 		<match Class="PatchOperationAddModExtension">

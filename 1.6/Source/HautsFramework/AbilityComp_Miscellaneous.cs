@@ -237,6 +237,13 @@ namespace HautsFramework
                 return (CompProperties_AbilityGiveHediffFromMenu)this.props;
             }
         }
+        public virtual List<HediffDef> HediffListForMenu
+        {
+            get
+            {
+                return this.Props.hediffs;
+            }
+        }
     }
     public class CompAbilityEffect_GiveHediffFromMenu : CompAbilityEffect_GiveHediffFromMenuBase
     {
@@ -268,9 +275,9 @@ namespace HautsFramework
                 if (this.parent.pawn != null && this.parent.pawn.Faction == Faction.OfPlayer)
                 {
                     List<Pawn> targets = new List<Pawn>() { target };
-                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, targets, other, this.parent.pawn, this.Props.hediffs, this.Props.menuString, this.Props.menuStringPlural, this.Props.removeExistingOptionsFromPawn,this.Props.removeThisAfterGrantingOption));
+                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, targets, other, this.parent.pawn, this.HediffListForMenu, this.Props.menuString, this.Props.menuStringPlural, this.Props.removeExistingOptionsFromPawn,this.Props.removeThisAfterGrantingOption));
                 } else {
-                    HautsMiscUtility.AddHediffFromMenu(this.Props.hediffs.RandomElement<HediffDef>(), target, this, other, this.parent.pawn,this.Props.removeExistingOptionsFromPawn?this.Props.hediffs:null);
+                    HautsMiscUtility.AddHediffFromMenu(this.HediffListForMenu.RandomElement<HediffDef>(), target, this, other, this.parent.pawn,this.Props.removeExistingOptionsFromPawn?this.Props.hediffs:null);
                     if (this.Props.removeThisAfterGrantingOption != null)
                     {
                         foreach (Hediff h in target.health.hediffSet.hediffs)
@@ -308,9 +315,9 @@ namespace HautsFramework
             {
                 if (this.parent.pawn.IsPlayerControlled)
                 {
-                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, this.pawns, this.parent.pawn, this.parent.pawn, this.Props.hediffs, this.Props.menuString, this.Props.menuStringPlural, this.Props.removeExistingOptionsFromPawn, this.Props.removeThisAfterGrantingOption));
+                    Find.WindowStack.Add(new Dialog_GiveHediffFromMenu(this, this.pawns, this.parent.pawn, this.parent.pawn, this.HediffListForMenu, this.Props.menuString, this.Props.menuStringPlural, this.Props.removeExistingOptionsFromPawn, this.Props.removeThisAfterGrantingOption));
                 } else {
-                    HediffDef hd = this.Props.hediffs.RandomElement();
+                    HediffDef hd = this.HediffListForMenu.RandomElement();
                     foreach (Pawn p in pawns)
                     {
                         HautsMiscUtility.AddHediffFromMenu(hd, p, this, this.parent.pawn, this.parent.pawn, this.Props.removeExistingOptionsFromPawn ? this.Props.hediffs : null);
@@ -379,6 +386,10 @@ namespace HautsFramework
                 this.optionalTitle = menuLabel.Translate(this.pawns[0].LabelCap);
             } else {
                 this.optionalTitle = menuLabelPlural.Translate();
+            }
+            if (this.possibleHediffs != null)
+            {
+                this.possibleHediffs.Clear();
             }
             this.possibleHediffs = hediffs;
             this.removesOtherOptionsFromPawn = removesOtherOptionsFromPawn;

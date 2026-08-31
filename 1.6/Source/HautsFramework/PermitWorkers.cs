@@ -78,6 +78,7 @@ namespace HautsFramework
         public string onUseMessage;
         //other effects
         public FloatRange extraNumber;
+        public StatDef extraStat;
         public DamageDef damageType;
         //thing-targeting
         public List<ThingDef> targetableThings;

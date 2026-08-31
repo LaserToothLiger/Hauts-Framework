@@ -67,6 +67,20 @@
 			</value>
 		</match>
 	</Operation>
+	<!--UMW-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Unique Melee Weapons</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="UMW_RallyingCry"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+				</li>
+			</value>
+		</match>
+	</Operation>
 	<!--VE mods-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>

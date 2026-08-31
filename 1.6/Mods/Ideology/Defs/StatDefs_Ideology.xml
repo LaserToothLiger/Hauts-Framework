@@ -2,7 +2,7 @@
 <Defs>
 	<StatDef>
 		<defName>Hauts_IdeoAbilityDurationSelf</defName>
-		<label>ideoligious ability susceptibility</label>
+		<label>ideoligious susceptibility</label>
 		<description>A multiplier to the duration of ideoligious ability-caused mental states and health conditions on this pawn.</description>
 		<category>BasicsPawn</category>
         <minValue>0</minValue>

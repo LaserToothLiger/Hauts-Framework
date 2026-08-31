@@ -782,15 +782,33 @@ namespace HautsFramework
                 return (HediffCompProperties_GiveTrait)this.props;
             }
         }
+        public virtual TraitDef TraitToGive
+        {
+            get
+            {
+                return this.Props.traitDef;
+            }
+        }
+        public virtual int DegreeToGive
+        {
+            get
+            {
+                return this.Props.traitDegree;
+            }
+        }
         public override string CompTipStringExtra
         {
             get
             {
+                if (this.TraitToGive == null)
+                {
+                    return null;
+                }
                 if (!this.removeTraitOnRemoval)
                 {
                     return base.CompLabelInBracketsExtra;
                 }
-                return "Hauts_GivesTraitTooltip".Translate(this.Props.traitDef.DataAtDegree(this.Props.traitDegree).GetLabelFor(this.parent.pawn));
+                return "Hauts_GivesTraitTooltip".Translate(this.TraitToGive.DataAtDegree(this.DegreeToGive).GetLabelFor(this.parent.pawn));
             }
         }
         public override void CompPostPostAdd(DamageInfo? dinfo)
@@ -799,7 +817,7 @@ namespace HautsFramework
             {
                 foreach (Trait t in this.parent.pawn.story.traits.allTraits)
                 {
-                    if (t.def == this.Props.traitDef && t.Degree == this.Props.traitDegree)
+                    if (t.def == this.TraitToGive && t.Degree == this.DegreeToGive)
                     {
                         this.removeTraitOnRemoval = false;
                         if (t.suppressedByTrait)
@@ -811,7 +829,7 @@ namespace HautsFramework
                     }
                 }
                 this.AdjustSuppression();
-                Trait toGain = new Trait(this.Props.traitDef, this.Props.traitDegree);
+                Trait toGain = new Trait(this.TraitToGive,this.DegreeToGive);
                 this.parent.pawn.story.traits.GainTrait(toGain);
                 this.removeTraitOnRemoval = true;
                 this.parent.pawn.story.traits.RecalculateSuppression();
@@ -819,53 +837,59 @@ namespace HautsFramework
         }
         public void AdjustSuppression()
         {
-            foreach (Trait tt in this.parent.pawn.story.traits.allTraits)
+            if (this.TraitToGive != null)
             {
-                if ((tt.def != this.Props.traitDef && tt.def.ConflictsWith(this.Props.traitDef) && tt.def.canBeSuppressed) || (tt.def == this.Props.traitDef && tt.Degree != this.Props.traitDegree))
+                foreach (Trait tt in this.parent.pawn.story.traits.allTraits)
                 {
-                    tt.suppressedByTrait = true;
+                    if ((tt.def != this.TraitToGive && tt.def.ConflictsWith(this.TraitToGive) && tt.def.canBeSuppressed) || (tt.def == this.TraitToGive && tt.Degree != this.DegreeToGive))
+                    {
+                        tt.suppressedByTrait = true;
+                    }
                 }
             }
         }
         public override void CompPostPostRemoved()
         {
-            if (this.parent.pawn.story != null && this.parent.pawn.story.traits != null)
+            if (this.TraitToGive != null)
             {
-                if (this.removeTraitOnRemoval)
+                if (this.parent.pawn.story != null && this.parent.pawn.story.traits != null)
                 {
-                    List<Trait> toRemove = new List<Trait>();
-                    foreach (Trait t in this.parent.pawn.story.traits.allTraits)
+                    if (this.removeTraitOnRemoval)
                     {
-                        if (t.def == this.Props.traitDef && t.Degree == this.Props.traitDegree)
+                        List<Trait> toRemove = new List<Trait>();
+                        foreach (Trait t in this.parent.pawn.story.traits.allTraits)
                         {
-                            toRemove.Add(t);
-                        }
-                    }
-                    foreach (Trait t in toRemove)
-                    {
-                        this.parent.pawn.story.traits.RemoveTrait(t);
-                        foreach (Trait tt in this.parent.pawn.story.traits.allTraits)
-                        {
-                            if (tt.suppressedByTrait && ((tt.def.ConflictsWith(this.Props.traitDef)) || (tt.def == this.Props.traitDef && tt.Degree != this.Props.traitDegree)))
+                            if (t.def == this.TraitToGive && t.Degree == this.DegreeToGive)
                             {
-                                bool flag = true;
-                                foreach (Trait ttt in this.parent.pawn.story.traits.allTraits)
+                                toRemove.Add(t);
+                            }
+                        }
+                        foreach (Trait t in toRemove)
+                        {
+                            this.parent.pawn.story.traits.RemoveTrait(t);
+                            foreach (Trait tt in this.parent.pawn.story.traits.allTraits)
+                            {
+                                if (tt.suppressedByTrait && ((tt.def.ConflictsWith(this.TraitToGive)) || (tt.def == this.TraitToGive && tt.Degree != this.DegreeToGive)))
                                 {
-                                    if (ttt != tt && ttt.def.ConflictsWith(tt.def))
+                                    bool flag = true;
+                                    foreach (Trait ttt in this.parent.pawn.story.traits.allTraits)
                                     {
-                                        flag = false;
+                                        if (ttt != tt && ttt.def.ConflictsWith(tt.def))
+                                        {
+                                            flag = false;
+                                        }
                                     }
-                                }
-                                if (flag)
-                                {
-                                    tt.suppressedByTrait = false;
+                                    if (flag)
+                                    {
+                                        tt.suppressedByTrait = false;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                this.parent.pawn.story.traits.RecalculateSuppression();
             }
-            this.parent.pawn.story.traits.RecalculateSuppression();
             base.CompPostPostRemoved();
         }
         public override void CompExposeData()
