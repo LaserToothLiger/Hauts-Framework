@@ -7,19 +7,7 @@
 		<match Class="PatchOperationSequence">
 			<operations>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/AbilityDef[defName="AcidSpray"]</xpath>
-					<value>
-						<li Class="HautsFramework.Hauts_SpewAbility" />
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/AbilityDef[defName="FoamSpray"]</xpath>
-					<value>
-						<li Class="HautsFramework.Hauts_SpewAbility" />
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/AbilityDef[defName="FireSpew"]</xpath>
+					<xpath>/Defs/AbilityDef[defName="AcidSpray" or defName="FoamSpray" or defName="FireSpew"]</xpath>
 					<value>
 						<li Class="HautsFramework.Hauts_SpewAbility" />
 					</value>
@@ -43,13 +31,7 @@
 					<match Class="PatchOperationSequence">
 						<operations>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="FSFAdvBionicAcidJaw"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="FSFAdvBionicFlameJaw"]</xpath>
+								<xpath>/Defs/AbilityDef[defName="FSFAdvBionicAcidJaw" or defName="FSFAdvBionicFlameJaw"]</xpath>
 								<value>
 									<li Class="HautsFramework.Hauts_SpewAbility" />
 								</value>
@@ -64,31 +46,7 @@
 					<match Class="PatchOperationSequence">
 						<operations>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="AG_GreaterAcidicVomit"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="AG_GreaterFireSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="AG_FreezingBreath"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="AG_NoxiousBreath"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="AG_SterilizingBreath"]</xpath>
+								<xpath>/Defs/AbilityDef[defName="AG_GreaterAcidicVomit" or defName="AG_GreaterFireSpew" or defName="AG_FreezingBreath" or defName="AG_NoxiousBreath" or defName="AG_SterilizingBreath"]</xpath>
 								<value>
 									<li Class="HautsFramework.Hauts_SpewAbility" />
 								</value>
@@ -103,19 +61,7 @@
 					<match Class="PatchOperationSequence">
 						<operations>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="AI_AnimalAcidSpray"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="AI_AnimalFoamSpray"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="AI_AnimalFireSpew"]</xpath>
+								<xpath>/Defs/AbilityDef[defName="AI_AnimalAcidSpray" or defName="AI_AnimalFoamSpray" or defName="AI_AnimalFireSpew"]</xpath>
 								<value>
 									<li Class="HautsFramework.Hauts_SpewAbility" />
 								</value>
@@ -130,13 +76,7 @@
 					<match Class="PatchOperationSequence">
 						<operations>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="BS_FoamSpray"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="BS_StickyAcidSpray"]</xpath>
+								<xpath>/Defs/AbilityDef[defName="BS_FoamSpray" or defName="BS_StickyAcidSpray"]</xpath>
 								<value>
 									<li Class="HautsFramework.Hauts_SpewAbility" />
 								</value>
@@ -151,31 +91,7 @@
 					<match Class="PatchOperationSequence">
 						<operations>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="EBSA_FireSpray"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="EBSA_FoamSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="EBSA_AcidSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="EBSA_BloodSpew"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="EBSA_BloodSpew_Hemogen"]</xpath>
+								<xpath>/Defs/AbilityDef[defName="EBSA_FireSpray" or defName="EBSA_FoamSpew" or defName="EBSA_AcidSpew" or defName="EBSA_BloodSpew" or defName="EBSA_BloodSpew_Hemogen"]</xpath>
 								<value>
 									<li Class="HautsFramework.Hauts_SpewAbility" />
 								</value>
@@ -190,19 +106,7 @@
 					<match Class="PatchOperationSequence">
 						<operations>
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_EMP"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Fire"]</xpath>
-								<value>
-									<li Class="HautsFramework.Hauts_SpewAbility" />
-								</value>
-							</li>
-							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Tox"]</xpath>
+								<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_EMP" or defName="OE_AxotlSpit_Fire" or defName="OE_AxotlSpit_Tox"]</xpath>
 								<value>
 									<li Class="HautsFramework.Hauts_SpewAbility" />
 								</value>
@@ -214,19 +118,7 @@
 								<match Class="PatchOperationSequence">
 									<operations>
 										<li Class="PatchOperationAddModExtension">
-											<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Acid"]</xpath>
-											<value>
-												<li Class="HautsFramework.Hauts_SpewAbility" />
-											</value>
-										</li>
-										<li Class="PatchOperationAddModExtension">
-											<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Cryo"]</xpath>
-											<value>
-												<li Class="HautsFramework.Hauts_SpewAbility" />
-											</value>
-										</li>
-										<li Class="PatchOperationAddModExtension">
-											<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Blast"]</xpath>
+											<xpath>/Defs/AbilityDef[defName="OE_AxotlSpit_Acid" or defName="OE_AxotlSpit_Cryo" or defName="OE_AxotlSpit_Blast"]</xpath>
 											<value>
 												<li Class="HautsFramework.Hauts_SpewAbility" />
 											</value>
@@ -305,7 +197,7 @@
 								</value>
 							</li>-->
 							<li Class="PatchOperationAddModExtension">
-								<xpath>/Defs/AbilityDef[defName="VRE_ViscuousGoo"]</xpath>
+								<xpath>/Defs/AbilityDef[defName="VRE_ViscuousGoo" or defName="VRE_ViscuousGoo_SingleUse"]</xpath>
 								<value>
 									<li Class="HautsFramework.Hauts_SpewAbility" />
 								</value>

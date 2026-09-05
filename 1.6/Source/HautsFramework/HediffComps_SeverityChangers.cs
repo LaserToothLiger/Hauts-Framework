@@ -591,6 +591,7 @@ namespace HautsFramework
         }
     }
     /*The severity of this hediff depends on whether the pawn is in one of the specified mental state(s). anyMentalState is, as the name indicates, a blanket whitelist; if you want a subset, you whitelist via mentalStates.
+     * anyAggroMentalState: if anyMentalState is false, then the whitelist includes (but is not necessarily restricted to, in conjunction w mentalStates) any mental state whose category is aggro.
      * severityInState: … if in a triggering mental state, and this amount is anything other than -999, the hediff’s severity is this amount…
      * severityPerTickInState: …or if it was -999, adds this amount to the hediff’s severity each tick.
      * severityOtherwise: if not in any such state, and this amount isn’t -999, the hediff’s severity is this amount…
@@ -602,6 +603,7 @@ namespace HautsFramework
             this.compClass = typeof(HediffComp_SeverityDuringSpecificMentalStates);
         }
         public bool anyMentalState = true;
+        public bool anyAggroMentalState = false;
         public List<MentalStateDef> mentalStates;
         public float severityInState = -999f;
         public float severityPerTickInState;
@@ -617,28 +619,26 @@ namespace HautsFramework
                 return (HediffCompProperties_SeverityDuringSpecificMentalStates)this.props;
             }
         }
-        public override void CompPostTick(ref float severityAdjustment)
+        public override void CompPostTickInterval(ref float severityAdjustment, int delta)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (this.parent.pawn.MentalStateDef != null && (this.Props.anyMentalState || this.Props.mentalStates.Contains(this.parent.pawn.MentalStateDef)))
+            base.CompPostTickInterval(ref severityAdjustment, delta);
+            if (this.Pawn.MentalStateDef != null && this.IsValidMentalState(this.Pawn.MentalStateDef))
             {
                 if (this.Props.severityInState != -999f)
                 {
                     this.parent.Severity = this.Props.severityInState;
+                } else {
+                    this.parent.Severity += this.Props.severityPerTickInState * delta;
                 }
-                else
-                {
-                    this.parent.Severity += this.Props.severityPerTickInState;
-                }
-            }
-            else if (this.Props.severityOtherwise != -999f)
-            {
+            } else if (this.Props.severityOtherwise != -999f) {
                 this.parent.Severity = this.Props.severityOtherwise;
+            } else {
+                this.parent.Severity += this.Props.severityPerTickOtherwise * delta;
             }
-            else
-            {
-                this.parent.Severity += this.Props.severityPerTickOtherwise;
-            }
+        }
+        public virtual bool IsValidMentalState(MentalStateDef state)
+        {
+            return this.Props.anyMentalState || (this.Props.anyAggroMentalState && state.IsAggro) || (this.Props.mentalStates != null && this.Props.mentalStates.Contains(state));
         }
     }
     /*The severity of this hediff = the sum level of the specified skill(s).

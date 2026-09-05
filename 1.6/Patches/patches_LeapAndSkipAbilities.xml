@@ -3,7 +3,7 @@
 	<Operation Class="PatchOperationFindMod">
 		<mods>
 			<li>Fray of the Fog</li>
-		</mods><!--the other patches in this file register certain VEF Abilities as "leaps" 2 be affected by jump range factor, this is for 'regular' abilities. Their range is not affected by jrf due to a custom class override of Range that uses a custom stat, so we statFactor that stat-->
+		</mods><!--the other patches in this file register certain VEF Abilities as "leaps" 2 be affected by jump range factor, this is for abilities not affected by jrf due to having hteir own custom stats that determine range, so we statFactor that stat-->
 		<match Class="PatchOperationConditional"><!--note that this stat caps out at 20-->
 			<xpath>/Defs/StatDef[defName="dvd_JumpRangeFray"]/statFactors</xpath>
 			<match Class="PatchOperationAdd">
