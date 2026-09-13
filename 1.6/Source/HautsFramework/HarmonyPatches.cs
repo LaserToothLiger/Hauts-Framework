@@ -1046,10 +1046,12 @@ namespace HautsFramework
             {
                 foreach (Trait t in pawn.story.traits.allTraits)
                 {
-                    if (t.def.HasModExtension<TraitGrantedStuff>() && t.def.GetModExtension<TraitGrantedStuff>().prisonerResolveFactor != null)
+                    TraitGrantedStuff tgs = t.def.GetModExtension<TraitGrantedStuff>();
+                    if (tgs != null && tgs.prisonerResolveFactor != null)
                     {
-                        __instance.resistance *= t.def.GetModExtension<TraitGrantedStuff>().prisonerResolveFactor.TryGetValue(t.Degree);
-                        __instance.will *= t.def.GetModExtension<TraitGrantedStuff>().prisonerResolveFactor.TryGetValue(t.Degree);
+                        float resolveFactor = tgs.prisonerResolveFactor.TryGetValue(t.Degree);
+                        __instance.resistance *= resolveFactor;
+                        __instance.will *= resolveFactor;
                     }
                 }
             }

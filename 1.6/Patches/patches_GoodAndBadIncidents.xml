@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Patch>
-	<!--unless they're given the BelongsToEventPool DME, incidents are eligible for auto-assignation of a BelongsToEventPool based on their letterDef. Makeable is off by default for these-->
+	<!--unless they're given the BelongsToEventPool DME, incidents are eligible for auto-assignation of a BelongsToEventPool purely based on their letterDef. Makeable is off by default for these-->
 	<Operation Class="PatchOperationAddModExtension">
 		<xpath>/Defs/LetterDef[@Name="ThreatBig"]</xpath>
 		<value>
@@ -44,23 +44,7 @@
 	
 	<!--good events-->
 	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="ResourcePodCrash"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="PsychicSoothe"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="SelfTame"]</xpath>
+		<xpath>/Defs/IncidentDef[defName="SelfTame" or defName="Aurora"]</xpath>
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<good>true</good>
@@ -69,7 +53,8 @@
 		</value>
 	</Operation>
 	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="AmbrosiaSprout"]</xpath>
+		<xpath>/Defs/IncidentDef[defName="ResourcePodCrash" or defName="PsychicSoothe" or defName="AmbrosiaSprout" or defName="FarmAnimalsWanderIn" or defName="WandererJoin" or defName="RefugeePodCrash" or defName="ThrumboPasses" or defName="MeteoriteImpact" or
+				defName="ShipChunkDrop" or defName="GiveQuest_Random"]</xpath>
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<good>true</good>
@@ -77,85 +62,11 @@
 		</value>
 	</Operation>
 	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="FarmAnimalsWanderIn"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="WandererJoin"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="RefugeePodCrash"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="ThrumboPasses"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="MeteoriteImpact"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="ShipChunkDrop"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="OrbitalTraderArrival"]</xpath>
+		<xpath>/Defs/IncidentDef[defName="OrbitalTraderArrival" or defName="TraderCaravanArrival"]</xpath>
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<good>true</good>
 				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="TraderCaravanArrival"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
-				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="Aurora"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
-				<impact>0</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="GiveQuest_Random"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<good>true</good>
 			</li>
 		</value>
 	</Operation>
@@ -221,66 +132,6 @@
 		</value>
 	</Operation>
 	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="RansomDemand"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="PsychicDrone"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="ToxicFallout"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="VolcanicWinter"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="HeatWave"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="ColdSnap"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="Flashstorm"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
 		<xpath>/Defs/IncidentDef[defName="ShortCircuit"]</xpath>
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
@@ -290,7 +141,7 @@
 		</value>
 	</Operation>
 	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="CropBlight"]</xpath>
+		<xpath>/Defs/IncidentDef[defName="RansomDemand" or defName="PsychicDrone" or defName="Flashstorm" or defName="CropBlight" or defName="Alphabeavers" or defName="DeepDrillInfestation" or defName="AnimalInsanityMass" or defName="AnimalInsanitySingle" or defName="Eclipse" or defName="SolarFlare"]</xpath>
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
@@ -298,95 +149,11 @@
 		</value>
 	</Operation>
 	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="Alphabeavers"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="RaidEnemy"]</xpath>
+		<xpath>/Defs/IncidentDef[defName="ToxicFallout" or defName="VolcanicWinter" or defName="HeatWave" or defName="ColdSnap" or defName="RaidEnemy" or defName="Infestation" or defName="ManhunterPack" or defName="DefoliatorShipPartCrash" or defName="PsychicEmanatorShipPartCrash"]</xpath>
 		<value>
 			<li Class="HautsFramework.BelongsToEventPool">
 				<bad>true</bad>
 				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="Infestation"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="DeepDrillInfestation"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="ManhunterPack"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="DefoliatorShipPartCrash"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="PsychicEmanatorShipPartCrash"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-				<impact>2</impact>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="AnimalInsanityMass"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="AnimalInsanitySingle"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="Eclipse"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
-			</li>
-		</value>
-	</Operation>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>/Defs/IncidentDef[defName="SolarFlare"]</xpath>
-		<value>
-			<li Class="HautsFramework.BelongsToEventPool">
-				<bad>true</bad>
 			</li>
 		</value>
 	</Operation>
@@ -397,20 +164,10 @@
 		<match Class="PatchOperationSequence">
 			<operations>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="BloodRain"]</xpath>
+					<xpath>/Defs/IncidentDef[@ParentName="ObeliskBase"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="DeathPall"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -433,122 +190,28 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="FrenziedAnimals" or defName="GhoulAttack" or defName="MetalhorrorImplantation" or defName="Nociosphere" or defName="UnnaturalCorpseArrival"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="BloodRain" or defName="DeathPall" or defName="HateChanters" or defName="PitGate" or defName="PsychicRitualSiege" or defName="Revenant" or defName="ShamblerAssault" or defName="SightstealerArrival" or defName="UnnaturalDarkness"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>2</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
 					<xpath>/Defs/IncidentDef[defName="FleshmassHeart"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
 							<impact>3</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="FrenziedAnimals"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="GhoulAttack"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="HateChanters"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="MetalhorrorImplantation"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="Nociosphere"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[@ParentName="ObeliskBase"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="PitGate"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="PsychicRitualSiege"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="Revenant"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="ShamblerAssault"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="SightstealerArrival"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="UnnaturalCorpseArrival"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="UnnaturalDarkness"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
 						</li>
 					</value>
 				</li>
@@ -562,16 +225,7 @@
 		<match Class="PatchOperationSequence">
 			<operations>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="MechCluster"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="ProblemCauser"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="MechCluster" or defName="ProblemCauser"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
@@ -589,93 +243,7 @@
 		<match Class="PatchOperationSequence">
 			<operations>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VolcanicAsh"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="LavaEmergence"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="LavaFlow"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="SeasonalFlooding"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>0</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VolcanicDebris"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="DroughtInitial"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="Drought"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="GillRot"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="OrbitalDebris"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="BoomshroomSprout"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<good>true</good>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="BioluminescentSpores"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="BoomshroomSprout" or defName="BioluminescentSpores"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
@@ -691,6 +259,32 @@
 						</li>
 					</value>
 				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="SeasonalFlooding"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>0</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="LavaFlow" or defName="DroughtInitial" or defName="GillRot"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="VolcanicAsh" or defName="LavaEmergence" or defName="VolcanicDebris" or defName="Drought" or defName="OrbitalDebris"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>2</impact>
+						</li>
+					</value>
+				</li>
 			</operations>
 		</match>
 	</Operation>
@@ -703,7 +297,7 @@
 		<match Class="PatchOperationSequence">
 			<operations>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="AA_Incident_Gallatross"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="AA_Incident_Gallatross" or defName="AA_MimeWandererJoinQuest"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
@@ -720,16 +314,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="AA_MimeWandererJoinQuest"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<good>true</good>
-							<!--<bad>true</bad>-->
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="AA_CactipineDropPod"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="AA_CactipineDropPod" or defName="AA_IncidentFungalHusk"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
@@ -742,14 +327,6 @@
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
 							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="AA_IncidentFungalHusk"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
 						</li>
 					</value>
 				</li>
@@ -822,6 +399,89 @@
 		</match>
 	</Operation>
 	
+	<!--cybranian-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Cybranian - Events</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="MountainAir" or defName="SeaAir"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<impact>0</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="AlliesGift" or defName="WorldMeteorite"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="OldMan"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<impact>2</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="RatInfestation"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="IceStorm" or defName="TurtleInvasion"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>2</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="SupervolcanoExplosion"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>3</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="PsyStorm"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<bad>true</bad>
+							<impact>3</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="DeathOfSun" or defName="GlobalCooling" or defName="GlobalWarming"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<bad>true</bad>
+							<impact>4</impact>
+							<makeable>false</makeable>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
 	<!--dark ages: beasts and monsters-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>
@@ -885,15 +545,7 @@
 		<match Class="PatchOperationSequence">
 			<operations>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="dvd_IncidentSalvageFray"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<good>true</good>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="dvd_FrayhoundPasses"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="dvd_IncidentSalvageFray" or defName="dvd_FrayhoundPasses"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
@@ -1172,16 +824,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="Mashed_Ashlands_DaedrothPasses"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<good>true</good>
-							<bad>true</bad>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="Mashed_Ashlands_OgrimPasses"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="Mashed_Ashlands_DaedrothPasses" or defName="Mashed_Ashlands_OgrimPasses"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<good>true</good>
@@ -1475,34 +1118,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VGE_MicrometeorStorm"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VGE_SpaceDebris"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VGE_AsteroidShower"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VGE_ToxicDustCloud"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="VGE_MicrometeorStorm" or defName="VGE_SpaceDebris" or defName="VGE_AsteroidShower" or defName="VGE_ToxicDustCloud"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
@@ -1511,6 +1127,20 @@
 					</value>
 				</li>
 			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Gravship Expanded - Chapter 2</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/IncidentDef[defName="VGE_SpaceInfestation"]</xpath>
+			<value>
+				<li Class="HautsFramework.BelongsToEventPool">
+					<bad>true</bad>
+					<impact>2</impact>
+				</li>
+			</value>
 		</match>
 	</Operation>
 	
@@ -1530,16 +1160,7 @@
 					</value>
 				</li>
 				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VESWW_FullMapFlashstorm"]</xpath>
-					<value>
-						<li Class="HautsFramework.BelongsToEventPool">
-							<bad>true</bad>
-							<impact>2</impact>
-						</li>
-					</value>
-				</li>
-				<li Class="PatchOperationAddModExtension">
-					<xpath>/Defs/IncidentDef[defName="VESWW_MeteorStorm"]</xpath>
+					<xpath>/Defs/IncidentDef[defName="VESWW_FullMapFlashstorm" or defName="VESWW_MeteorStorm"]</xpath>
 					<value>
 						<li Class="HautsFramework.BelongsToEventPool">
 							<bad>true</bad>
