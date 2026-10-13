@@ -869,6 +869,43 @@
 		</match>
 	</Operation>
 	
+	<!--More Phytokin Xenotypes-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>More Phytokin Xenotypes</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="MPX_Incident_DeathTreeCocoon"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="MPX_Incident_DeathTreeWandererJoin"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<impact>2</impact>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/IncidentDef[defName="MPX_Incident_SourceSoilAncientTree" or defName="MPX_Incident_DeathTreeGuardianJoin"]</xpath>
+					<value>
+						<li Class="HautsFramework.BelongsToEventPool">
+							<good>true</good>
+							<impact>3</impact>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	
 	<!--Mythic ages: megafauna bestiary-->
 	<Operation Class="PatchOperationFindMod">
 		<mods>

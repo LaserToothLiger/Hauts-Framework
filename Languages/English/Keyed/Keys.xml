@@ -68,6 +68,8 @@
 <Hauts_ExtraHitFXSuffix2E> unnatural entities</Hauts_ExtraHitFXSuffix2E>
 <Hauts_GotInspiredOnHit>{0} gained an inspiration due to the {1} on-hit effect.</Hauts_GotInspiredOnHit>
 <Hauts_GotMBOnHit>The {0} on-hit effect is responsible.</Hauts_GotMBOnHit>
+<Hauts_PsyfocusSpentTrackerTooltip>{0}% of {1}% psyfocus spent to trigger</Hauts_PsyfocusSpentTrackerTooltip><!--currently only used in HAT for the Stork transcendence-->
+<Hauts_PsyfocusSpentTrackerTooltipFantasy>{0}% of {1}% mana spent to trigger</Hauts_PsyfocusSpentTrackerTooltipFantasy>
 <Hauts_ShieldRecharge>{0}s to recharge</Hauts_ShieldRecharge>
 <Hauts_SkillAdjustmentTooltip>Grants {0} {1} xp per day</Hauts_SkillAdjustmentTooltip>
 <Hauts_StatWorkerPsyfocusBand>From current psyfocus band</Hauts_StatWorkerPsyfocusBand>
