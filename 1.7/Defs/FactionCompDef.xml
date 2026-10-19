@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <HautsFramework.Hauts_FactionCompDef>
+    <defName>Hauts_FCHolder</defName>
+    <comps>
+	  <!--add comps via xpath here-->
+	  <li Class="HautsFramework.HautsFactionCompProperties_SpyPoints">
+		<spyPoints>0</spyPoints>
+	  </li>
+	  <li Class="HautsFramework.HautsFactionCompProperties_BurglaryResponse">
+		<initialAlertLevel>0</initialAlertLevel>
+		<minAlertGainFromBurgle>5</minAlertGainFromBurgle>
+		<alertGainPerMarketValueStolen>0.001</alertGainPerMarketValueStolen>
+		<advancedDecayThreshold>13.34</advancedDecayThreshold><!--if a faction's alert level exceeds this value...-->
+		<advancedDecayPerDayPct>0.15</advancedDecayPerDayPct><!--decrease by this percent each day, down to the threshold. Since decay is actually incremented in hours, this is a different curve than "per day" would ordinarily imply-->
+		<alertDecayPerDay>2</alertDecayPerDay><!--otherwise decay by this flat value per day-->
+		<specificFactionMinAlertLevels>
+		</specificFactionMinAlertLevels>
+		<minAlertLevelPerTechLevel>
+		  <li><key>Undefined</key><value>0</value></li>
+		  <li><key>Animal</key><value>0</value></li>
+		  <li><key>Neolithic</key><value>0</value></li>
+		  <li><key>Medieval</key><value>0.25</value></li>
+		  <li><key>Industrial</key><value>0.5</value></li>
+		  <li><key>Spacer</key><value>0.75</value></li>
+		  <li><key>Ultra</key><value>0.1</value></li>
+		  <li><key>Archotech</key><value>5</value></li>
+		</minAlertLevelPerTechLevel>
+	  </li>
+    </comps>
+  </HautsFramework.Hauts_FactionCompDef>
+</Defs>

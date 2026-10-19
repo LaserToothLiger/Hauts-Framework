@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationConditional">
+		<xpath>/Defs/StatDef[@Name="MarketValueBase"]/parts</xpath>
+		<nomatch Class="PatchOperationAdd">
+			<xpath>/Defs/StatDef[@Name="MarketValueBase"]</xpath>
+			<value>
+				<parts>
+				  <li Class="HautsFramework.StatPart_ItemCharged"/>
+				</parts>
+			</value>
+		</nomatch>
+		<match Class="PatchOperationAdd">
+			<xpath>/Defs/StatDef[@Name="MarketValueBase"]/parts</xpath>
+			<value>
+			  <li Class="HautsFramework.StatPart_ItemCharged"/>
+			</value>
+		</match>
+	</Operation>
+</Patch>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationReplace">
+		<xpath>/Defs/HediffDef[defName="Hauts_AmplifiedGraviticPull"]/stages/li/statOffsets/MeleeDodgeChance</xpath>
+		<value>
+			<MeleeDodgeChance>-0.035</MeleeDodgeChance>
+		</value>
+	</Operation>
+</Patch>

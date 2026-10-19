@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Alpha Memes</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/TraitDef[defName="AM_Ahimsa"]</xpath>
+			<value>
+				<li Class="HautsFramework.ExciseTraitExempt" />
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Colonist Tech Background</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="TechBackground"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExempt" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Crystalloid</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/TraitDef[defName="Attunement"]</xpath>
+			<value>
+				<li Class="HautsFramework.ExciseTraitExempt" />
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Cultivator of the Rim</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="CTR_MediocreTalent" or defName="CTR_GoodTalent" or defName="CTR_CultivationProdigy"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExempt" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>ISEKAI RPG LEVELING</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="Isekai_Rank_F" or defName="Isekai_Rank_E" or defName="Isekai_Rank_D" or defName="Isekai_Rank_C" or defName="Isekai_Rank_B" or defName="Isekai_Rank_A" or defName="Isekai_Rank_S" or defName="Isekai_Rank_SS" or defName="Isekai_Rank_SSS"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExempt" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Progression: Education</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="PE_LowTechProficiency" or defName="PE_FirearmProficiency" or defName="PE_HighTechProficiency" or defName="PE_AnimalRidingProficiency" or defName="PE_AutomobileDrivingProficiency" or defName="PE_AerialPilotingProficiency" or defName="PE_OrbitalPilotingProficiency" or defName="PE_MuteProficiency" or defName="PE_BasicSpeechProficiency" or defName="PE_FluentSpeechProficiency"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExempt" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Reunion</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/TraitDef[defName="ReunionCharacter"]</xpath>
+			<value>
+				<li Class="HautsFramework.ExciseTraitExempt" />
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Roo's Minotaur Xenotype</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/TraitDef[defName="RBM_Herculean_Trait"]</xpath>
+			<value>
+				<li Class="HautsFramework.ExciseTraitExempt" />
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Segmentum - Servitors</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="Seg_Servitors_Servitor"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExempt" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Factions Expanded - Pirates</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="VFEP_WarcasketTrait"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExempt" />
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="VFEP_Shellcasket"]</xpath>
+					<value>
+						<li Class="HautsFramework.ExciseTraitExempt" />
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Ideology Expanded - Memes and Structures</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/TraitDef[defName="VME_Elder"]</xpath>
+			<value>
+				<li Class="HautsFramework.ExciseTraitExempt" />
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Psycasts Expanded</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/TraitDef[defName="VPE_Thrall"]</xpath>
+			<value>
+				<li Class="HautsFramework.ExciseTraitExempt" />
+			</value>
+		</match>
+	</Operation>
+	<!--<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Vanilla Quests Expanded - Ancients</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/TraitDef[defName="VQE_IdealPatient"]</xpath>
+			<value>
+				<li Class="HautsFramework.ExciseTraitExempt" />
+			</value>
+		</match>
+	</Operation>-->
+</Patch>

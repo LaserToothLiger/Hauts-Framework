@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <StatDef>
+		<defName>Hauts_SurveySpeedFactor</defName>
+		<label>survey speed factor</label>
+		<description>The speed at which people operate this scanner is multiplied by this value.</description>
+		<category>Building</category>
+		<defaultBaseValue>1</defaultBaseValue>
+		<minValue>0.1</minValue>
+		<hideAtValue>1</hideAtValue>
+		<toStringStyle>PercentZero</toStringStyle>
+		<displayPriorityInCategory>3457</displayPriorityInCategory>
+    </StatDef>
+	
+</Defs>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Biotech</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--fixes the dumb new behavior of Diaboli in 1.5 that makes them prefer Fire Bursting instead of using the Hellsphere Cannon regardless of whether anything is in Fire Burst range-->
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/AbilityDef[defName="FireBurst"]/comps</xpath>
+					<value>
+					  <li Class="HautsFramework.CompProperties_AbilityAiTargetingDistanceRange">
+						<compClass>HautsFramework.CompAbilityEffect_AiTargetingDistanceRange</compClass>
+						<distanceRange>0~5.9</distanceRange>
+					  </li>
+					</value>
+				</li>
+				<!--mech energy usage stat functionality-->
+				<li Class="PatchOperationConditional">
+					<xpath>/Defs/StatDef[defName="MechEnergyUsageFactor"]/parts</xpath>
+					<nomatch Class="PatchOperationAdd">
+						<xpath>/Defs/StatDef[defName="MechEnergyUsageFactor"]</xpath>
+						<value>
+							<parts>
+							  <li Class="StatPart_OverseerStatOffset" MayRequire="Ludeon.RimWorld.Biotech">
+								<stat>Hauts_MechEnergyUsage</stat>
+								<label>Offset from mechanitor</label>
+							  </li>
+							</parts>
+						</value>
+					</nomatch>
+					<match Class="PatchOperationAdd">
+						<xpath>/Defs/StatDef[defName="MechEnergyUsageFactor"]/parts</xpath>
+						<value>
+						  <li Class="StatPart_OverseerStatOffset" MayRequire="Ludeon.RimWorld.Biotech">
+							<stat>Hauts_MechEnergyUsage</stat>
+							<label>Offset from mechanitor</label>
+						  </li>
+						</value>
+					</match>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

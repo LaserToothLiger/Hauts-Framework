@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<!--see patches_SpecificDamageFactorStats.xml for what specific damage types are affected-->
+	<HautsFramework.SpecificDamageFactorStatDef Name="Hauts_IncomingXDamageFactorStat" Abstract="True">
+		<category>PawnResistances</category>
+		<minValue>0</minValue>
+		<hideAtValue>1</hideAtValue>
+		<defaultBaseValue>1</defaultBaseValue>
+        <toStringStyle>PercentZero</toStringStyle>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_AcidDamageFactor</defName>
+		<label>incoming acid damage factor</label>
+		<description>A multiplier on incoming damage taken of various acid types.</description>
+		<displayPriorityInCategory>3001</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_ColdDamageFactor</defName>
+		<label>incoming cold damage factor</label>
+		<description>A multiplier on incoming damage taken of various cold types.</description>
+		<displayPriorityInCategory>3002</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_ElectricalDamageFactor</defName>
+		<label>incoming electric damage factor</label>
+		<description>A multiplier on incoming damage taken of various electric types. Note that lightning strikes actually do flame damage, and as such are affected by incoming heat damage factor instead.</description>
+		<displayPriorityInCategory>3003</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_ExplosiveDamageFactor</defName>
+		<label>incoming explosive damage factor</label>
+		<description>A multiplier on incoming damage taken of various kinetic explosions.</description>
+		<displayPriorityInCategory>3004</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_GravityDamageFactor</defName>
+		<label>incoming gravitic damage factor</label>
+		<description>A multiplier on incoming damage taken of various 'gravitic' types.\n\nThere are no gravitic damage types in the base game or its DLCs - they are only found in specific mods.</description>
+		<displayPriorityInCategory>3003</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_HeatDamageFactor</defName>
+		<label>incoming heat damage factor</label>
+		<description>A multiplier on incoming damage taken of various heat-related types. Note that lightning strikes actually do flame damage, and as such are affected by this stat.</description>
+		<displayPriorityInCategory>3005</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_PsychicDamageFactor</defName>
+		<label>incoming psychic damage factor</label>
+		<description>A multiplier on incoming damage taken of various psychic types.\n\nPsychic damage types are very rare; although some unnatural entities from the Anomaly DLC use psychic damage, they typically apply it as part of an instant-kill effect which does not need the damage to function, so this stat is only useful if you have mods that add more conventionally-applied sources of psychic damage.</description>
+		<displayPriorityInCategory>3006</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_RadiationDamageFactor</defName>
+		<label>incoming radiation damage factor</label>
+		<description>A multiplier on incoming damage taken of various radiation-related types.</description>
+		<displayPriorityInCategory>3007</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_SkipDamageFactor</defName>
+		<label>incoming skip damage factor</label>
+		<description>A multiplier on incoming damage taken of various teleportation-related types.\n\nSkip damage types are very rare, often associated with archotech or psycast phenomena.</description>
+		<displayPriorityInCategory>3008</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+	<HautsFramework.SpecificDamageFactorStatDef ParentName="Hauts_IncomingXDamageFactorStat">
+		<defName>Hauts_ToxicDamageFactor</defName>
+		<label>incoming toxin damage factor</label>
+		<description>A multiplier on incoming damage taken of various toxin types.\n\nThis does not directly affect one's resistance to toxic buildup, although some of the affected damage types inflict toxic buildup in proportion to the amount of damage inflicted.</description>
+		<displayPriorityInCategory>3009</displayPriorityInCategory>
+	</HautsFramework.SpecificDamageFactorStatDef>
+</Defs>

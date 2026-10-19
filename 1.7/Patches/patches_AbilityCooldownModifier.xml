@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch><!--Certain ability cooldown modifiers work on the following abilities
+		Obsidia Expansion mods-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Obsidia Expansion - Ceratons Xenotype</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityGroupDef[defName="OEAuraBuff"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	<!--Sierra's mods-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Cooking Specialist</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="SO_ButcherCommand"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Cooking</affectedByAnyACMwithThisWorkTag>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Penitent Specialist</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="SO_PenitentCommand"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Violent</affectedByAnyACMwithThisWorkTag>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Podcaster Specialist</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="SO_PodcasterCommand"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+				</li>
+			</value>
+		</match>
+	</Operation><!--No need for Rimfluencer Specialist patch as its abilities already require Social. Void Specialist not included here as it has a couple other patches, and we might as well all group them in one FindMod patch-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Zealot Specialist </li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="SO_HolyFervour"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag><!--or maybe violent...?-->
+				</li>
+			</value>
+		</match>
+	</Operation>
+	<!--UMW-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Unique Melee Weapons</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AbilityDef[defName="UMW_RallyingCry"]</xpath>
+			<value>
+				<li Class="HautsFramework.CooldownModifier_WorkTags">
+					<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+				</li>
+			</value>
+		</match>
+	</Operation>
+	<!--VE mods-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>Vanilla Ideology Expanded - Memes and Structures</li>
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--animals abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_InsectoidHerder"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Animals</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--caring abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_Nurse"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Caring</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--crafting abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_Mechacker"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Crafting</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--intellectual abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityDef[defName="VME_EnableSelfDestruct"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Intellectual</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--social abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_Commissar"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_PartyHost"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityGroupDef[defName="VME_Trader"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Social</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+				<!--violent abilities-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/AbilityDef[defName="VME_EnforceCompliance"]</xpath>
+					<value>
+						<li Class="HautsFramework.CooldownModifier_WorkTags">
+							<affectedByAnyACMwithThisWorkTag>Violent</affectedByAnyACMwithThisWorkTag>
+						</li>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<!--<Operation Class="PatchOperationAddModExtension"> it's better if the severity level for Ambient Horror remains customizable on a case by case basis imo. Even if I don't use defaultSeverityAmbientHorror at all, someone else might have a use for it
+		<xpath>/Defs/AnomalyPlaystyleDef[defName="AmbientHorror"]</xpath>
+		<value>
+			<li Class="HautsFramework.CustomAnomalyPlaystyleActivityLevels">
+				<activityLevelWorker>HautsFramework.ActivityLevelWorker</activityLevelWorker>
+				<defaultLevel>2</defaultLevel>
+			</li>
+		</value>
+	</Operation>-->
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+		  <li>[Alpha] Anomaly Remix: Gray Pall</li>
+		</mods>
+		<match Class="PatchOperationAddModExtension">
+			<xpath>/Defs/AnomalyPlaystyleDef[defName="GrayPall"]</xpath>
+			<value>
+				<li Class="HautsFramework.CustomAnomalyPlaystyleActivityLevels">
+					<activityLevelWorker>HautsFramework.ActivityLevelWorker_GrayPallMod</activityLevelWorker>
+					<defaultLevel>0</defaultLevel>
+					<daysToNextLevel>1</daysToNextLevel><!--anomaly activity level hediffs gain one level per continuous day spent in gray pall-->
+				</li>
+			</value>
+		</match>
+	</Operation>
+</Patch>

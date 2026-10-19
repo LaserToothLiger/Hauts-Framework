@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+	<Operation Class="PatchOperationFindMod">
+		<mods>
+			<li>Dynamic's Traits</li><!--thankfully, a lot of exclsions are already handled by conflicting disabled/required work tags, so we don't have to do much here-->
+		</mods>
+		<match Class="PatchOperationSequence">
+			<operations>
+				<!--given its exclusivity w Ascetic and two of the three unmodded conceited traits, as well as its concept, Narcissist is clearly a conceited trait-->
+				<li Class="PatchOperationAddModExtension">
+					<xpath>/Defs/TraitDef[defName="Narcissist_DT"]</xpath>
+					<value>
+						<li Class="HautsFramework.ConceitedTrait" />
+					</value>
+				</li>
+				<!--not wanting to get dirty, hypochondriacs keep their feet clean-->
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="Hypochondriac_DT"]/degreeDatas/li/statOffsets</xpath>
+					<value>
+						<Hauts_TrackSize>-0.4</Hauts_TrackSize>
+					</value>
+				</li>
+				<!--Melee Armor Penetration and MeleeDPS are not modifiable, and they are DESCRIPTIONS of the average armor pen and DPS of the pawn's available melee attacks, not prescriptions. Daredevil thus needs to be fixed.-->
+				<li Class="PatchOperationAdd">
+					<xpath>/Defs/TraitDef[defName="Daredevil_DT"]/degreeDatas/li/statFactors</xpath>
+					<value>
+						<MeleeCooldownFactor>0.9</MeleeCooldownFactor><!--slightly better than what 1.1x melee DPS is supposed to do, but round numbers are better than .909par-->
+						<Hauts_MeleeArmorPenetration>1.1</Hauts_MeleeArmorPenetration>
+					</value>
+				</li>
+			</operations>
+		</match>
+	</Operation>
+</Patch>
