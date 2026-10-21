@@ -6,6 +6,7 @@ using Verse;
 using Verse.AI;
 using HarmonyLib;
 using UnityEngine;
+using VEF.Things;
 
 namespace HautsFramework
 {
@@ -1222,16 +1223,19 @@ namespace HautsFramework
         //hediff comps - some PDMs can prevent the attachment of "BadAttachments" (fire, VGE astrofire, VQE Cryptoforge cryptofreeze)
         public static bool Hauts_AddAttachmentPrefix(AttachableThing __instance, Thing newParent)
         {
-            if (__instance.def.HasModExtension<BadAttachable>() && newParent is Pawn p)
+            if (newParent is Pawn p)
             {
-                if (p.TryGetComp<CompAttachBase>(out CompAttachBase cab))
+                if (__instance.def is CustomFireDef || __instance.def.HasModExtension<BadAttachable>())
                 {
-                    foreach (Hediff h in p.health.hediffSet.hediffs)
+                    if (p.TryGetComp<CompAttachBase>(out CompAttachBase cab))
                     {
-                        HediffComp_DamageNegation hcdn = h.TryGetComp<HediffComp_DamageNegation>();
-                        if (hcdn != null && hcdn.Props.removeBadAttachables && hcdn.ShouldPreventAttachment(__instance))
+                        foreach (Hediff h in p.health.hediffSet.hediffs)
                         {
-                            return false;
+                            HediffComp_DamageNegation hcdn = h.TryGetComp<HediffComp_DamageNegation>();
+                            if (hcdn != null && hcdn.Props.removeBadAttachables && hcdn.ShouldPreventAttachment(__instance))
+                            {
+                                return false;
+                            }
                         }
                     }
                 }

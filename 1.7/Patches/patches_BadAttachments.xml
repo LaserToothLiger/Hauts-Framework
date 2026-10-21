@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<Patch><!--Certain damage negation hediffs remove these attachments periodically-->
+<Patch><!--Certain damage negation hediffs prevent these from attaching. Anything that is a -->
 	<Operation Class="PatchOperationAddModExtension">
 		<xpath>/Defs/ThingDef[defName="Fire"]</xpath>
 		<value>
@@ -17,19 +17,6 @@
 			<value>
 				<li Class="HautsFramework.BadAttachable">
 					<extinguishingDamageDef>Extinguish</extinguishingDamageDef>
-				</li>
-			</value>
-		</match>
-	</Operation>
-	<Operation Class="PatchOperationFindMod">
-		<mods>
-		  <li>Vanilla Gravship Expanded - Chapter 1</li>
-		</mods>
-		<match Class="PatchOperationAddModExtension">
-			<xpath>/Defs/ThingDef[defName="VGE_Astrofire"]</xpath>
-			<value>
-				<li Class="HautsFramework.BadAttachable">
-					<extinguishingDamageDef>VGE_ExtinguishAstrofire</extinguishingDamageDef>
 				</li>
 			</value>
 		</match>
